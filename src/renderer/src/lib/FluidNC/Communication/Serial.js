@@ -29,7 +29,6 @@ export default class Serial {
             this.parser.onData(line => {
                 console.log(line);
                 callback(line);
-
             });
         }
     };
