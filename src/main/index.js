@@ -6,6 +6,10 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 
+app.commandLine.appendSwitch('ignore-gpu-blacklist');
+app.commandLine.appendSwitch('enable-gpu');
+app.commandLine.appendSwitch('enable-webgl');
+
 function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({

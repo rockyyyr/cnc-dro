@@ -41,7 +41,7 @@ export default class Serial {
 
     send = data => {
         if (this.port && this.isOpen) {
-            this.port.send(`$${data}\r\n`, console.error);
+            this.port.send(`${data}\r\n`, console.error);
         }
     };
 
