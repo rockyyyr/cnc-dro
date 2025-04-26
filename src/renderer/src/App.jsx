@@ -10,9 +10,11 @@ import UtilityPanel from './components/UtilityPanel';
 import FluidNC, { Serial, Websocket } from './lib/FluidNC';
 import { NumpadProvider } from './util/Numpad/Context';
 
-const comms = window.env.ENV === 'production'
+const comms = window.env.RUN_ENVIRONMENT === 'pi'
     ? new Serial()
     : new Websocket();
+
+console.log(window.env.RUN_ENVIRONMENT);
 
 function App() {
     return (

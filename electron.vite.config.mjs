@@ -16,11 +16,11 @@ export default defineConfig({
             }
         },
         plugins: [react()],
-        server: {
-            host: '0.0.0.0',
-            port: 3333,
-            cors: false,
-            allowedHosts: 'all',
-        }
+        // server: {
+        //     host: '0.0.0.0',
+        //     port: 3333,
+        //     cors: false,
+        //     allowedHosts: 'all',
+        // }
     }))
 });
