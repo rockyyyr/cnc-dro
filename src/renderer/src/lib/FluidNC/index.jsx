@@ -1,6 +1,8 @@
 import * as Constants from './Constants';
 import * as Events from './Events';
-import * as Api from './Api';
+import * as Api from './Communication/Api';
+import Serial from './Communication/Serial';
+import Websocket from './Communication/Websocket';
 import * as Files from './Files';
 import Context from './Context';
 import * as Messages from './Messages';
@@ -14,7 +16,9 @@ export {
     Files,
     Context,
     Messages,
-    Commands
+    Commands,
+    Serial,
+    Websocket
 };
 
 export default FluidNC;

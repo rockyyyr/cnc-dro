@@ -1,4 +1,4 @@
-import api from "./Api";
+import api from "./Communication/Api";
 import { FILE_UPLOADED } from './Events';
 import * as Messages from './Messages';
 

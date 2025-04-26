@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
@@ -16,6 +19,8 @@ function createWindow() {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false,
             webSecurity: false,
+            contextIsolation: true,
+            nodeIntegration: false
         }
     });
 

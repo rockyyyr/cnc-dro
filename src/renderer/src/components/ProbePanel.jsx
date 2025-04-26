@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
@@ -12,7 +12,7 @@ import UpRight from '../assets/img/arrow-up-right.svg';
 
 import { probeZ, probeXY, probeX, probeY } from '../lib/probe';
 
-import { Context, Api } from '../lib/FluidNC';
+import { Api } from '../lib/FluidNC';
 import Spacer from '../util/Spacer';
 
 
@@ -20,9 +20,6 @@ export default function ProbePanel({ show, onClose }) {
     const [probeHeight, setProbeHeight] = useState(5);
     const [probeWidth, setProbeWidth] = useState(5);
     const [probeDirection, setProbeDirection] = useState({ y: -1, x: -1, label: 'downleft' });
-
-    // eslint-disable-next-line no-unused-vars
-    // const [ready, message, send] = useContext(Context);
 
     const runProbeZ = () => Api.command(probeZ(probeHeight));
     const runProbeXY = () => Api.command(probeXY(probeWidth, probeDirection));

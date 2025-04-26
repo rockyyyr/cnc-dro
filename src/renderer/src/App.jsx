@@ -4,16 +4,19 @@ import ButtonPanel from './components/ButtonPanel';
 import PositionsPanel from './components/PositionsPanel';
 import JogPanel from './components/JogPanel';
 import Spindle from './components/Spindle';
-import Limits from './components/Limits';
 import Feeds from './components/Feeds';
 import GCode from './components/Visualizer';
 import UtilityPanel from './components/UtilityPanel';
-import FluidNC from './lib/FluidNC';
+import FluidNC, { Serial, Websocket } from './lib/FluidNC';
 import { NumpadProvider } from './util/Numpad/Context';
+
+const comms = window.env.ENV === 'production'
+    ? new Serial()
+    : new Websocket();
 
 function App() {
     return (
-        <FluidNC>
+        <FluidNC comms={comms}>
             <NumpadProvider>
                 <div className="flex-row" style={{ margin: '0 3px' }}>
                     <ButtonPanel />

@@ -20,10 +20,12 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@serialport/parser-readline": "^13.0.0",
     "axios": "^1.8.4",
     "colornames": "^1.1.1",
     "gcode-preview": "^2.18.0",
     "react-use-websocket": "^4.13.0",
+    "serialport": "^13.0.0",
     "three": "^0.175.0"
   },
   "devDependencies": {
@@ -32,6 +34,7 @@
     "@types/react": "^19.1.2",
     "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv": "^16.5.0",
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
     "electron-vite": "^3.1.0",

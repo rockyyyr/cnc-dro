@@ -5,3 +5,4 @@ out
 .eslintcache
 .vscode
 *.log*
+.env

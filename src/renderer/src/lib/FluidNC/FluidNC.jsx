@@ -2,38 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import FluidNCContext from "./Context";
 import * as Messages from './Messages';
 import * as Commands from './Commands';
-import { WS, PING_INTERVAL } from './Constants';
+import { PING_INTERVAL } from './Constants';
 
-const FluidNC = ({ children }) => {
+const FluidNC = ({ children, comms }) => {
     const [isReady, setIsReady] = useState(false);
     const [val, setVal] = useState(null);
 
     const ws = useRef(null);
 
     useEffect(() => {
-        const socket = new WebSocket(WS);
-
         let pingInterval;
 
-        socket.onopen = () => {
-            setIsReady(true);
-            pingInterval = setInterval(() => socket.send(Commands.STATUS), PING_INTERVAL);
-        };
+        comms.open();
 
-        socket.onclose = () => {
+        comms.onopen(() => {
+            setIsReady(true);
+            pingInterval = setInterval(() => comms.send(Commands.STATUS), PING_INTERVAL);
+        });
+
+        comms.onclose(() => {
             setIsReady(false);
             clearInterval(pingInterval);
-        };
+        });
 
-        socket.onerror = error => console.error("WebSocket error:", error);
-        socket.onmessage = async event => setVal(await Messages.parse(event));
+        comms.onerror(error => console.error("Communication error:", error));
+        comms.onmessage(async event => setVal(await Messages.parse(event)));
 
-        ws.current = socket;
+        ws.current = comms;
 
         return () => {
-            socket.close();
+            comms.close();
         };
-    }, []);
+    }, [comms]);
 
     const ret = [isReady, val, ws.current?.send.bind(ws.current)];
 
