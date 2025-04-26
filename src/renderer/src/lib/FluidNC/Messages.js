@@ -56,9 +56,6 @@ const parseStateMessage = message => {
         }
     }
 
-    console.log({ status });
-
-
     return {
         type: MessageType.STATE,
         state: status.state,
