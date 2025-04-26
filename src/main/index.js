@@ -12,7 +12,7 @@ function createWindow() {
         width: 1920,
         height: 550,
         show: false,
-        kiosk: process.env.RUN_ENVIRONMENT === 'pi',
+        // kiosk: process.env.RUN_ENVIRONMENT === 'pi',
         // titleBarStyle: 'hidden',
         autoHideMenuBar: true,
         ...(process.platform === 'linux' ? { icon } : {}),
