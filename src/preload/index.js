@@ -1,7 +1,7 @@
 import { contextBridge } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import { SerialPort } from 'serialport';
-import { Readline } from '@serialport/parser-readline';
+import { ReadlineParser } from '@serialport/parser-readline';
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -18,7 +18,7 @@ if (process.contextIsolated) {
         contextBridge.exposeInMainWorld('serial', {
             open: () => {
                 port = new SerialPort({ path: '/dev/serial0', baudRate: 115200 });
-                parser = port.pipe(new Readline({ delimiter: '\n' }));
+                parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
 
                 return new Promise((resolve, reject) => {
                     port.on('open', () => resolve());
