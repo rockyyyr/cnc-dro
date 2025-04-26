@@ -5,7 +5,7 @@ import ProbePanel from './ProbePanel';
 
 import Probe from '../assets/img/probe.svg';
 import Air from '../assets/img/air.svg';
-import Mist from '../assets/img/Mist.svg';
+import Mist from '../assets/img/mist.svg';
 import Terminal from '../assets/img/terminal.svg';
 
 export default function UtilityPanel() {
