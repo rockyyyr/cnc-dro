@@ -1,0 +1,21 @@
+.input {
+    /* padding: 0.5rem 1rem; */
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: var(--button-text);
+    background-color: var(--button-background);
+    border: none;
+    transition: all 0.1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+}

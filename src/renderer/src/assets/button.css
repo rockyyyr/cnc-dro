@@ -1,0 +1,52 @@
+.button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: var(--button-text);
+    background-color: var(--button-background);
+    border: none;
+    transition: all 0.2s ease-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.button.button-clickable:active {
+    filter: brightness(150%);
+    transition-duration: 0s;
+}
+
+.button.button-dark {
+    background-color: var(--button-background);
+}
+
+.button.button-light {
+    background-color: var(--button-background-light);
+}
+
+.button.button-outline {
+    background-color: transparent;
+    border: 1px solid var(--button-background);
+    color: var(--color-text)
+}
+
+.button.button-success {
+    background-color: var(--success);
+}
+
+.button.button-danger {
+    background-color: var(--danger);
+}
+
+.button.button-warning {
+    background-color: var(--warning);
+}
+
+.button.button-info {
+    background-color: var(--info);
+}
