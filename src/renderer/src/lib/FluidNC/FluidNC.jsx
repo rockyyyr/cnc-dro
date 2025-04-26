@@ -15,8 +15,6 @@ const FluidNC = ({ children, comms }) => {
         comms.open();
 
         comms.onopen(() => {
-            console.log('port opened');
-
             setIsReady(true);
             pingInterval = setInterval(() => comms.send(Commands.STATUS), PING_INTERVAL);
         });

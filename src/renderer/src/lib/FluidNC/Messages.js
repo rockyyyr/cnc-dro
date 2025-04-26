@@ -103,10 +103,12 @@ const parseMessage = message => {
 };
 
 export const parseSerialMessage = message => {
+    console.log(message);
+
     return parseMessage(message);
 };
 
-export const parseWebSocketMessage = async event => {
+export const parseWebsocketMessage = async event => {
     if (typeof event.data === 'string') {
         return {
             type: MessageType.GENERIC,
