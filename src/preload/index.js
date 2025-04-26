@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import Readline from '@serialport/parser-readline';
 
 // Use `contextBridge` APIs to expose Electron APIs to
