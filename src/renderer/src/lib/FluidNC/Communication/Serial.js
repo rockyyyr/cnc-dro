@@ -2,7 +2,8 @@
 export default class Serial {
 
     open = () => {
-        this.port = window.serial.open();
+        this.port = window.serial;
+        this.port.open();
     };
 
     onopen = callback => {
