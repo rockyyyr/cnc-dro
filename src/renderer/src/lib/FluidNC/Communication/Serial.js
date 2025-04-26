@@ -25,7 +25,11 @@ export default class Serial {
 
     onmessage = callback => {
         if (this.parser) {
-            this.parser.onData(callback);
+            this.parser.onData(line => {
+                console.log(line);
+                callback(line);
+
+            });
         }
     };
 
