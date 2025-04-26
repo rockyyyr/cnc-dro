@@ -98,7 +98,7 @@ const parseMessage = async message => {
 };
 
 export const parseSerialMessage = message => {
-    return message;
+    return parseMessage(message);
 };
 
 export const parseWebSocketMessage = async event => {
