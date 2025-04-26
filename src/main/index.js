@@ -9,6 +9,7 @@ import icon from '../../resources/icon.png?asset';
 app.commandLine.appendSwitch('ignore-gpu-blacklist');
 app.commandLine.appendSwitch('enable-gpu');
 app.commandLine.appendSwitch('enable-webgl');
+app.commandLine.appendSwitch('use-angle', 'egl');
 
 function createWindow() {
     // Create the browser window.

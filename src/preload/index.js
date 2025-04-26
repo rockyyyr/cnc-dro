@@ -10,7 +10,7 @@ if (process.contextIsolated) {
     try {
         contextBridge.exposeInMainWorld('electron', electronAPI);
         contextBridge.exposeInMainWorld('env', {
-            RUN_ENVIRONMENT: process.env.RUN_ENVIRONMENT,
+            COMMS: process.env.COMMS,
         });
 
         let port, parser;
@@ -59,6 +59,6 @@ if (process.contextIsolated) {
         close: () => { }
     };
     window.env = {
-        RUN_ENVIRONMENT: process.env.RUN_ENVIRONMENT,
+        COMMS: process.env.COMMS,
     };
 }
