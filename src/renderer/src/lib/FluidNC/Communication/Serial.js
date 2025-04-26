@@ -4,6 +4,10 @@ export default class Serial {
     open = () => {
         this.port = window.serial;
         this.port.open();
+        this.port.onOpen(() => {
+            console.log('Serial port opened');
+            this.isOpen = true;
+        });
     };
 
     onopen = callback => {
@@ -14,6 +18,7 @@ export default class Serial {
 
     onclose = callback => {
         if (this.port) {
+            this.isOpen = false;
             this.port.onClose(callback);
         }
     };
@@ -25,8 +30,8 @@ export default class Serial {
     };
 
     onmessage = callback => {
-        if (this.parser) {
-            this.parser.onData(line => {
+        if (this.port) {
+            this.port.onData(line => {
                 console.log(line);
                 callback(line);
             });
@@ -34,7 +39,7 @@ export default class Serial {
     };
 
     send = data => {
-        if (this.port) {
+        if (this.port && this.isOpen) {
             this.port.send(`$${data}\r\n`, console.error);
         }
     };
