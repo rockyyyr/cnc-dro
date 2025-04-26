@@ -72,8 +72,8 @@ const parseStateMessage = message => {
             y: roundTo(status.WPos.y + status.WCO.y, 3),
             z: roundTo(status.WPos.z + status.WCO.z, 3),
         },
-        feedrate: status.FS.feedrate || null,
-        spindleSpeed: status.FS.spindleSpeed || null,
+        feedrate: status.FS?.feedrate,
+        spindleSpeed: status.FS?.spindleSpeed,
     };
 };
 
