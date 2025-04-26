@@ -1,4 +1,5 @@
 import { WS } from '../Constants';
+import * as Messages from '../Messages';
 
 export default class Websocket {
 
@@ -26,7 +27,7 @@ export default class Websocket {
 
     onmessage = callback => {
         if (this.socket) {
-            this.socket.onmessage = callback;
+            this.socket.onmessage = async message => callback(await Messages.parseWebsocketMessage(message));
         }
     };
 

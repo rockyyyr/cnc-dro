@@ -97,7 +97,11 @@ const parseMessage = async message => {
     }
 };
 
-export const parse = async event => {
+export const parseSerialMessage = message => {
+    return message;
+};
+
+export const parseWebSocketMessage = async event => {
     if (typeof event.data === 'string') {
         return {
             type: MessageType.GENERIC,

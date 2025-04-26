@@ -1,3 +1,4 @@
+import * as Messages from '../Messages';
 
 export default class Serial {
 
@@ -5,7 +6,6 @@ export default class Serial {
         this.port = window.serial;
         this.port.open();
         this.port.onOpen(() => {
-            console.log('Serial port opened');
             this.isOpen = true;
         });
     };
@@ -32,8 +32,9 @@ export default class Serial {
     onmessage = callback => {
         if (this.port) {
             this.port.onData(line => {
-                console.log(line);
-                callback(line);
+                const message = Messages.parseSerialMessage(line);
+                console.log(message);
+                callback(message);
             });
         }
     };
