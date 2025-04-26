@@ -87,13 +87,12 @@ const parseInfoMessage = message => {
     };
 };
 
-const parseMessage = async message => {
+const parseMessage = message => {
     if (message.startsWith(STATE)) {
         return parseStateMessage(message);
 
     } else if (message.startsWith(MSG)) {
-        const result = parseInfoMessage(message);
-        return result;
+        return parseInfoMessage(message);
     }
 };
 
