@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import FluidNCContext from "./Context";
-import * as Messages from './Messages';
 import * as Commands from './Commands';
 import { PING_INTERVAL } from './Constants';
 
@@ -28,7 +27,7 @@ const FluidNC = ({ children, comms }) => {
         });
 
         comms.onerror(error => console.error("Communication error:", error));
-        comms.onmessage(async event => setVal(await Messages.parse(event)));
+        comms.onmessage(message => setVal(message));
 
         ws.current = comms;
 
