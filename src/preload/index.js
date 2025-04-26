@@ -16,8 +16,8 @@ if (process.contextIsolated) {
         let port, parser;
 
         contextBridge.exposeInMainWorld('serial', {
-            open: ({ path = '/dev/serial0', baudRate = 115200 }) => {
-                port = new SerialPort(path, { baudRate });
+            open: () => {
+                port = new SerialPort('/dev/serial0', { baudRate: 115200 });
                 parser = port.pipe(new Readline({ delimiter: '\n' }));
 
                 return new Promise((resolve, reject) => {
