@@ -93,6 +93,12 @@ const parseMessage = message => {
 
     } else if (message.startsWith(MSG)) {
         return parseInfoMessage(message);
+
+    } else {
+        return {
+            type: MessageType.GENERIC,
+            message: message,
+        };
     }
 };
 
