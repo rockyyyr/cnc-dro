@@ -8,9 +8,8 @@
 
 .file-selector::-webkit-scrollbar {
     display: none;
-    /* Safari and Chrome */
 }
 
-.file-selector tr:nth-child(even) {
+.file-selector tr:nth-child(odd) {
     background-color: #686767;
 }

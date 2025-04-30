@@ -15,13 +15,11 @@ export default class Gcode {
         this.firstZ;
         this.firstCommand;
         this.spindleSpeed;
-        this.tools = this._parseTools(gcode);
-
         this.minZ = Number.MAX_SAFE_INTEGER;
 
+        this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
-        `  T2 D=6.35 CR=0 - ZMIN=0 - flat end mill )
-    (  T2 D=6.35 CR=0 - ZMIN=0 - flat end mill `;
+        this.length = this.lines.length;
     }
 
 
@@ -41,11 +39,20 @@ export default class Gcode {
 
 
     _format(gcode) {
-        return gcode
-            .split('\n')
-            .map(this._stripCommentsFromLine)
-            .filter(this._filterEmpty)
-            .map(line => this._toObject(line));
+        const lines = gcode.split('\n');
+        const result = [];
+
+        for (const line of lines) {
+            const strippedLine = this._stripCommentsFromLine(line);
+
+            if (strippedLine === '') {
+                continue;
+            }
+            result.push(this._toObject(strippedLine));
+        }
+        console.log('gcode formatted');
+
+        return result;
     }
 
     _stripCommentsFromLine(line) {
@@ -79,16 +86,19 @@ export default class Gcode {
                 if (this.firstCommand === undefined) {
                     this.firstCommand = result.command;
                 }
+
             } else if (part.startsWith('X')) {
                 result.x = parseFloat(part.substring(1));
                 if (this.firstX === undefined) {
                     this.firstX = result.x;
                 }
+
             } else if (part.startsWith('Y')) {
                 result.y = parseFloat(part.substring(1));
                 if (this.firstY === undefined) {
                     this.firstY = result.y;
                 }
+
             } else if (part.startsWith('Z')) {
                 result.z = parseFloat(part.substring(1));
                 if (this.firstZ === undefined) {
@@ -97,17 +107,22 @@ export default class Gcode {
                 if (result.z < this.minZ) {
                     this.minZ = result.z;
                 }
+
             } else if (part.startsWith('F')) {
                 result.f = parseFloat(part.substring(1));
+
             } else if (part.startsWith('S')) {
                 result.s = parseFloat(part.substring(1));
                 if (this.spindleSpeed === undefined) {
                     this.spindleSpeed = result.s;
                 }
+
             } else if (part.startsWith('T')) {
                 result.t = parseFloat(part.substring(1));
+
             } else if (part.startsWith('I')) {
                 result.i = parseFloat(part.substring(1));
+
             } else if (part.startsWith('J')) {
                 result.j = parseFloat(part.substring(1));
             }

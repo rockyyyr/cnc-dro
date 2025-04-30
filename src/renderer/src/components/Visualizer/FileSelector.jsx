@@ -19,6 +19,7 @@ const fileLine = (file, action) => {
                 width: '100%',
                 border: 'none',
                 justifyContent: 'flex-start',
+                textAlign: 'left',
             }} />
     );
 };
@@ -46,7 +47,7 @@ export default function FileSelector({ show, onClose, onChange }) {
             show={show}
             onClose={onClose}
         >
-            <Grid x={4} y={5} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'hidden' }}>
+            <div style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'hidden', padding: 5 }}>
                 <div className="file-selector">
                     <Grid x={4}>
                         <h2>Files</h2>
@@ -64,7 +65,7 @@ export default function FileSelector({ show, onClose, onChange }) {
                     </table>
 
                 </div>
-            </Grid>
+            </div>
         </Modal>
     );
 }

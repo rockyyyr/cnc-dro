@@ -9,8 +9,8 @@ import GCode from './components/Visualizer';
 import UtilityPanel from './components/UtilityPanel';
 import FluidNC from './lib/FluidNC';
 import { NumpadProvider } from './util/Numpad/Context';
+import { KeyboardProvider } from './util/Keyboard/Context';
 import Notification from './components/Notification';
-import { KeyboardProvider } from './util/Numpad copy/Context';
 
 
 function App() {

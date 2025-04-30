@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { Comms } from '../lib/FluidNC';
-import { useKeyboard } from '../util/Numpad copy';
+import { useKeyboard } from '../util/Keyboard';
 
 export default function Terminal({ show: showKeyboard, onClose }) {
     const { show } = useKeyboard();

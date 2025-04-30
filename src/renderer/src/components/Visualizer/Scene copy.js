@@ -10,13 +10,6 @@ export default class Scene {
 
         this.size = 300;
 
-        this.colorMap = {
-            G0: new THREE.Color(0xff0000), // Red for G0
-            G1: new THREE.Color(0x00ff00), // Green for G1
-            G2: new THREE.Color(0xffff00), // Yellow for G2
-            G3: new THREE.Color(0xffff00), // Yellow for G3
-        };
-
         this.cncGroup = new THREE.Group();
         this.cncGroup.rotation.x = -(Math.PI / 2);
         this.cncGroup.scale.set(1, 1, 1);
@@ -91,48 +84,21 @@ export default class Scene {
     }
 
     draw(gcode) {
-        this.disposeGcode();
+        let x = gcode.firstX;
+        let y = gcode.firstY;
+        let z = gcode.firstZ;
+        let currentCommand = gcode.firstCommand;
+
+        const colorMap = {
+            G0: new THREE.Color(0xff0000), // Red for G0
+            G1: new THREE.Color(0x00ff00), // Green for G1
+            G2: new THREE.Color(0xffff00), // Blue for G2
+            G3: new THREE.Color(0xffff00), // Yellow for G3
+        };
+
         this.gcodeGroup = new THREE.Group();
 
-        if (gcode.length === 0) {
-            return;
-        }
-
-        const { positions, colors } = this.calculatePositions(gcode.lines, {
-            firstX: gcode.firstX,
-            firstY: gcode.firstY,
-            firstZ: gcode.firstZ,
-            firstCommand: gcode.firstCommand
-        });
-
-        const geom = new THREE.BufferGeometry();
-        geom.setAttribute(
-            'position',
-            new THREE.Float32BufferAttribute(positions, 3)
-        );
-        geom.setAttribute(
-            'color',
-            new THREE.Float32BufferAttribute(colors, 3)
-        );
-
-        const mat = new THREE.LineBasicMaterial({ vertexColors: true });
-        const lines = new THREE.LineSegments(geom, mat);
-
-        this.gcodeGroup.add(lines);
-        this.cncGroup.add(this.gcodeGroup);
-        this.renderer.render(this.scene, this.camera);
-    }
-
-    calculatePositions(lines, start) {
-        const positions = [];
-        const colors = [];
-
-        let x = start.firstX;
-        let y = start.firstY;
-        let z = start.firstZ;
-        let currentCommand = start.firstCommand;
-
-        for (const line of lines) {
+        for (const line of gcode.lines) {
             const startX = x;
             const startY = y;
             const startZ = z;
@@ -151,16 +117,20 @@ export default class Scene {
                 currentCommand = line.command;
             }
 
-            const color = this.colorMap[currentCommand] || new THREE.Color(0xffffff);
+            const color = colorMap[currentCommand] || new THREE.Color(0xffffff);
 
             if ([Commands.G0, Commands.G1].includes(currentCommand)) {
-                positions.push(startX, startY, startZ, x, y, z);
-                colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+                const geometry = new THREE.BufferGeometry();
+                const positions = [startX, startY, startZ, x, y, z];
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                const material = new THREE.LineBasicMaterial({ color });
+                const line = new THREE.Line(geometry, material);
+                this.gcodeGroup.add(line);
 
             } else if ([Commands.G2, Commands.G3].includes(currentCommand)) {
                 const isClockwise = currentCommand === Commands.G2;
                 const centerX = line.i !== undefined ? startX + line.i : startX; // I is the X distance to the center
-                const centerY = line.j !== undefined ? startY + line.j : startY; // J is the Y distance to the center
+                const centerY = line.j !== undefined ? startY + line.j : startY; // J is the Z distance to the center
                 const radius = Math.sqrt((startX - centerX) ** 2 + (startY - centerY) ** 2);
 
                 const startAngle = Math.atan2(startY - centerY, startX - centerX);
@@ -176,17 +146,22 @@ export default class Scene {
                     isClockwise
                 );
 
-                const points = curve.getPoints(12);
-
-                for (let i = 0; i < points.length - 1; i++) {
-                    const p1 = points[i], p2 = points[i + 1];
-                    positions.push(p1.x, p1.y, startZ, p2.x, p2.y, startZ);
-                    colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+                const points = curve.getPoints(50);
+                const positions = [];
+                for (const point of points) {
+                    positions.push(point.x, point.y, startZ);
                 }
-            }
-        }
 
-        return { positions, colors };
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                const material = new THREE.LineBasicMaterial({ color });
+                const arc = new THREE.Line(geometry, material);
+                this.gcodeGroup.add(arc);
+            }
+
+            this.cncGroup.add(this.gcodeGroup);
+            this.renderer.render(this.scene, this.camera);
+        }
     }
 
     positionCamera(boundingBox) {
