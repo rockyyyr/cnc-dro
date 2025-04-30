@@ -86,8 +86,6 @@ const FluidNC = ({ children }) => {
                     }
                 }
 
-                console.log(message);
-
                 if (message.type === Messages.MessageType.GENERIC) {
                     if (['ALARM', 'error'].some(val => message.value.includes(val))) {
                         setNotification({

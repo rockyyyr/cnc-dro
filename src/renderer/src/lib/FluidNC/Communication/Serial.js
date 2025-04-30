@@ -1,10 +1,12 @@
 import * as Messages from '../Messages';
+import Queue from './Queue';
 import { REPORT_INTERVAL } from '../Constants';
 
 export default class Serial {
 
     constructor() {
         this.ready = false;
+        this.queue = new Queue(this);
     }
 
     open = () => {
@@ -46,7 +48,7 @@ export default class Serial {
         if (this.port) {
             this.port.onData(line => {
                 const message = Messages.parseSerialMessage(line);
-                this.message = message;
+                console.log({ received: message });
                 callback(message);
             });
         }
@@ -54,6 +56,13 @@ export default class Serial {
 
     send = data => {
         if (this.port && this.ready) {
+            this.queue.add(data);
+        }
+    };
+
+    forceSend = data => {
+        if (this.port && this.ready) {
+            console.log({ sent: data });
             this.port.send(`${data}\r\n`, console.error);
         }
     };

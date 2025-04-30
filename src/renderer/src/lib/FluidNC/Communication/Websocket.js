@@ -51,7 +51,6 @@ export default class Websocket {
         if (this.socket) {
             this.socket.addEventListener('message', async message => {
                 const newMessage = await Messages.parseWebsocketMessage(message);
-                this.message = newMessage;
                 callback(newMessage);
             });
         }
