@@ -42,16 +42,16 @@ if (process.contextIsolated) {
 
             send: cmd => {
                 if (!port) console.log('Port is not ready yet');
-                port.write(cmd);
+                port?.write(cmd);
             },
-            onOpen: callback => port.on('open', () => callback()),
-            onError: callback => port.on('error', error => callback(error)),
-            onClose: callback => port.on('close', () => callback()),
+            onOpen: callback => port?.on('open', () => callback()),
+            onError: callback => port?.on('error', error => callback(error)),
+            onClose: callback => port?.on('close', () => callback()),
             onData: callback => {
                 if (!parser) console.log('Parser is not ready yet');
-                parser.on('data', line => callback(line));
+                parser?.on('data', line => callback(line));
             },
-            close: () => port && port.close()
+            close: () => port?.close()
         });
 
     } catch (error) {
