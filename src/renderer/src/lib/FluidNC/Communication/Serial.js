@@ -6,11 +6,11 @@ export default class Serial {
 
     constructor() {
         this.ready = false;
-        this.queue = new Queue(this);
     }
 
     open = () => {
         this.port = window.serial;
+        this.queue = new Queue(this);
         this.port.open();
         this.port.onOpen(() => {
             this.ready = true;
