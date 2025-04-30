@@ -38,8 +38,9 @@ if (process.contextIsolated) {
             },
 
             send: cmd => {
-                if (!port) throw new Error('Port not opened');
-                port.write(cmd);
+                if (port) {
+                    port.write(cmd);
+                }
             },
             onOpen: callback => port.on('open', () => callback()),
             onError: callback => port.on('error', error => callback(error)),
