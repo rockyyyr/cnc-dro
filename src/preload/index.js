@@ -39,6 +39,7 @@ if (process.contextIsolated) {
 
             send: cmd => {
                 if (port) {
+                    console.log({ message: cmd });
                     port.write(cmd);
                 }
             },
