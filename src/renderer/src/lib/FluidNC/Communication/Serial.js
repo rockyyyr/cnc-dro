@@ -20,7 +20,6 @@ export default class Serial {
     autoReport = () => {
         if (this.port) {
             console.log('Auto report enabled');
-
             this.port.send(`$Report/Interval=${REPORT_INTERVAL}`);
         }
     };
