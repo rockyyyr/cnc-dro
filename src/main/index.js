@@ -6,7 +6,7 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 
-if (process.env.COMMS === 'serial') {
+if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
     app.commandLine.appendSwitch('enable-gpu');
     app.commandLine.appendSwitch('enable-webgl');
@@ -19,7 +19,6 @@ function createWindow() {
         height: 550,
         show: false,
         fullscreen: process.env.FULLSCREEN,
-        // titleBarStyle: 'hidden',
         autoHideMenuBar: true,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
@@ -30,8 +29,6 @@ function createWindow() {
             nodeIntegration: false
         }
     });
-
-    // mainWindow.openDevTools();
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
