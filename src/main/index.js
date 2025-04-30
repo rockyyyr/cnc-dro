@@ -31,7 +31,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
