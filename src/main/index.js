@@ -60,6 +60,10 @@ app.whenReady().then(() => {
                 click: () => window.webContents.reload(),
             },
             {
+                label: 'Toggle Fullscreen',
+                role: 'togglefullscreen'
+            },
+            {
                 label: 'Inspect Element',
                 click: () => window.webContents.openDevTools(),
             },
