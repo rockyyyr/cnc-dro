@@ -16,6 +16,8 @@ export const MessageLevels = {
     ERROR: 'ERR',
 };
 
+const LINE_TERMINATION = /\r$|\n$|\r\n$/g;
+
 const roundTo = (value, precision) => {
     const factor = Math.pow(10, precision);
     return Math.round(value * factor) / factor;
@@ -37,7 +39,6 @@ const parseSpeeds = speedsString => {
         return null;
     }
     const [feedrate, spindleSpeed] = speedsString
-        .replace(/\r\n$/, '')
         .split(',')
         .map(speed => parseFloat(speed));
     return { feedrate, spindleSpeed };
@@ -122,15 +123,15 @@ const parseProbeMessage = message => {
 };
 
 const parseGeneric = message => {
-    const formatted = message.replace(/\r\n$/, '');
-    const type = formatted === 'ok' ? MessageType.ACK : MessageType.GENERIC;
+    const type = message === 'ok' ? MessageType.ACK : MessageType.GENERIC;
     return {
         type,
-        value: formatted
+        value: message
     };
 };
 
-const parseMessage = message => {
+const parseMessage = rawMessage => {
+    const message = rawMessage?.replace(LINE_TERMINATION, '');
     if (message.startsWith(STATUS)) {
         return parseStateMessage(message);
 
@@ -152,7 +153,7 @@ export const parseSerialMessage = message => {
 
 export const parseWebsocketMessage = async event => {
     if (typeof event.data === 'string') {
-        return parseGeneric(event.data);
+        return parseGeneric(event?.data?.replace(LINE_TERMINATION, ''));
 
     } else {
         const buffer = await event.data.arrayBuffer();
