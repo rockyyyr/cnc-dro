@@ -29,25 +29,27 @@ if (process.contextIsolated) {
                     lock: false,
                     autoOpen: true
                 });
-                parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
 
                 return new Promise((resolve, reject) => {
-                    port.on('open', () => resolve());
+                    port.on('open', () => {
+                        parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
+                        port.write('?\n', err => console.log('Error requesting initial status: ', err));
+                        resolve();
+                    });
                     port.on('error', err => reject(err));
                 });
             },
 
             send: cmd => {
-                if (port) {
-                    console.log({ message: cmd });
-                    port.write(cmd);
-                }
+                if (!port) console.log('Port is not ready yet');
+                console.log({ message: cmd });
+                port.write(cmd);
             },
             onOpen: callback => port.on('open', () => callback()),
             onError: callback => port.on('error', error => callback(error)),
             onClose: callback => port.on('close', () => callback()),
             onData: callback => {
-                // if (!parser) throw new Error('Port not opened');
+                if (!parser) console.log('Parser is not ready yet');
                 parser.on('data', line => callback(line));
             },
             close: () => port && port.close()
