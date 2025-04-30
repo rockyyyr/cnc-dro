@@ -46,7 +46,7 @@ if (process.contextIsolated) {
             onError: callback => port.on('error', error => callback(error)),
             onClose: callback => port.on('close', () => callback()),
             onData: callback => {
-                if (!parser) throw new Error('Port not opened');
+                // if (!parser) throw new Error('Port not opened');
                 parser.on('data', line => callback(line));
             },
             close: () => port && port.close()

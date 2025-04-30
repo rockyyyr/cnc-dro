@@ -6,7 +6,7 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 
-if (process.env.FULLSCREEN) {
+if (process.env.COMMS === 'serial') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
     app.commandLine.appendSwitch('enable-gpu');
     app.commandLine.appendSwitch('enable-webgl');
