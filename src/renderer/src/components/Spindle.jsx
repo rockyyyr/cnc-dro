@@ -1,9 +1,9 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useNumpad } from '../util/Numpad';
 import Grid from '../util/Grid';
 import Button from './Button';
 import DataBlock from './DataBlock';
-import { Context, Messages } from '../lib/FluidNC';
+import { Context } from '../lib/FluidNC';
 import { clockwise, off } from '../lib/spindle';
 
 import Rotate from '../assets/img/rotate.svg';
@@ -12,22 +12,11 @@ import RotateStop from '../assets/img/rotate-stop.svg';
 export default function Spindle() {
     const { show } = useNumpad();
     const [spindleSetting, setSpindleSetting] = useState(0);
-    const [spindleSpeed, setSpindleSpeed] = useState(0);
-    // const [showNumpad, setShowNumpad] = useState(false);
+    const { spindleSpeed } = useContext(Context);
 
     const showNumpad = () => show({
         onChange: value => setSpindleSetting(value)
     });
-
-    const [ready, message] = useContext(Context);
-
-    useEffect(() => {
-        if (ready && message?.type === Messages.MessageType.STATE) {
-            if (![undefined, null].includes(message.spindleSpeed)) {
-                setSpindleSpeed(message.spindleSpeed);
-            }
-        }
-    }, [ready, message]);
 
     const spindleButtons = [
         { icon: Rotate, onClick: () => clockwise(spindleSetting), variant: spindleSpeed > 0 ? 'info' : '' },
@@ -55,14 +44,6 @@ export default function Spindle() {
                     </Grid>
                 ))}
                 <Grid x={2}>
-                    {/* <Numpad
-                        show={showNumpad}
-                        onChange={value => {
-                            setSpindleSetting(value);
-                            setShowNumpad(false);
-                        }}
-                        onClose={() => setShowNumpad(false)}
-                    /> */}
                     <Button
                         label={spindleSetting}
                         outline

@@ -1,13 +1,24 @@
 import * as Messages from '../Messages';
+import { REPORT_INTERVAL } from '../Constants';
 
 export default class Serial {
+
+    constructor() {
+        this.ready = false;
+    }
 
     open = () => {
         this.port = window.serial;
         this.port.open();
         this.port.onOpen(() => {
-            this.isOpen = true;
+            this.ready = true;
         });
+    };
+
+    autoReport = () => {
+        if (this.port) {
+            this.port.send(`$Report/Interval=${REPORT_INTERVAL}`);
+        }
     };
 
     onopen = callback => {
@@ -18,7 +29,7 @@ export default class Serial {
 
     onclose = callback => {
         if (this.port) {
-            this.isOpen = false;
+            this.ready = false;
             this.port.onClose(callback);
         }
     };
@@ -33,14 +44,14 @@ export default class Serial {
         if (this.port) {
             this.port.onData(line => {
                 const message = Messages.parseSerialMessage(line);
-                console.log(message);
+                this.message = message;
                 callback(message);
             });
         }
     };
 
     send = data => {
-        if (this.port && this.isOpen) {
+        if (this.port && this.ready) {
             this.port.send(`${data}\r\n`, console.error);
         }
     };

@@ -30,6 +30,8 @@
     --success: #52c41a;
     --info: #1890ff;
 
+    --border-radius: 4px;
+
     --button-text: #1b1b1f;
     --button-background: var(--gray-1);
     --button-background-light: var(--white-mute);
@@ -55,6 +57,7 @@ ul {
 
 * {
     font-family:
+        monospace,
         Inter,
         -apple-system,
         BlinkMacSystemFont,

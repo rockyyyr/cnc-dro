@@ -1,4 +1,12 @@
 import { createContext } from 'react';
 
-const WebsocketContext = createContext(false, null, () => { });
-export default WebsocketContext;
+const FluidNCContext = createContext({
+    state: null,
+    alarm: null,
+    workPosition: null,
+    machinePostion: null,
+    feedrate: null,
+    spindleSpeed: null
+});
+
+export default FluidNCContext;

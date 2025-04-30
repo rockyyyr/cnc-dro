@@ -17,6 +17,7 @@
     padding-right: 10px;
     width: 77%;
     border: 1px solid var(--gray-1);
+    border-left: none !important;
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
 }

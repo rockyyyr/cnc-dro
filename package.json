@@ -24,6 +24,7 @@
     "axios": "^1.8.4",
     "colornames": "^1.1.1",
     "gcode-preview": "^2.18.0",
+    "react-toastify": "^11.0.5",
     "react-use-websocket": "^4.13.0",
     "serialport": "^13.0.0",
     "three": "^0.175.0"

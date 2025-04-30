@@ -1,10 +1,10 @@
 import '../assets/button.css';
 
-export default function Button({ label, onClick, icon, disabled, labelSize = 'lg', background = 'dark', outline, children, style, variant, className }) {
+export default function Button({ label, onClick, icon, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className }) {
     let fontSize;
     switch (labelSize) {
         case 'xs':
-            fontSize = 20;
+            fontSize = 22;
             break;
         case 'sm':
             fontSize = 30;
@@ -33,6 +33,7 @@ export default function Button({ label, onClick, icon, disabled, labelSize = 'lg
     if (outline) {
         classes.push('button-outline');
     }
+
     if (variant) {
         switch (variant) {
             case 'success':
@@ -51,7 +52,7 @@ export default function Button({ label, onClick, icon, disabled, labelSize = 'lg
     }
 
     return (
-        <button className={`button ${classes.join(' ')}`} onClick={onClick} style={style}>
+        <button className={`button ${classes.join(' ')}`} onClick={onClick} style={style} disabled={actuallyDisable && disabled}>
             {icon
                 ? (<img src={icon} alt={label} style={{ width: 50, height: 50 }} />)
                 : label

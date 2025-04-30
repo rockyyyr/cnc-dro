@@ -8,12 +8,24 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
+        this.size = 300;
+
+        this.cncGroup = new THREE.Group();
+        this.cncGroup.rotation.x = -(Math.PI / 2);
+        this.cncGroup.scale.set(1, 1, 1);
+        this.gcodeGroup = null;
+        this.plane = null;
+        this.tool = null;
+        this.toolHeight = 10;
+        this.toolBottom = this.toolHeight / 2;
+
         this.cameraPadding = options.cameraPadding || 15;
         this.subjectBoundingBox;
 
         this.height = ref.current.getBoundingClientRect().height;
         this.width = ref.current.getBoundingClientRect().width;
         this.scene = new THREE.Scene();
+        this.scene.add(this.cncGroup);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.domElement = this.renderer.domElement;
         ref.current.appendChild(this.domElement);
@@ -25,10 +37,13 @@ export default class Scene {
     init() {
         this.renderer.setSize(this.width, this.height);
 
+        const center = this.size / 2;
+
         this.camera.up.set(0, 0, -1);
+        this.camera.position.set(center, 100, center);
         this.camera.lookAt(0, 0, 0);
 
-        this.controls.target.set(0, 0, 0);
+        this.controls.target.set(center, 0, -center);
         this.controls.noPan = false;
         this.controls.panSpeed = 1.0;
         this.controls.rotateSpeed = 4.0;
@@ -40,14 +55,38 @@ export default class Scene {
     }
 
     drawPlane() {
-        const gridHelper = new THREE.GridHelper(200, 20);
-        this.scene.add(gridHelper);
+        this.plane = new THREE.GridHelper(this.size, 20);
+        this.plane.position.set((this.size / 2), 0, -(this.size / 2));
+        const box = new THREE.Box3().setFromObject(this.plane);
+        this.subjectBoundingBox = box;
+        this.scene.add(this.plane);
+    }
+
+    drawAxes() {
+        const axesHelper = new THREE.AxesHelper(50);
+        this.cncGroup.add(axesHelper);
+    }
+
+    drawTool(position) {
+        const geometry = new THREE.CylinderGeometry(1, 1, this.toolHeight, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        this.tool = new THREE.Mesh(geometry, material);
+        this.tool.rotation.x = Math.PI / 2;
+        this.tool.position.set(position.x, position.y, position.z + this.toolBottom);
+        this.cncGroup.add(this.tool);
+    }
+
+    updateTool(position) {
+        if (this.tool) {
+            this.tool.position.set(position.x, position.y, position.z + this.toolBottom);
+            this.tool.updateMatrixWorld();
+        }
     }
 
     draw(gcode) {
         let x = gcode.firstX;
-        let y = gcode.firstZ;
-        let z = gcode.firstY;
+        let y = gcode.firstY;
+        let z = gcode.firstZ;
         let currentCommand = gcode.firstCommand;
 
         const colorMap = {
@@ -57,7 +96,7 @@ export default class Scene {
             G3: new THREE.Color(0xffff00), // Yellow for G3
         };
 
-        const group = new THREE.Group();
+        this.gcodeGroup = new THREE.Group();
 
         for (const line of gcode.lines) {
             const startX = x;
@@ -68,10 +107,10 @@ export default class Scene {
                 x = line.x;
             }
             if (line.y) {
-                z = line.y;
+                y = line.y;
             }
             if (line.z) {
-                y = line.z;
+                z = line.z;
             }
 
             if (line.command) {
@@ -86,16 +125,16 @@ export default class Scene {
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 const material = new THREE.LineBasicMaterial({ color });
                 const line = new THREE.Line(geometry, material);
-                group.add(line);
+                this.gcodeGroup.add(line);
 
             } else if ([Commands.G2, Commands.G3].includes(currentCommand)) {
                 const isClockwise = currentCommand === Commands.G2;
                 const centerX = line.i !== undefined ? startX + line.i : startX; // I is the X distance to the center
-                const centerY = line.j !== undefined ? startZ + line.j : startZ; // J is the Z distance to the center
-                const radius = Math.sqrt((startX - centerX) ** 2 + (startZ - centerY) ** 2);
+                const centerY = line.j !== undefined ? startY + line.j : startY; // J is the Z distance to the center
+                const radius = Math.sqrt((startX - centerX) ** 2 + (startY - centerY) ** 2);
 
-                const startAngle = Math.atan2(startZ - centerY, startX - centerX);
-                const endAngle = Math.atan2(z - centerY, x - centerX);
+                const startAngle = Math.atan2(startY - centerY, startX - centerX);
+                const endAngle = Math.atan2(y - centerY, x - centerX);
 
                 const curve = new THREE.EllipseCurve(
                     centerX,
@@ -110,25 +149,18 @@ export default class Scene {
                 const points = curve.getPoints(50);
                 const positions = [];
                 for (const point of points) {
-                    positions.push(point.x, startY, point.y);
+                    positions.push(point.x, point.y, startZ);
                 }
 
                 const geometry = new THREE.BufferGeometry();
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 const material = new THREE.LineBasicMaterial({ color });
                 const arc = new THREE.Line(geometry, material);
-                group.add(arc);
+                this.gcodeGroup.add(arc);
             }
 
-            const box = new THREE.Box3().setFromObject(group);
-            this.subjectBoundingBox = box;
-
-            const center = new THREE.Vector3();
-            box.getCenter(center);
-            group.position.sub(new THREE.Vector3(center.x, 0, center.z));
-
-            this.scene.add(group);
-            this.positionCamera(box);
+            this.cncGroup.add(this.gcodeGroup);
+            this.renderer.render(this.scene, this.camera);
         }
     }
 
@@ -170,8 +202,19 @@ export default class Scene {
         }
 
         this.animationFrame = null;
+        this.cncGroup?.clear();
+        this.gcodeGroup?.clear();
+        this.scene?.clear();
         this.renderer.dispose();
-        this.scene.clear();
         this.controls.dispose();
+    }
+
+    disposeGcode() {
+        if (this.gcodeGroup) {
+            this.gcodeGroup.clear();
+            this.cncGroup.remove(this.gcodeGroup);
+            this.gcodeGroup = null;
+            this.renderer.render(this.scene, this.camera);
+        }
     }
 }

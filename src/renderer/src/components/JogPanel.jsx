@@ -36,7 +36,7 @@ export default function JogPanel() {
         { icon: ArrowLeft, onClick: () => Jog.left(jogValue) },
         { label: 'XY0', onClick: () => Jog.xyZero(), labelSize: 'xs' },
         { icon: ArrowRight, onClick: () => Jog.right(jogValue) },
-        { label: jogValue, onClick: showNumpad, labelSize: 'sm', outline: true }
+        { label: jogValue, onClick: showNumpad, labelSize: 'xs', outline: true }
     ];
 
     const row3 = [
@@ -54,21 +54,21 @@ export default function JogPanel() {
             />
             <div className='flex-row'>
                 {row1.map((button, index) => (
-                    <Grid key={index}>
+                    <Grid key={index} x={button.width || 1}>
                         <Button icon={button.icon} label={button.label} onClick={button.onClick} />
                     </Grid>
                 ))}
             </div>
             <div className='flex-row'>
                 {row2.map((button, index) => (
-                    <Grid key={index}>
+                    <Grid key={index} x={button.width || 1}>
                         <Button icon={button.icon} label={button.label} onClick={button.onClick} labelSize={button.labelSize} outline={button.outline} />
                     </Grid>
                 ))}
             </div>
             <div className='flex-row'>
                 {row3.map((button, index) => (
-                    <Grid key={index}>
+                    <Grid key={index} x={button.width || 1}>
                         <Button icon={button.icon} label={button.label} onClick={button.onClick} />
                     </Grid>
                 ))}

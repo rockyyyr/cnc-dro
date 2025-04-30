@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import Button from './Button';
 import '../assets/button-panel.css';
 import Grid from '../util/Grid';
-import { Context, Messages, Constants, Api, Commands } from '../lib/FluidNC';
+import { Context, Comms, Commands, States } from '../lib/FluidNC';
 
 import Home from '../assets/img/home.svg';
 import Reset from '../assets/img/reset.svg';
@@ -12,52 +12,77 @@ import Pause from '../assets/img/pause.svg';
 import Locked from '../assets/img/locked.svg';
 import Unlocked from '../assets/img/unlocked.svg';
 
-const { ALARM, RUN, HOLD, IDLE } = Constants.States;
+const { ALARM, RUN, HOLD, IDLE, JOG, PROBE, EMERG } = States;
 
 export default function ButtonPanel() {
     const [locked, setLocked] = useState(false);
     const [run, setRun] = useState(false);
     const [hold, setHold] = useState(false);
-    const [ready, message] = useContext(Context);
+    const { state } = useContext(Context);
 
     useEffect(() => {
-        if (ready && message?.type === Messages.MessageType.STATE) {
-            if (message.state === ALARM) {
-                setLocked(true);
-                setRun(false);
-                setHold(false);
+        if (state === ALARM) {
+            setLocked(true);
+            setRun(false);
+            setHold(false);
 
-            } else if (message.state === RUN) {
-                setLocked(false);
-                setRun(true);
-                setHold(false);
+        } else if (state === RUN) {
+            setLocked(false);
+            setRun(true);
+            setHold(false);
 
-            } else if (message.state.includes(HOLD)) {
-                setLocked(false);
-                setRun(false);
-                setHold(true);
+        } else if (state?.includes(HOLD)) {
+            setLocked(false);
+            setRun(false);
+            setHold(true);
 
-            } else if (message.state === IDLE) {
-                setLocked(false);
-                setRun(false);
-                setHold(false);
-            }
+        } else if (state === IDLE) {
+            setLocked(false);
+            setRun(false);
+            setHold(false);
         }
-    }, [ready, message]);
+    }, [state]);
+
+    const alarmVariant = state => {
+        switch (state) {
+            case ALARM:
+                return 'warning';
+            case EMERG:
+                return 'danger';
+            case RUN:
+                return 'success';
+            case HOLD:
+                return 'warning';
+            case JOG:
+                return 'info';
+            case PROBE:
+                return 'info';
+            case IDLE:
+                return '';
+        }
+    };
 
     const buttons = [
-        { icon: Home, onClick: () => Api.command(Commands.HOME) },
-        { icon: locked ? Locked : Unlocked, onClick: () => Api.command(Commands.UNLOCK), variant: locked ? 'danger' : '' },
-        { icon: Reset, onClick: () => Api.command(Commands.RESET) },
-        { icon: Play, onClick: () => Api.command(Commands.RESUME), variant: run ? 'success' : '' },
-        { icon: Pause, onClick: () => Api.command(Commands.HOLD), variant: hold ? 'warning' : '' },
+        { label: state, disabled: true, variant: alarmVariant(state) },
+        { icon: Home, onClick: () => Comms.send(Commands.HOME) },
+        { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
+        { icon: Reset, onClick: () => Comms.send(Commands.RESET) },
+        { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '' },
+        { icon: Pause, onClick: () => Comms.send(Commands.HOLD), variant: hold ? 'warning' : '' },
     ];
 
     return (
         <div className={'vertical-button-panel'}>
             {buttons.map((button, index) => (
-                <Grid key={index} y={6 / 5}>
-                    <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                <Grid key={index} y={1}>
+                    <Button
+                        label={button.label}
+                        labelSize={button.label === 'Alarm' ? 'xs' : 'sm'}
+                        icon={button.icon}
+                        onClick={button.onClick}
+                        variant={button.variant}
+                        disabled={button.disabled}
+                    />
                 </Grid>
             ))
             }

@@ -5,6 +5,8 @@ export const Commands = {
     G3: 'G3'
 };
 
+const TOOLTABLE = /(?<=\( Tools Table:\)\s*\()[\s\S]+?(?=\)\s*\(\s*\))/gm;
+
 export default class Gcode {
 
     constructor(gcode) {
@@ -12,12 +14,31 @@ export default class Gcode {
         this.firstY;
         this.firstZ;
         this.firstCommand;
+        this.spindleSpeed;
+        this.tools = this._parseTools(gcode);
 
         this.minZ = Number.MAX_SAFE_INTEGER;
 
         this.lines = this._format(gcode);
-        console.log({ gcode: this.lines });
+        `  T2 D=6.35 CR=0 - ZMIN=0 - flat end mill )
+    (  T2 D=6.35 CR=0 - ZMIN=0 - flat end mill `;
     }
+
+
+    _parseTools(gcode) {
+        const matches = gcode.match(TOOLTABLE);
+        if (matches) {
+            return matches[0]
+                .replace(/\(|\)/g, '')
+                .split('\n')
+                .map(x => x.trim().split(' '))
+                .map(d => ({
+                    diameter: d[1]?.replace(/D=/g, ''),
+                    name: d.slice(6).join(' ')
+                }));
+        }
+    }
+
 
     _format(gcode) {
         return gcode
@@ -80,6 +101,9 @@ export default class Gcode {
                 result.f = parseFloat(part.substring(1));
             } else if (part.startsWith('S')) {
                 result.s = parseFloat(part.substring(1));
+                if (this.spindleSpeed === undefined) {
+                    this.spindleSpeed = result.s;
+                }
             } else if (part.startsWith('T')) {
                 result.t = parseFloat(part.substring(1));
             } else if (part.startsWith('I')) {

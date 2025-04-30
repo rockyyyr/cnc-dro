@@ -1,38 +1,43 @@
-import { MM, REL, ABS, RAPID } from './Gcode/Commands';
-import { Api } from './FluidNC';
+import { MM, ABS, FEEDRATE, REL } from './Gcode/Commands';
+import { Commands, Comms } from './FluidNC';
 
 const jog = (directions, distance) => {
     if (!distance) {
         return;
     }
 
+    const command = [REL, MM];
+
     const keys = Object.keys(directions);
-    const command = [REL, RAPID, MM];
 
     for (const key of keys) {
-        command.push(`${key.toUpperCase()}+${directions[key] * distance}`);
+        command.push(`${key.toUpperCase()}${directions[key] * distance}`);
     }
-    return command.join(' ');
+
+    command.push(`${FEEDRATE}3000`);
+
+    return Commands.JOG + command.join(' ');
 };
 
 const goTo = axes => {
-    const command = [MM, ABS, RAPID];
+    const command = [MM, ABS];
     const keys = Object.keys(axes);
 
     for (const key of keys) {
         command.push(`${key.toUpperCase()}${axes[key]}`);
     }
-    return command.join(' ');
+    command.push(`${FEEDRATE}3000`);
+    return Commands.JOG + command.join(' ');
 };
 
-export const left = distance => Api.command(jog({ x: -1 }, distance));
-export const right = distance => Api.command(jog({ x: 1 }, distance));
-export const up = distance => Api.command(jog({ y: 1 }, distance));
-export const down = distance => Api.command(jog({ y: -1 }, distance));
-export const leftUp = distance => Api.command(jog({ x: -1, y: 1 }, distance));
-export const leftDown = distance => Api.command(jog({ x: -1, y: -1 }, distance));
-export const rightUp = distance => Api.command(jog({ x: 1, y: 1 }, distance));
-export const rightDown = distance => Api.command(jog({ x: 1, y: -1 }, distance));
-export const zUp = distance => Api.command(jog({ z: 1 }, distance));
-export const zDown = distance => Api.command(jog({ z: -1 }, distance));
-export const xyZero = () => Api.command(goTo({ x: 0, y: 0 }));
+export const left = distance => Comms.send(jog({ x: -1 }, distance));
+export const right = distance => Comms.send(jog({ x: 1 }, distance));
+export const up = distance => Comms.send(jog({ y: 1 }, distance));
+export const down = distance => Comms.send(jog({ y: -1 }, distance));
+export const leftUp = distance => Comms.send(jog({ x: -1, y: 1 }, distance));
+export const leftDown = distance => Comms.send(jog({ x: -1, y: -1 }, distance));
+export const rightUp = distance => Comms.send(jog({ x: 1, y: 1 }, distance));
+export const rightDown = distance => Comms.send(jog({ x: 1, y: -1 }, distance));
+export const zUp = distance => Comms.send(jog({ z: 1 }, distance));
+export const zDown = distance => Comms.send(jog({ z: -1 }, distance));
+export const xyZero = () => Comms.send(goTo({ x: 0, y: 0 }));

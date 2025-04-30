@@ -3,22 +3,30 @@ import Grid from '../Grid';
 import Button from '../../components/Button';
 import Modal from '../Modal';
 
-import Backspace from '../../assets/img/backspace.svg';
-import Clear from '../../assets/img/clear.svg';
-import Cancel from '../../assets/img/cancel.svg';
-
-export default function Numpad({ show, initial, onChange, onClose }) {
+export default function Keyboard({ show, initial, onChange, onClose }) {
     const [value, setValue] = useState(initial || null);
     const addToValue = nextValue => setValue(`${value || ''}${nextValue}`);
 
-    const buttons = [
-        ['1', '2', '3', { icon: Backspace, onClick: () => setValue(value.slice(0, -1)) }],
-        ['4', '5', '6', { icon: Clear, onClick: () => setValue(null) }],
-        ['7', '8', '9', { icon: Cancel, onClick: () => close() }],
-        ['.', '0', { label: 'Enter', onClick: () => onChange(parseFloat(value)), size: 2 }],
-    ];
+    const enter = {
+        label: 'enter',
+        onClick: () => value && onChange(value),
+        size: 1.5,
+    };
 
-    const labelSize = value => value.match(/^[0-9|.]+$/) ? 'lg' : 'sm';
+    const backspace = {
+        label: 'delete',
+        onClick: () => setValue(value.slice(0, -1)),
+        size: 1,
+    };
+
+    const blank = size => ({ blank: true, size: size || 1 });
+
+    const buttons = [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '+', backspace],
+        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+        [blank(0.5), 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', enter],
+        [' ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', '?', '='],
+    ];
 
     useEffect(() => {
         if (show) {
@@ -42,7 +50,7 @@ export default function Numpad({ show, initial, onChange, onClose }) {
                 <Grid key={key}>
                     <Button
                         label={button}
-                        labelSize={labelSize(button)}
+                        labelSize={'sm'}
                         onClick={() => addToValue(button)}
                     />
                 </Grid>
@@ -50,11 +58,13 @@ export default function Numpad({ show, initial, onChange, onClose }) {
         } else if (typeof button === 'object') {
             return (
                 <Grid key={key} x={button.size || 1}>
-                    <Button
-                        icon={button.icon}
-                        label={button.label}
-                        onClick={button.onClick}
-                    />
+                    {button.label && (
+                        <Button
+                            label={button.label}
+                            onClick={button.onClick}
+                            labelSize={'sm'}
+                        />
+                    )}
                 </Grid>
             );
         }
@@ -66,8 +76,8 @@ export default function Numpad({ show, initial, onChange, onClose }) {
             show={show}
             onClose={() => close()}
         >
-            <Grid x={4}>
-                <Button label={value} disabled />
+            <Grid x={13}>
+                <Button label={value} disabled labelSize='sm' />
             </Grid>
             {buttons.map((row, index) => (
                 <div key={index} className="flex-row">
@@ -77,3 +87,4 @@ export default function Numpad({ show, initial, onChange, onClose }) {
         </Modal>
     );
 };
+

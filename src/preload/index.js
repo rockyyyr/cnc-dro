@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
@@ -14,6 +14,12 @@ if (process.contextIsolated) {
         });
 
         let port, parser;
+
+        contextBridge.exposeInMainWorld('api', {
+            onMenuCommand: (callback) => {
+                ipcRenderer.on('restart-board', (_, cmd) => callback(cmd));
+            }
+        });
 
         contextBridge.exposeInMainWorld('serial', {
             open: () => {

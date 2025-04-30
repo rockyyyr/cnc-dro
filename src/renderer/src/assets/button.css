@@ -1,6 +1,6 @@
 .button {
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--border-radius);
     font-size: 3rem;
     font-weight: bold;
     text-align: center;
@@ -16,9 +16,14 @@
     width: 100%;
 }
 
+
 .button.button-clickable:active {
     filter: brightness(150%);
     transition-duration: 0s;
+}
+
+.button:disabled {
+    filter: brightness(50%);
 }
 
 .button.button-dark {
@@ -37,16 +42,20 @@
 
 .button.button-success {
     background-color: var(--success);
+    transition-duration: 0s;
 }
 
 .button.button-danger {
     background-color: var(--danger);
+    transition-duration: 0s;
 }
 
 .button.button-warning {
     background-color: var(--warning);
+    transition-duration: 0s;
 }
 
 .button.button-info {
     background-color: var(--info);
+    transition-duration: 0s;
 }

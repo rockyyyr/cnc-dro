@@ -1,10 +1,19 @@
-const STATE = '<';
-const MSG = '[';
+const STATUS = '<';
+const MSG = '[MSG';
+const PROBE = '[PRB';
 
 export const MessageType = {
-    STATE: 'state',
+    STATUS: 'status',
     INFO: 'info',
     GENERIC: 'generic',
+    PROBE: 'probe',
+    ACK: 'acknowledge',
+};
+
+export const MessageLevels = {
+    INFO: 'INFO',
+    ALARM: 'ALARM',
+    ERROR: 'ERR',
 };
 
 const roundTo = (value, precision) => {
@@ -40,8 +49,11 @@ const parseStateMessage = message => {
         .replaceAll('>', '')
         .split('|');
 
+    const state = data[0]?.split(':');
+
     const status = {
-        state: data[0]
+        state: state[0],
+        substate: state[1],
     };
 
     for (const item of data) {
@@ -52,13 +64,16 @@ const parseStateMessage = message => {
                 status[key] = parsePosition(value);
             } else if (key === 'FS') {
                 status[key] = parseSpeeds(value);
+            } else if (key === 'Pn') {
+                status[key] = value;
             }
         }
     }
 
     return {
-        type: MessageType.STATE,
+        type: MessageType.STATUS,
         state: status.state,
+        substate: status.substate,
         workPosition: !status.WPos ? null : {
             x: status.WPos.x,
             y: status.WPos.y,
@@ -69,6 +84,11 @@ const parseStateMessage = message => {
             y: roundTo(status.WPos.y + status.WCO.y, 3),
             z: roundTo(status.WPos.z + status.WCO.z, 3),
         },
+        limits: !status.Pn ? null : {
+            x: status.Pn.includes('X'),
+            y: status.Pn.includes('Y'),
+            z: status.Pn.includes('Z'),
+        },
         feedrate: status.FS?.feedrate,
         spindleSpeed: status.FS?.spindleSpeed,
     };
@@ -76,44 +96,63 @@ const parseStateMessage = message => {
 
 const parseInfoMessage = message => {
     const data = message
-        .replaceAll('[', '')
+        .replaceAll('[MSG:', '')
         .replaceAll(']', '')
         .split(':');
 
     return {
         type: MessageType.INFO,
-        level: data[0],
-        value: data[1],
+        level: data[0]?.trim(),
+        value: (data[1] + (data[2] || '')).trim(),
+    };
+};
+
+const parseProbeMessage = message => {
+    const data = message
+        .replaceAll('[PRB:', '')
+        .replaceAll(']', '')
+        .split(':');
+
+    return {
+        type: MessageType.PROBE,
+        level: MessageLevels.INFO,
+        value: parsePosition(data[0]),
+        success: data[1] && !!parseInt(data[1]),
+    };
+};
+
+const parseGeneric = message => {
+    const formatted = message.replace(/\r\n$/, '');
+    const type = formatted === 'ok' ? MessageType.ACK : MessageType.GENERIC;
+    return {
+        type,
+        value: formatted
     };
 };
 
 const parseMessage = message => {
-    if (message.startsWith(STATE)) {
+    if (message.startsWith(STATUS)) {
         return parseStateMessage(message);
 
     } else if (message.startsWith(MSG)) {
         return parseInfoMessage(message);
 
+    } else if (message.startsWith(PROBE)) {
+        return parseProbeMessage(message);
+
     } else {
-        return {
-            type: MessageType.GENERIC,
-            message: message,
-        };
+        return parseGeneric(message);
     }
 };
 
-export const parseSerialMessage = message => {
-    console.log(message);
 
+export const parseSerialMessage = message => {
     return parseMessage(message);
 };
 
 export const parseWebsocketMessage = async event => {
     if (typeof event.data === 'string') {
-        return {
-            type: MessageType.GENERIC,
-            message: event.data,
-        };
+        return parseGeneric(event.data);
 
     } else {
         const buffer = await event.data.arrayBuffer();

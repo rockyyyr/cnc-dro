@@ -1,42 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { Context } from '../lib/FluidNC';
 import '../assets/position-panel.css';
 import Grid from '../util/Grid';
 import DataBlock from './DataBlock';
-import { Context, Messages } from '../lib/FluidNC';
 import { zeroAxis } from '../lib/positions';
 
 export default function PositionsPanel() {
-    const [ready, message] = useContext(Context);
-
-    const [x, setX] = useState(0);
-    const [y, setY] = useState(0);
-    const [z, setZ] = useState(0);
-
-    const [machineX, setMachineX] = useState(0);
-    const [machineY, setMachineY] = useState(0);
-    const [machineZ, setMachineZ] = useState(0);
+    const { workPosition, machinePosition, limits } = useContext(Context);
 
     const blocks = [
-        { label: 'X', value: x, secondaryValue: machineX, unit: 'mm', onClick: () => zeroAxis('X') },
-        { label: 'Y', value: y, secondaryValue: machineY, unit: 'mm', onClick: () => zeroAxis('Y') },
-        { label: 'Z', value: z, secondaryValue: machineZ, unit: 'mm', onClick: () => zeroAxis('Z') },
+        { label: 'X', value: workPosition.x, secondaryValue: machinePosition.x, unit: 'mm', onClick: () => zeroAxis('X'), variant: limits?.x ? 'danger' : '' },
+        { label: 'Y', value: workPosition.y, secondaryValue: machinePosition.y, unit: 'mm', onClick: () => zeroAxis('Y'), variant: limits?.y ? 'danger' : '' },
+        { label: 'Z', value: workPosition.z, secondaryValue: machinePosition.z, unit: 'mm', onClick: () => zeroAxis('Z'), variant: limits?.z ? 'danger' : '' },
     ];
-
-    useEffect(() => {
-        if (ready && message?.type === Messages.MessageType.STATE) {
-            if (message.workPosition) {
-                setX(message.workPosition.x);
-                setY(message.workPosition.y);
-                setZ(message.workPosition.z);
-            }
-
-            if (message.machinePosition) {
-                setMachineX(message.machinePosition.x);
-                setMachineY(message.machinePosition.y);
-                setMachineZ(message.machinePosition.z);
-            }
-        }
-    }, [ready, message]);
 
     return (
         <div className="display-panel" style={{ border: 'none' }}>
@@ -44,6 +20,7 @@ export default function PositionsPanel() {
                 <Grid key={block.label} x={4}>
                     <DataBlock
                         label={block.label}
+                        variant={block.variant}
                         value={block.value}
                         secondaryValue={block.secondaryValue}
                         // unit={block.unit}

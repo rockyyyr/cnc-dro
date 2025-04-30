@@ -1,4 +1,4 @@
-import { Api } from './FluidNC';
+import { Comms } from './FluidNC';
 import { OFFSET, SET_COORDS } from './Gcode/Commands';
 
-export const zeroAxis = axis => Api.command(`${OFFSET} ${SET_COORDS} P0 ${axis}0`);
+export const zeroAxis = axis => Comms.send(`${OFFSET} ${SET_COORDS} P0 ${axis.toUpperCase()}0`);

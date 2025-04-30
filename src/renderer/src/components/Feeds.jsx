@@ -1,31 +1,22 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import Grid from '../util/Grid';
 import Button from './Button';
 import DataBlock from './DataBlock';
-import { Context, Messages } from '../lib/FluidNC';
+import { Context } from '../lib/FluidNC';
 
 export default function Feeds() {
-    const [ready, message] = useContext(Context);
-    const [feedRateOverride, setFeedRateOverride] = useState(0);
-    const [feedRate, setFeedRate] = useState(0);
+    const { feedrate } = useContext(Context);
+    const [feedrateOverride, setFeedrateOverride] = useState(0);
 
-    useEffect(() => {
-        if (ready && message?.type === Messages.MessageType.STATE) {
-            if (![undefined, null].includes(message.feedrate)) {
-                setFeedRate(message.feedrate);
-            }
-        }
-    }, [ready, message]);
-
-    const minus10 = () => setFeedRateOverride(prev => prev - 10);
-    const plus10 = () => setFeedRateOverride(prev => prev + 10);
+    const minus10 = () => setFeedrateOverride(prev => prev - 10);
+    const plus10 = () => setFeedrateOverride(prev => prev + 10);
 
     return (
         <div>
             <Grid x={4}>
                 <DataBlock
                     label='F'
-                    value={feedRate}
+                    value={feedrate}
                     unit='mm/min'
                 />
             </Grid>
@@ -33,13 +24,13 @@ export default function Feeds() {
                 <Grid>
                     <Button
                         label='-10%'
-                        labelSize='sm'
+                        labelSize='xs'
                         onClick={minus10}
                     />
                 </Grid>
                 <Grid x={2}>
                     <Button
-                        label={`${100 + feedRateOverride}%`}
+                        label={`${100 + feedrateOverride}%`}
                         labelSize='sm'
                         outline
                         disabled
@@ -48,7 +39,7 @@ export default function Feeds() {
                 <Grid>
                     <Button
                         label='+10%'
-                        labelSize='sm'
+                        labelSize='xs'
                         onClick={plus10}
                     />
                 </Grid>

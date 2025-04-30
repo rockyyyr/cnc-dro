@@ -1,7 +1,1 @@
-const FILE_UPLOADED = 'Files changed';
-
-
-export {
-    FILE_UPLOADED
-}
-
+export const FILE_UPLOADED = 'Files changed';
