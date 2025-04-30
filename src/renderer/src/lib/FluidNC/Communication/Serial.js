@@ -6,6 +6,7 @@ export default class Serial {
 
     constructor() {
         this.ready = false;
+        this.reconnectInterval = null;
     }
 
     open = () => {

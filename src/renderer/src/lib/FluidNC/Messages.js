@@ -1,5 +1,5 @@
 const STATUS = '<';
-const MSG = '[MSG';
+const INFO = '[MSG';
 const PROBE = '[PRB';
 
 export const MessageType = {
@@ -104,7 +104,7 @@ const parseInfoMessage = message => {
     return {
         type: MessageType.INFO,
         level: data[0]?.trim(),
-        value: (data[1] + (data[2] || '')).trim(),
+        value: data[1] ? (data[1] + (data[2] || '')).trim() : data[0]?.trim(),
     };
 };
 
@@ -135,7 +135,7 @@ const parseMessage = rawMessage => {
     if (message.startsWith(STATUS)) {
         return parseStateMessage(message);
 
-    } else if (message.startsWith(MSG)) {
+    } else if (message.startsWith(INFO)) {
         return parseInfoMessage(message);
 
     } else if (message.startsWith(PROBE)) {

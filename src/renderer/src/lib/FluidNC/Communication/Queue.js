@@ -14,10 +14,7 @@ export default class Queue {
         this.state = null;
 
         this.comm.onopen(() => {
-            console.log('Queue: Connection opened');
-
             this.comm.onmessage(message => {
-                console.log(JSON.stringify({ queueOnmessage: message }));
                 this.acknowledge(message);
                 this.setState(message);
             });

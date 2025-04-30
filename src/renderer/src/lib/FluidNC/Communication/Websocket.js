@@ -65,7 +65,6 @@ export default class Websocket {
 
     forceSend = data => {
         if (this.socket && this.ready) {
-            console.log({ message: data });
             this.socket.send(data + '\n');
         }
     };
