@@ -128,12 +128,9 @@ function Visualizer() {
                         <>
                             <div className="visualizer-info">
                                 <h3>{fileName}</h3>
-                                {tools && (
-                                    tools.map((tool, index) => (
-                                        <p key={index}>{tool.name} ({tool.diameter}mm)</p>
-                                    ))
-                                )}
-                                {spindleSpeed && (<p>Spindle Speed: {spindleSpeed}rpm</p>)}
+                                {tools && (<p>Tools: {tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
+                                {spindleSpeed && (<p>Spindle: {spindleSpeed}rpm</p>)}
+                                {gcode.length && (<p>Lines: {gcode.length}</p>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
