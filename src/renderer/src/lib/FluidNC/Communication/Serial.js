@@ -48,7 +48,7 @@ export default class Serial {
         if (this.port) {
             this.port.onData(line => {
                 const message = Messages.parseSerialMessage(line);
-                console.log({ received: message });
+                console.log(JSON.stringify({ received: message }));
                 callback(message);
             });
         }
@@ -62,7 +62,7 @@ export default class Serial {
 
     forceSend = data => {
         if (this.port && this.ready) {
-            console.log({ sent: data });
+            console.log(JSON.stringify({ sent: data }));
             this.port.send(`${data}\r\n`, console.error);
         }
     };

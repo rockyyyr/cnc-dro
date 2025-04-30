@@ -15,6 +15,7 @@ export default class Queue {
 
         this.comm.onopen(() => {
             this.comm.onmessage(message => {
+                console.log(JSON.stringify({ queueOnmessage: message }));
                 this.acknowledge(message);
                 this.setState(message);
             });
