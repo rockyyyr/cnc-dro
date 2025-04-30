@@ -119,9 +119,6 @@ const FluidNC = ({ children }) => {
         spindleSpeed
     };
 
-    console.log(status);
-
-
     return (
         <FluidNCContext.Provider value={status}>
             {!Comms.ready && (
