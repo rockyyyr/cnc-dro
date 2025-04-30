@@ -29,7 +29,7 @@ export default class Scene {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.domElement = this.renderer.domElement;
         ref.current.appendChild(this.domElement);
-        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 500);
+        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
         this.controls = new TrackballControls(this.camera, this.renderer.domElement);
         this.controls.addEventListener('change', () => this.needsRender = true);
     }
@@ -40,10 +40,10 @@ export default class Scene {
         const center = this.size / 2;
 
         this.camera.up.set(0, 0, -1);
-        this.camera.position.set(center, 100, center);
+        this.camera.position.set(center, 250, center);
         this.camera.lookAt(0, 0, 0);
 
-        this.controls.target.set(center, 0, -center);
+        this.controls.target.set(center, -25, -center);
         this.controls.noPan = false;
         this.controls.panSpeed = 1.0;
         this.controls.rotateSpeed = 4.0;

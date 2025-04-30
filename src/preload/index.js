@@ -42,7 +42,7 @@ if (process.contextIsolated) {
 
             send: cmd => {
                 if (!port) console.log('Port is not ready yet');
-                console.log({ message: cmd });
+                console.log(JSON.stringify({ message: cmd }));
                 port.write(cmd);
             },
             onOpen: callback => port.on('open', () => callback()),
