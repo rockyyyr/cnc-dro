@@ -7,7 +7,7 @@ import Probe from '../assets/img/probe.svg';
 import Air from '../assets/img/air.svg';
 import Mist from '../assets/img/mist.svg';
 import TerminalIcon from '../assets/img/terminal.svg';
-
+import * as Coolant from '../lib/coolant';
 import Terminal from './Terminal';
 
 export default function UtilityPanel() {
@@ -16,8 +16,8 @@ export default function UtilityPanel() {
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(prev => !prev), variant: showProbePanel ? 'info' : '' },
-        { icon: Air, onClick: () => console.log('Button 4 clicked') },
-        { icon: Mist, onClick: () => console.log('Button 4 clicked') },
+        { icon: Air, onClick: Coolant.toggleAir },
+        { icon: Mist, onClick: Coolant.toggleMist },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
     ];
 
