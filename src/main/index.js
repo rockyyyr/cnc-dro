@@ -72,7 +72,20 @@ app.whenReady().then(() => {
             },
             {
                 label: 'Restart Board',
-                click: () => window.webContents.send('restart-board', '$BYE')
+                click: async (menuItem, browserWindow) => {
+                    const result = await dialog.showMessageBox(browserWindow, {
+                        type: 'warning',
+                        buttons: ['Restart', 'Cancel'],
+                        defaultId: 1,
+                        cancelId: 1,
+                        title: 'Confirm Restart',
+                        message: 'Are you sure you want to restart the board?'
+                    });
+
+                    if (result.response === 0) {
+                        window.webContents.send('restart-board', '$BYE');
+                    }
+                }
             },
             {
                 label: 'Exit',
