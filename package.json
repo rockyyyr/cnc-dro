@@ -8,7 +8,8 @@
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint --cache .",
-        "start": "electron-vite preview",
+        "start": "electron-vite preview --skip-build",
+        "preview": "electron-vite preview",
         "dev": "electron-vite --watch dev",
         "build": "electron-vite build",
         "postinstall": "electron-builder install-app-deps",
