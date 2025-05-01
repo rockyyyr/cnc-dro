@@ -1,13 +1,15 @@
 import { WS, PING_INTERVAL } from '../Constants';
 import * as Messages from '../Messages';
-import Queue from './Queue';
 
 export default class Websocket {
 
-    init = () => {
+    constructor() {
         this.ready = false;
         this.invterval = null;
-        this.queue = new Queue(this);
+    }
+
+    addQueue = queue => {
+        this.queue = queue;
     };
 
     open = () => {

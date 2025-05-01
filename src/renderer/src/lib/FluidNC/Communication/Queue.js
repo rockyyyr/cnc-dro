@@ -14,7 +14,7 @@ export default class Queue {
         this.processing = false;
         this.state = null;
 
-        this.comm.onopen(() => this.setMessageListener());
+        this.setMessageListener();
     }
 
     setMessageListener = () => {

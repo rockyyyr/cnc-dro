@@ -4,6 +4,8 @@ import FluidNCContext from "./Context";
 import GenericDescriptions from './GenericDescriptions.json';
 
 import Comms from './Communication';
+import Queue from './Communication/Queue';
+
 import * as Messages from './Messages';
 
 const FluidNC = ({ children }) => {
@@ -32,8 +34,9 @@ const FluidNC = ({ children }) => {
         Comms.open();
         Comms.onopen(() => {
             console.log('comms open');
-
             setReady(true);
+
+            Comms.addQueue(new Queue(Comms));
             Comms.autoReport();
         });
         Comms.onclose(() => setReady(false));

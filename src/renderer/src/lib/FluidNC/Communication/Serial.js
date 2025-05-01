@@ -1,13 +1,15 @@
 import * as Messages from '../Messages';
-import Queue from './Queue';
 import { REPORT_INTERVAL } from '../Constants';
 
 export default class Serial {
 
-    init = () => {
+    constructor() {
         this.ready = false;
         this.reconnectInterval = null;
-        this.queue = new Queue(this);
+    }
+
+    addQueue = queue => {
+        this.queue = queue;
     };
 
     open = () => {
