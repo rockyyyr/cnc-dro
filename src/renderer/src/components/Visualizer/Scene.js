@@ -8,7 +8,7 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = 300;
+        this.size = 200;
 
         this.colorMap = {
             G0: new THREE.Color(0xff0000), // Red for G0
@@ -23,7 +23,7 @@ export default class Scene {
         this.gcodeGroup = null;
         this.plane = null;
         this.tool = null;
-        this.toolHeight = 10;
+        this.toolHeight = 15;
         this.toolBottom = this.toolHeight / 2;
 
         this.cameraPadding = options.cameraPadding || 15;
@@ -47,10 +47,10 @@ export default class Scene {
         const center = this.size / 2;
 
         this.camera.up.set(0, 0, -1);
-        this.camera.position.set(center, 250, center);
+        this.camera.position.set(center, this.size - 70, center);
         this.camera.lookAt(0, 0, 0);
 
-        this.controls.target.set(center, -25, -center);
+        this.controls.target.set(center, -5, -center);
         this.controls.noPan = false;
         this.controls.panSpeed = 1.0;
         this.controls.rotateSpeed = 4.0;
@@ -76,7 +76,7 @@ export default class Scene {
 
     drawTool(position) {
         const geometry = new THREE.CylinderGeometry(1, 1, this.toolHeight, 32);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const material = new THREE.MeshBasicMaterial({ color: '#00FFFF' });
         this.tool = new THREE.Mesh(geometry, material);
         this.tool.rotation.x = Math.PI / 2;
         this.tool.position.set(position.x, position.y, position.z + this.toolBottom);
