@@ -14,8 +14,8 @@ export default class Queue {
         this.state = null;
 
         this.comm.onopen(() => {
+            console.log('setting on message');
             this.comm.onmessage(message => {
-                console.log('setting on message');
 
                 this.acknowledge(message);
                 this.setState(message);

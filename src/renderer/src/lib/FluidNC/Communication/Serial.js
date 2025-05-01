@@ -16,6 +16,7 @@ export default class Serial {
         this.port.onOpen(() => {
             this.ready = true;
         });
+        this.port.onClose(() => console.log('port closing'));
     };
 
     autoReport = () => {
