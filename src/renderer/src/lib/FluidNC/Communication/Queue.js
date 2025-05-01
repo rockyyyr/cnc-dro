@@ -58,7 +58,7 @@ export default class Queue {
                 await this.waitForJog();
                 this.queue.shift();
             }
-
+            console.log(`Processing message: ${this.queue[0]}`);
             this.comm.forceSend(this.queue[0]);
             this.processing = true;
         }
