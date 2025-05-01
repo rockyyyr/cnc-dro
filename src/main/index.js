@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
@@ -12,6 +12,8 @@ if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('enable-webgl');
     app.commandLine.appendSwitch('use-angle', 'egl');
 }
+
+const isMac = process.platform === 'darwin';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -71,6 +73,24 @@ app.whenReady().then(() => {
             {
                 label: 'Restart Board',
                 click: () => window.webContents.send('restart-board', '$BYE')
+            },
+            {
+                label: 'Exit',
+                accelerator: isMac ? 'Cmd+Q' : 'Ctrl+Q',
+                click: async (menuItem, browserWindow) => {
+                    const result = await dialog.showMessageBox(browserWindow, {
+                        type: 'warning',
+                        buttons: ['Exit', 'Cancel'],
+                        defaultId: 1,
+                        cancelId: 1,
+                        title: 'Confirm Exit',
+                        message: 'Are you sure you want to exit?'
+                    });
+
+                    if (result.response === 0) {
+                        app.quit();
+                    }
+                }
             }
         ]);
 
