@@ -9,21 +9,27 @@ export default class Queue {
     constructor(comm) {
         this.queue = [];
         this.comm = comm;
+        this.ready = false;
 
         this.processing = false;
         this.state = null;
 
-        this.comm.onopen(() => {
-            console.log('setting on message');
-            this.comm.onmessage(message => {
-
-                this.acknowledge(message);
-                this.setState(message);
-            });
-        });
+        this.comm.onopen(() => this.setMessageListener());
     }
 
+    setMessageListener = () => {
+        console.log('setting message listener');
+        this.comm.onmessage(message => {
+            this.acknowledge(message);
+            this.setState(message);
+            this.ready = true;
+        });
+    };
+
     add = message => {
+        if (!this.ready) {
+            this.setMessageListener();
+        }
         if (typeof message === 'string') {
             this._queue(message);
 
