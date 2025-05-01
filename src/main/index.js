@@ -30,6 +30,10 @@ function createWindow() {
         }
     });
 
+    if (process.env.DEVTOOLS) {
+        mainWindow.webContents.openDevTools();
+    }
+
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
     });
