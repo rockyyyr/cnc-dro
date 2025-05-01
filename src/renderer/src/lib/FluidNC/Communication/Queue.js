@@ -15,6 +15,8 @@ export default class Queue {
 
         this.comm.onopen(() => {
             this.comm.onmessage(message => {
+                console.log('setting on message');
+
                 this.acknowledge(message);
                 this.setState(message);
             });
@@ -50,18 +52,17 @@ export default class Queue {
         if (this.processing) return;
         if (this.queue.length === 0) return;
 
-        if (this.queue.length > 0) {
-            if (this.queue[0] === WAIT_FOR_JOG) {
-                console.log('waiting for jog to complete');
+        if (this.queue[0] === WAIT_FOR_JOG) {
+            console.log('waiting for jog to complete');
 
-                this.shouldWaitForJog = true;
-                await this.waitForJog();
-                this.queue.shift();
-            }
-            console.log(`Processing message: ${this.queue[0]}`);
-            this.comm.forceSend(this.queue[0]);
-            this.processing = true;
+            this.shouldWaitForJog = true;
+            await this.waitForJog();
+            this.queue.shift();
         }
+
+        console.log(`Processing message: ${this.queue[0]}`);
+        this.comm.forceSend(this.queue[0]);
+        this.processing = true;
     };
 
     acknowledge = message => {
