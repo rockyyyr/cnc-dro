@@ -27,9 +27,9 @@ export default class Queue {
     };
 
     add = message => {
-        if (!this.ready) {
-            this.setMessageListener();
-        }
+        // if (!this.ready) {
+        //     this.setMessageListener();
+        // }
         if (typeof message === 'string') {
             this._queue(message);
 

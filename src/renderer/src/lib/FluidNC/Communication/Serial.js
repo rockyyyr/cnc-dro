@@ -4,19 +4,16 @@ import { REPORT_INTERVAL } from '../Constants';
 
 export default class Serial {
 
-    constructor() {
+    init = () => {
         this.ready = false;
         this.reconnectInterval = null;
-    }
+        this.queue = new Queue(this);
+    };
 
     open = () => {
         this.port = window.serial;
-        this.queue = new Queue(this);
         this.port.open();
-        this.port.onOpen(() => {
-            this.ready = true;
-        });
-        this.port.onClose(() => console.log('port closing'));
+        this.port.onOpen(() => this.ready = true);
     };
 
     autoReport = () => {

@@ -5,6 +5,8 @@ const comms = window.env.COMMS === 'serial'
     ? new Serial()
     : new Websocket();
 
+comms.init();
+
 window.api.onMenuCommand((cmd) => {
     if (cmd === '$BYE') {
         comms.send('$BYE');

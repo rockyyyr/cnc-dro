@@ -4,14 +4,14 @@ import Queue from './Queue';
 
 export default class Websocket {
 
-    constructor() {
+    init = () => {
         this.ready = false;
         this.invterval = null;
-    }
+        this.queue = new Queue(this);
+    };
 
     open = () => {
         this.socket = new WebSocket(WS);
-        this.queue = new Queue(this);
     };
 
     autoReport = () => {
