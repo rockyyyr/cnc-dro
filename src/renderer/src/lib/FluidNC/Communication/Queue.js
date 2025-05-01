@@ -31,6 +31,8 @@ export default class Queue {
     };
 
     _queue = message => {
+        console.log(`Queueing message: ${message}`);
+
         if (this.IMMEDIATE.includes(message)) {
             this.comm.forceSend(message);
 
@@ -50,6 +52,8 @@ export default class Queue {
 
         if (this.queue.length > 0) {
             if (this.queue[0] === WAIT_FOR_JOG) {
+                console.log('waiting for jog to complete');
+
                 this.shouldWaitForJog = true;
                 await this.waitForJog();
                 this.queue.shift();
