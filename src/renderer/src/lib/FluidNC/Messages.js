@@ -18,11 +18,6 @@ export const MessageLevels = {
 
 const LINE_TERMINATION = /\r$|\n$|\r\n$/g;
 
-const roundTo = (value, precision) => {
-    const factor = Math.pow(10, precision);
-    return Math.round(value * factor) / factor;
-};
-
 const parsePosition = positionString => {
     if (!positionString) {
         return null;
@@ -80,11 +75,16 @@ const parseStateMessage = message => {
             y: status.WPos.y,
             z: status.WPos.z,
         },
-        machinePosition: (!status.WPos || !status.WCO) ? null : {
-            x: roundTo(status.WPos.x + status.WCO.x, 3),
-            y: roundTo(status.WPos.y + status.WCO.y, 3),
-            z: roundTo(status.WPos.z + status.WCO.z, 3),
+        workOffset: !status.WCO ? null : {
+            x: status.WCO.x,
+            y: status.WCO.y,
+            z: status.WCO.z,
         },
+        // machinePosition: (!status.WPos || !status.WCO) ? null : {
+        //     x: roundTo(status.WPos.x + status.WCO.x, 3),
+        //     y: roundTo(status.WPos.y + status.WCO.y, 3),
+        //     z: roundTo(status.WPos.z + status.WCO.z, 3),
+        // },
         limits: !status.Pn ? null : {
             x: status.Pn.includes('X'),
             y: status.Pn.includes('Y'),

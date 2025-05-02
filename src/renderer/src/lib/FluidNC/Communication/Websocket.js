@@ -6,6 +6,7 @@ export default class Websocket {
     constructor() {
         this.ready = false;
         this.invterval = null;
+        this.message = null;
     }
 
     addQueue = queue => {
@@ -55,6 +56,7 @@ export default class Websocket {
             this.socket.addEventListener('message', async message => {
                 const newMessage = await Messages.parseWebsocketMessage(message);
                 callback(newMessage);
+                this.message = message;
             });
         }
     };

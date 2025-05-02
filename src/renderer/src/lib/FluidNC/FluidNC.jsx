@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FluidNCContext from "./Context";
 
 import GenericDescriptions from './GenericDescriptions.json';
+import { roundTo } from '../../util/numbers';
 
 import Comms from './Communication';
 import Queue from './Communication/Queue';
@@ -19,9 +20,13 @@ const FluidNC = ({ children }) => {
     const [workY, setWorkY] = useState(0);
     const [workZ, setWorkZ] = useState(0);
 
-    const [machineX, setMachineX] = useState(0);
-    const [machineY, setMachineY] = useState(0);
-    const [machineZ, setMachineZ] = useState(0);
+    // const [machineX, setMachineX] = useState(0);
+    // const [machineY, setMachineY] = useState(0);
+    // const [machineZ, setMachineZ] = useState(0);
+
+    const [workOffsetX, setWorkOffsetX] = useState(0);
+    const [workOffsetY, setWorkOffsetY] = useState(0);
+    const [workOffsetZ, setWorkOffsetZ] = useState(0);
 
     const [probeResults, setProbeResults] = useState([]);
     const [limits, setLimits] = useState(null);
@@ -52,17 +57,23 @@ const FluidNC = ({ children }) => {
                         setSubstate(message.substate);
                     }
 
+                    if (message.workOffset) {
+                        safeSetNumber(message.workOffset.x, setWorkOffsetX);
+                        safeSetNumber(message.workOffset.y, setWorkOffsetY);
+                        safeSetNumber(message.workOffset.z, setWorkOffsetZ);
+                    }
+
                     if (message.workPosition) {
                         safeSetNumber(message.workPosition.x, setWorkX);
                         safeSetNumber(message.workPosition.y, setWorkY);
                         safeSetNumber(message.workPosition.z, setWorkZ);
                     }
 
-                    if (message.machinePosition) {
-                        safeSetNumber(message.machinePosition.x, setMachineX);
-                        safeSetNumber(message.machinePosition.y, setMachineY);
-                        safeSetNumber(message.machinePosition.z, setMachineZ);
-                    }
+                    // if (message.machinePosition) {
+                    //     safeSetNumber(message.machinePosition.x, setMachineX);
+                    //     safeSetNumber(message.machinePosition.y, setMachineY);
+                    //     safeSetNumber(message.machinePosition.z, setMachineZ);
+                    // }
 
                     safeSetNumber(message.feedrate, setFeedrate);
                     safeSetNumber(message.spindleSpeed, setSpindleSpeed);
@@ -113,14 +124,21 @@ const FluidNC = ({ children }) => {
             z: workZ,
         },
         machinePosition: {
-            x: machineX,
-            y: machineY,
-            z: machineZ,
+            x: roundTo(workX + workOffsetX, 3),
+            y: roundTo(workY + workOffsetY, 3),
+            z: roundTo(workZ + workOffsetZ, 3),
+        },
+        workOffset: {
+            x: workOffsetX,
+            y: workOffsetY,
+            z: workOffsetZ,
         },
         limits,
         feedrate,
         spindleSpeed
     };
+
+    console.log(status);
 
     return (
         <FluidNCContext.Provider value={status}>

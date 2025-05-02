@@ -6,6 +6,7 @@ export default class Serial {
     constructor() {
         this.ready = false;
         this.reconnectInterval = null;
+        this.message = null;
     }
 
     addQueue = queue => {
@@ -50,6 +51,7 @@ export default class Serial {
                 const message = Messages.parseSerialMessage(line);
                 // console.log(JSON.stringify({ received: message }));
                 callback(message);
+                this.message = message;
             });
         }
     };

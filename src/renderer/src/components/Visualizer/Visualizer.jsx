@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import Gcode from './Gcode';
+import Gcode from '../../lib/Gcode';
 import Scene from './Scene';
 import { Files, Comms, Context, States } from '../../lib/FluidNC';
 import Button from '../Button';
@@ -13,7 +13,7 @@ import FileSelector from './FileSelector';
 
 function Visualizer() {
     const ref = useRef(null);
-    const { workPosition, state } = useContext(Context);
+    const { machinePosition, state, workOffset } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [gcode, setGcode] = useState(null);
@@ -25,20 +25,16 @@ function Visualizer() {
 
     const newMessage = Comms.message;
 
-    const startJob = () => {
-        console.log('Starting job');
-
-        Job.run(fileName);
-    };
+    const startJob = () => Job.run(fileName);
     const abortJob = () => {
         setFileName(null);
         setGcode(null);
     };
 
     const loadSelectedFile = async file => {
-        setFileName(file.name);
         const { data } = await Files.getFile(file.name);
-        setGcode(new Gcode(data));
+        setFileName(file.name);
+        setGcode(new Gcode(data, workOffset));
     };
 
     const loadGcode = async () => {
@@ -46,7 +42,7 @@ function Visualizer() {
 
         if (name && data) {
             setFileName(name);
-            setGcode(new Gcode(data));
+            setGcode(new Gcode(data, workOffset));
         } else {
             setFileName(null);
             setGcode(null);
@@ -63,6 +59,16 @@ function Visualizer() {
 
         return () => scene.cleanUp(ref);
     }, []);
+
+    useEffect(() => {
+        if (workOffset) {
+            if (gcode) {
+                gcode.updateWorkOffset(workOffset);
+                scene.draw(gcode);
+            }
+        }
+
+    }, [workOffset]);
 
     useEffect(() => {
         if (Files.hasNewFile(newMessage)) {
@@ -87,15 +93,15 @@ function Visualizer() {
 
 
     useEffect(() => {
-        if (scene && workPosition) {
+        if (scene && machinePosition) {
             scene.needsRender = true;
             if (scene.tool) {
-                scene.updateTool(workPosition);
+                scene.updateTool(machinePosition);
             } else {
-                scene.drawTool(workPosition);
+                scene.drawTool(machinePosition);
             }
         }
-    }, [scene, workPosition]);
+    }, [scene, machinePosition]);
 
     useEffect(() => {
         if (gcode) {

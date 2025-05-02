@@ -1,14 +1,15 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 
-import { Commands } from './Gcode';
+import { Commands } from '../../lib/Gcode/Parser';
 
 export default class Scene {
     constructor(ref, options = {}) {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = 200;
+        this.size = 220;
+        this.divisions = 20;
 
         this.colorMap = {
             G0: new THREE.Color(0xff0000), // Red for G0
@@ -62,16 +63,62 @@ export default class Scene {
     }
 
     drawPlane() {
-        this.plane = new THREE.GridHelper(this.size, 20);
+        this.plane = new THREE.GridHelper(this.size, this.divisions);
         this.plane.position.set((this.size / 2), 0, -(this.size / 2));
         const box = new THREE.Box3().setFromObject(this.plane);
         this.subjectBoundingBox = box;
         this.scene.add(this.plane);
+        // this.drawPlaneLabels();
     }
 
     drawAxes() {
         const axesHelper = new THREE.AxesHelper(50);
         this.cncGroup.add(axesHelper);
+    }
+
+    drawPlaneLabels() {
+        function makeNumberSprite(text) {
+            const size = 64;
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.font = '28px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, size / 2, size / 2);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.SpriteMaterial({ map: tex, depthTest: false });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(10, 10, 1);
+            return sprite;
+        }
+
+        // const step = this.size / this.divisions;
+        const step = 50;
+
+        for (let i = 0; i < this.size; i += step) {
+            const x = i;
+            const sprite = makeNumberSprite(Math.round(x));
+            sprite.position.set(x, 0.1, 0);     // slight lift in Y so it’s above the grid
+            this.scene.add(sprite);
+        }
+
+        const finalX = makeNumberSprite(Math.round(this.size));
+        finalX.position.set(this.size, 0.1, 0);
+        this.scene.add(finalX);
+
+        for (let j = 0; j < this.size; j += step) {
+            const z = j;
+            const sprite = makeNumberSprite(Math.round(z));
+            sprite.position.set(0, 0.1, -z);
+            this.scene.add(sprite);
+        }
+
+        const finalY = makeNumberSprite(Math.round(this.size));
+        finalY.position.set(0, 0.1, -this.size);
+        this.scene.add(finalY);
     }
 
     drawTool(position) {
