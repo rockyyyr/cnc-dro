@@ -1,10 +1,12 @@
 import { FEEDRATE, PROBE, REL, ABS, OFFSET, SET_COORDS, RAPID } from './Gcode/Commands';
 import { Comms } from './FluidNC';
 
+const seekProbeSpeed = 300;
+
 export const probeZ = probeHeight => {
     return Comms.send(`
         REL
-        ${PROBE} Z-20 ${FEEDRATE}1000
+        ${PROBE} Z-20 ${FEEDRATE}${seekProbeSpeed}
         ${RAPID} Z2
         ${PROBE} Z-3 ${FEEDRATE}50
         ${OFFSET} ${SET_COORDS} P1 Z${probeHeight}
@@ -23,7 +25,7 @@ const probeHorizontal = (probeWidth, toolDiameter, direction, axis) => {
         `${RAPID} Z15`,
         `${RAPID} ${pos(15)}`,
         `${RAPID} Z-15`,
-        `${PROBE} ${pos(-20)} F1000`,
+        `${PROBE} ${pos(-20)} F${seekProbeSpeed}`,
         `${RAPID} ${pos(2)}`,
         `${PROBE} ${pos(-3)} F50`,
         `${OFFSET} ${SET_COORDS} P1 ${pos(offset)}`,
