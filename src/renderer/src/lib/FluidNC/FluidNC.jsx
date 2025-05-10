@@ -142,12 +142,12 @@ const FluidNC = ({ children }) => {
 
     return (
         <FluidNCContext.Provider value={status}>
-            {!Comms.ready && (
+            {/* {!Comms.ready && (
                 <div className='not-connected-overlay'>
                     <h1>Connecting</h1>
                     <div className="loading" />
                 </div>
-            )}
+            )} */}
             {children}
         </FluidNCContext.Provider>
     );

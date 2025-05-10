@@ -1,49 +1,57 @@
-import { FEEDRATE, PROBE, REL, ABS, OFFSET, SET_COORDS } from './Gcode/Commands';
+import { FEEDRATE, PROBE, REL, ABS, OFFSET, SET_COORDS, RAPID } from './Gcode/Commands';
 import { Comms } from './FluidNC';
-import { JOG, WAIT_FOR_JOG } from './FluidNC/Commands';
 
 export const probeZ = probeHeight => {
-    const command = [
-        REL,
-        `${PROBE} Z-20 ${FEEDRATE}20`,
-        ABS,
-        `${OFFSET} ${SET_COORDS} P1 Z${probeHeight}`,
-        `${JOG}${REL} Z5 F1500`
-    ];
-
-    return Comms.send(command);
+    return Comms.send(`
+        REL
+        ${PROBE} Z-20 ${FEEDRATE}1000
+        ${RAPID} Z2
+        ${PROBE} Z-3 ${FEEDRATE}50
+        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight}
+        ${RAPID} Z5
+        ABS
+    `);
 };
 
-export const probeXY = (probeWidth, direction) => {
+const probeHorizontal = (probeWidth, toolDiameter, direction, axis) => {
+    const toolRadius = toolDiameter / 2;
+    const offset = probeWidth + toolRadius;
+    const pos = amount => `${axis}${amount * direction}`;
 
+    return Comms.send([
+        REL,
+        `${RAPID} Z15`,
+        `${RAPID} ${pos(15)}`,
+        `${RAPID} Z-15`,
+        `${PROBE} ${pos(-20)} F1000`,
+        `${RAPID} ${pos(2)}`,
+        `${PROBE} ${pos(-3)} F50`,
+        `${OFFSET} ${SET_COORDS} P1 ${pos(offset)}`,
+        `${RAPID} ${pos(5)}`,
+        ABS,
+    ]);
 };
 
-export const probeX = (probeWidth, direction) => {
-    const command = [
-        `${JOG}${REL} Z15 ${FEEDRATE}2500`,
-        `${JOG}${REL} X${15 * direction.x} ${FEEDRATE}2500`,
-        `${JOG}${REL} Z-15 ${FEEDRATE}2500`,
-        WAIT_FOR_JOG,
-        REL,
-        `${PROBE} X${20 * -direction.x} ${FEEDRATE}20`,
-        ABS,
-        `${OFFSET} ${SET_COORDS} P1 X${probeWidth * direction.x}`,
-        `${JOG}${REL} X${5 * direction.x} ${FEEDRATE}2500`,
-    ];
-    return Comms.send(command);
+export const probeX = (probeWidth, toolDiameter, directions) => {
+    return probeHorizontal(probeWidth, toolDiameter, directions.x, 'X');
 };
 
-export const probeY = (probeWidth, direction) => {
-    const command = [
-        `${JOG}${REL} Z15 ${FEEDRATE}2500`,
-        `${JOG}${REL} Y${15 * direction.y} ${FEEDRATE}2500`,
-        `${JOG}${REL} Z-15 ${FEEDRATE}2500`,
-        WAIT_FOR_JOG,
-        REL,
-        `${PROBE} Y${20 * -direction.y} ${FEEDRATE}20`,
-        ABS,
-        `${OFFSET} ${SET_COORDS} P1 Y${probeWidth * direction.y}`,
-        `${JOG}${REL} Y${5 * direction.y} ${FEEDRATE}2500`
-    ];
-    return Comms.send(command);
+export const probeY = (probeWidth, toolDiameter, directions) => {
+    return probeHorizontal(probeWidth, toolDiameter, directions.y, 'Y');
+};
+
+export const probeXY = (probeWidth, toolDiameter, directions) => {
+    probeX(probeWidth, toolDiameter, directions);
+
+    Comms.send(`
+        ${REL}
+        ${RAPID} Z15
+        ${RAPID} X${10 * directions.x}
+    `);
+
+    probeY(probeWidth, toolDiameter, directions);
+};
+
+export const probeWithTouchProbe = direction => {
+    return probeXY(0, 2, direction);
 };

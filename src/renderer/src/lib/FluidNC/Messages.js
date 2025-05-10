@@ -89,6 +89,7 @@ const parseStateMessage = message => {
             x: status.Pn.includes('X'),
             y: status.Pn.includes('Y'),
             z: status.Pn.includes('Z'),
+            probe: status.Pn.includes('P'),
         },
         feedrate: status.FS?.feedrate,
         spindleSpeed: status.FS?.spindleSpeed,

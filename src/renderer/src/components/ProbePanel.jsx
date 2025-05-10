@@ -1,35 +1,61 @@
-import { useState } from 'react';
-
-import { useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Context } from '../lib/FluidNC';
-
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
 import Input from './Input';
+import { probeZ, probeXY, probeX, probeY, probeWithTouchProbe } from '../lib/probe';
+import Spacer from '../util/Spacer';
 
 import DownLeft from '../assets/img/arrow-down-left.svg';
 import DownRight from '../assets/img/arrow-down-right.svg';
 import UpLeft from '../assets/img/arrow-up-left.svg';
 import UpRight from '../assets/img/arrow-up-right.svg';
+import TouchProbe from '../assets/img/touchprobe.svg';
 
-import { probeZ, probeXY, probeX, probeY } from '../lib/probe';
-import Spacer from '../util/Spacer';
+const Storage = {
+    ProbeHeight: 'probePanel/probeHeight',
+    ProbeWidth: 'probePanel/probeWidth',
+    ToolDiameter: 'probePanel/toolDiameter',
+};
 
 export default function ProbePanel({ show, onClose }) {
     const { probeResults } = useContext(Context);
     const [probeHeight, setProbeHeight] = useState(5);
     const [probeWidth, setProbeWidth] = useState(5);
+    const [toolDiameter, setToolDiameter] = useState(6);
     const [probeDirection, setProbeDirection] = useState({ y: -1, x: -1, label: 'downleft' });
 
+    useEffect(() => {
+        const savedProbeHeight = localStorage.getItem(Storage.ProbeHeight);
+        const savedProbeWidth = localStorage.getItem(Storage.ProbeWidth);
+        const savedToolDiameter = localStorage.getItem(Storage.ToolDiameter);
+
+        if (savedProbeHeight) {
+            setProbeHeight(parseFloat(savedProbeHeight));
+        }
+        if (savedProbeWidth) {
+            setProbeWidth(parseFloat(savedProbeWidth));
+        }
+        if (savedToolDiameter) {
+            setToolDiameter(parseFloat(savedToolDiameter));
+        }
+    }, []);
+
     const runProbeZ = () => probeZ(probeHeight);
-    const runProbeXY = () => probeXY(probeWidth, probeDirection);
-    const runProbeX = () => probeX(probeWidth, probeDirection);
-    const runProbeY = () => probeY(probeWidth, probeDirection);
+    const runProbeXY = () => probeXY(probeWidth, toolDiameter, probeDirection);
+    const runProbeX = () => probeX(probeWidth, toolDiameter, probeDirection);
+    const runProbeY = () => probeY(probeWidth, toolDiameter, probeDirection);
+    const runTouchProbe = () => probeWithTouchProbe(probeDirection);
 
     const runAndClose = command => () => {
         command();
         onClose();
+    };
+
+    const updateAndSaveSetting = (data, command, storageName) => {
+        command(data);
+        localStorage.setItem(storageName, data);
     };
 
     const directions = [
@@ -44,6 +70,10 @@ export default function ProbePanel({ show, onClose }) {
         { label: 'XY', onClick: runAndClose(runProbeXY) },
         { label: 'X', onClick: runAndClose(runProbeX) },
         { label: 'Y', onClick: runAndClose(runProbeY) },
+    ];
+
+    const macros = [
+        { icon: TouchProbe, onClick: runAndClose(runTouchProbe), variant: 'info' },
     ];
 
     return (
@@ -62,9 +92,15 @@ export default function ProbePanel({ show, onClose }) {
                                 <Button label={button.label} onClick={button.onClick} />
                             </Grid>
                         ))}
-
                     </div>
-                    <Spacer y={0.5} x={4} hLine />
+                    <div className="flex-row">
+                        {macros.map((button, index) => (
+                            <Grid key={index}>
+                                <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                            </Grid>
+                        ))}
+                    </div>
+                    <Spacer y={0.2} x={4} hLine />
                     <div className="flex-row">
                         {directions.map((button, index) => (
                             <Grid key={index}>
@@ -79,7 +115,7 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Probe Height'
                             value={probeHeight}
-                            onChange={value => value && setProbeHeight(value)}
+                            onChange={value => value !== undefined && updateAndSaveSetting(value, setProbeHeight, Storage.ProbeHeight)}
                         />
 
                         <Input
@@ -87,7 +123,17 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Probe Width'
                             value={probeWidth}
-                            onChange={value => value && setProbeWidth(value)}
+                            onChange={value => value !== undefined && updateAndSaveSetting(value, setProbeWidth, Storage.ProbeWidth)}
+                        />
+                    </div>
+
+                    <div className='flex-row'>
+                        <Input
+                            labelSize='xs'
+                            inputWidth={1}
+                            label='Tool ⌀'
+                            value={toolDiameter}
+                            onChange={value => value !== undefined && updateAndSaveSetting(value, setToolDiameter, Storage.ToolDiameter)}
                         />
                     </div>
                 </div>
