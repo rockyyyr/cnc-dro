@@ -62,6 +62,8 @@ export const probeXY = (probeWidth, toolDiameter, directions) => {
         ${REL}
         ${RAPID} Z15
         ${RAPID} X${22.5 * -directions.x}
+        ${RAPID} Y${30 * directions.y}
+        ${RAPID} Z-15
     `);
 
     probeY(probeWidth, toolDiameter, directions);
