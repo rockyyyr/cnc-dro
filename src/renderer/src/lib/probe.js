@@ -52,7 +52,7 @@ export const probeXY = (probeWidth, toolDiameter, directions) => {
     Comms.send(`
         ${REL}
         ${RAPID} Z10
-        ${RAPID} ${30 * directions.x}
+        ${RAPID} X${30 * directions.x}
         ${RAPID} Z-15
     `);
 
