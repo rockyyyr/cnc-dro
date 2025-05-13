@@ -24,7 +24,7 @@ const fileLine = (file, action) => {
     );
 };
 
-export default function FileSelector({ show, onClose, onChange }) {
+export default function FileSelector({ show, onClose, onChange, onFilesLoaded }) {
     const [files, setFiles] = useState([]);
 
     const selectFile = file => {
@@ -37,6 +37,7 @@ export default function FileSelector({ show, onClose, onChange }) {
             const files = await Files.getFileList();
             if (files.length > 0) {
                 setFiles(files);
+                onFilesLoaded(files);
             }
         };
         getFiles();

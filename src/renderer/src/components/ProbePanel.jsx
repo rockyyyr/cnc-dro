@@ -4,7 +4,7 @@ import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
 import Input from './Input';
-import { probeZ, probeXY, probeX, probeY, probeWithTouchProbe } from '../lib/probe';
+import { probeZ, probeXY, probeX, probeY, probeWithTouchProbe, probeWithToolSetter } from '../lib/probe';
 import Spacer from '../util/Spacer';
 
 import DownLeft from '../assets/img/arrow-down-left.svg';
@@ -12,6 +12,7 @@ import DownRight from '../assets/img/arrow-down-right.svg';
 import UpLeft from '../assets/img/arrow-up-left.svg';
 import UpRight from '../assets/img/arrow-up-right.svg';
 import TouchProbe from '../assets/img/touchprobe.svg';
+import ToolSetter from '../assets/img/tool-setter.svg';
 
 const Storage = {
     ProbeHeight: 'probePanel/probeHeight',
@@ -47,6 +48,7 @@ export default function ProbePanel({ show, onClose }) {
     const runProbeX = () => probeX(probeWidth, toolDiameter, probeDirection);
     const runProbeY = () => probeY(probeWidth, toolDiameter, probeDirection);
     const runTouchProbe = () => probeWithTouchProbe(probeDirection);
+    const runToolSetter = () => probeWithToolSetter(probeDirection);
 
     const runAndClose = command => () => {
         command();
@@ -74,6 +76,7 @@ export default function ProbePanel({ show, onClose }) {
 
     const macros = [
         { icon: TouchProbe, onClick: runAndClose(runTouchProbe), variant: 'info' },
+        { icon: ToolSetter, onClick: runAndClose(runToolSetter), variant: 'success' },
     ];
 
     return (

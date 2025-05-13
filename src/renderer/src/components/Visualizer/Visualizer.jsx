@@ -16,6 +16,7 @@ function Visualizer() {
     const { machinePosition, state, workOffset } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
+    const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
     const [gcode, setGcode] = useState(null);
     const [fileName, setFileName] = useState(null);
     const [spindleSpeed, setSpindleSpeed] = useState(0);
@@ -127,6 +128,7 @@ function Visualizer() {
                 show={showFileSelector}
                 onClose={() => setShowFileSelector(false)}
                 onChange={file => loadSelectedFile(file)}
+                onFilesLoaded={files => setHasFilesLoaded(files.length > 0)}
             />
             <div className='visualizer'>
                 {fileName && gcode
@@ -152,7 +154,13 @@ function Visualizer() {
                             {!showFileSelector && (
                                 <div className='visualizer-load-file'>
                                     <Grid x={2} y={0.6}>
-                                        <Button label='Select File' labelSize='xs' onClick={() => setShowFileSelector(true)} />
+                                        <Button
+                                            label='Select File'
+                                            labelSize='xs'
+                                            disabled={!hasFilesLoaded}
+                                            actuallyDisable={!hasFilesLoaded}
+                                            onClick={() => setShowFileSelector(true)}
+                                        />
                                     </Grid>
                                 </div>
                             )}
