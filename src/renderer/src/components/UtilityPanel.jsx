@@ -13,11 +13,21 @@ import Terminal from './Terminal';
 export default function UtilityPanel() {
     const [showProbePanel, setShowProbePanel] = useState(false);
     const [showTerminal, setShowTerminal] = useState(false);
+    const [airEnabled, setAirEnabled] = useState(false);
     const { limits } = useContext(Context);
+
+    const toggleAir = () => {
+        if (airEnabled) {
+            Coolant.disableAir();
+        } else {
+            Coolant.enableAir();
+        }
+        setAirEnabled(!airEnabled);
+    };
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(prev => !prev), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '' },
-        { icon: Air, onClick: Coolant.toggleAir },
+        { icon: Air, onClick: toggleAir, variant: airEnabled ? 'info' : '' },
         { icon: Mist, onClick: Coolant.toggleMist },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
     ];
