@@ -28,6 +28,7 @@
         "node-hid": "^2.1.1",
         "react-terminal": "^1.4.5",
         "react-toastify": "^11.0.5",
+        "react-transition-group": "^4.4.5",
         "react-use-websocket": "^4.13.0",
         "serialport": "^13.0.0",
         "three": "^0.175.0"

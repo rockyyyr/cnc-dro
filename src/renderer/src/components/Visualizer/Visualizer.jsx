@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import Gcode from '../../lib/Gcode';
 import Scene from './Scene';
-import { Files, Comms, Context, States } from '../../lib/FluidNC';
+import { Files, Context, States } from '../../lib/FluidNC';
 import Button from '../Button';
 import Grid from '../../util/Grid';
 import * as Job from '../../lib/job';
@@ -24,8 +24,6 @@ function Visualizer() {
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
 
-    const newMessage = Comms.message;
-
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
         setFileName(null);
@@ -38,17 +36,17 @@ function Visualizer() {
         setGcode(new Gcode(data, workOffset));
     };
 
-    const loadGcode = async () => {
-        const { name, data } = await Files.getLatestFile();
+    // const loadGcode = async () => {
+    //     const { name, data } = await Files.getLatestFile();
 
-        if (name && data) {
-            setFileName(name);
-            setGcode(new Gcode(data, workOffset));
-        } else {
-            setFileName(null);
-            setGcode(null);
-        }
-    };
+    //     if (name && data) {
+    //         setFileName(name);
+    //         setGcode(new Gcode(data, workOffset));
+    //     } else {
+    //         setFileName(null);
+    //         setGcode(null);
+    //     }
+    // };
 
     useEffect(() => {
         const scene = new Scene(ref);
@@ -69,13 +67,13 @@ function Visualizer() {
             }
         }
 
-    }, [workOffset]);
+    }, [workOffset, gcode, scene]);
 
-    useEffect(() => {
-        if (Files.hasNewFile(newMessage)) {
-            loadGcode();
-        }
-    }, [newMessage]);
+    // useEffect(() => {
+    //     if (Files.hasNewFile(newMessage)) {
+    //         loadGcode();
+    //     }
+    // }, [newMessage]);
 
     useEffect(() => {
         if (state === States.IDLE) {

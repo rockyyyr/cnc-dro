@@ -2,6 +2,10 @@ const STATUS = '<';
 const INFO = '[MSG';
 const PROBE = '[PRB';
 
+export const isStatusMessage = message => message?.startsWith(STATUS);
+export const isInfoMessage = message => message?.startsWith(INFO);
+export const isProbeMessage = message => message?.startsWith(PROBE);
+
 export const MessageType = {
     STATUS: 'status',
     INFO: 'info',
@@ -39,7 +43,7 @@ const parseSpeeds = speedsString => {
     return { feedrate, spindleSpeed };
 };
 
-const parseStateMessage = message => {
+const parseStatusMessage = message => {
     const data = message
         .replaceAll('<', '')
         .replaceAll('>', '')
@@ -128,13 +132,13 @@ const parseGeneric = message => {
 
 const parseMessage = rawMessage => {
     const message = rawMessage?.replace(LINE_TERMINATION, '');
-    if (message.startsWith(STATUS)) {
-        return parseStateMessage(message);
+    if (isStatusMessage(message)) {
+        return parseStatusMessage(message);
 
-    } else if (message.startsWith(INFO)) {
+    } else if (isInfoMessage(message)) {
         return parseInfoMessage(message);
 
-    } else if (message.startsWith(PROBE)) {
+    } else if (isProbeMessage(message)) {
         return parseProbeMessage(message);
 
     } else {

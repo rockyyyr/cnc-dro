@@ -28,6 +28,7 @@ const FluidNC = ({ children }) => {
     const [limits, setLimits] = useState(null);
     const [feedrate, setFeedrate] = useState(0);
     const [spindleSpeed, setSpindleSpeed] = useState(0);
+    const [message, setMessage] = useState(null);
 
     const safeSetNumber = (value, setter) => ![undefined, null].includes(value) && !isNaN(value) && setter(value);
 
@@ -67,16 +68,16 @@ const FluidNC = ({ children }) => {
                     safeSetNumber(message.feedrate, setFeedrate);
                     safeSetNumber(message.spindleSpeed, setSpindleSpeed);
                     setLimits(message.limits);
-                }
 
-                if (message.type === Messages.MessageType.INFO) {
+                } else if (message.type === Messages.MessageType.INFO) {
                     if (message.value) {
+                        setMessage(message.value);
                         setNotification(message);
                     }
-                }
 
-                if (message.type === Messages.MessageType.PROBE) {
+                } else if (message.type === Messages.MessageType.PROBE) {
                     if (message.value) {
+                        setMessage(message.value);
                         setNotification({
                             level: message.success ? Messages.MessageLevels.INFO : Messages.MessageLevels.ERROR,
                             value: message.success ? 'Probe successful' : 'Probe failed',
@@ -87,9 +88,10 @@ const FluidNC = ({ children }) => {
                             timestamp: Date.now()
                         }, ...prev]);
                     }
-                }
 
-                if (message.type === Messages.MessageType.GENERIC) {
+                } else if (message.type === Messages.MessageType.GENERIC) {
+                    setMessage(GenericDescriptions[message.value] || message.value);
+
                     if (['ALARM', 'error'].some(val => message.value.includes(val))) {
                         setNotification({
                             ...message,
@@ -100,11 +102,13 @@ const FluidNC = ({ children }) => {
                 }
             });
         }
+
     }, [ready]);
 
     const status = {
         state,
         substate,
+        message,
         notification,
         probeResults,
         workPosition: {

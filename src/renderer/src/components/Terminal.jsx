@@ -1,34 +1,28 @@
 import { useContext, useEffect } from 'react';
-import { Comms } from '../lib/FluidNC';
+import { ReactTerminal, TerminalContext } from "react-terminal";
+import { Comms, Context } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
-import { ReactTerminal, TerminalContext } from "react-terminal";
 
 
 export default function Terminal({ show, onClose }) {
-    // const { setBufferedContent, setTemporaryContent } = useContext(TerminalContext);
+    const { setBufferedContent, setTemporaryContent } = useContext(TerminalContext);
+    const { message } = useContext(Context);
+
+    useEffect(() => {
+        setBufferedContent(prev => (
+            <>
+                {prev}
+                <span>&gt; {message}</span>
+                <br />
+            </>
+        ));
+        setTemporaryContent('');
+    }, [message, setBufferedContent, setTemporaryContent]);
 
     const sendCommand = (command, args) => {
         Comms.send([command, args].join(' '));
     };
-
-    // useEffect(() => {
-    //     const receiveMessage = message => {
-    //         if (!message || message.startsWith('<')) {
-    //             return;
-    //         }
-
-    //         setBufferedContent(prev => (
-    //             <>
-    //                 {prev}
-    //                 <span>&gt; {message}</span>
-    //                 <br />
-    //             </>
-    //         ));
-    //         setTemporaryContent('');
-    //     };
-    //     Comms.onmessage(receiveMessage);
-    // }, [setBufferedContent, setTemporaryContent]);
 
     return (
         <Modal
