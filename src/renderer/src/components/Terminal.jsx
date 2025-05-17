@@ -3,22 +3,24 @@ import { ReactTerminal, TerminalContext } from "react-terminal";
 import { Comms, Context } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
-
+import '../assets/terminal.css';
 
 export default function Terminal({ show, onClose }) {
     const { setBufferedContent, setTemporaryContent } = useContext(TerminalContext);
     const { message } = useContext(Context);
 
     useEffect(() => {
-        setBufferedContent(prev => (
-            <>
-                {prev}
-                <span>&gt; {message}</span>
-                <br />
-            </>
-        ));
-        setTemporaryContent('');
-    }, [message, setBufferedContent, setTemporaryContent]);
+        if (show && message) {
+            setBufferedContent(prev => (
+                <>
+                    {prev}
+                    <span>&gt; {message}</span>
+                    <br />
+                </>
+            ));
+            setTemporaryContent('');
+        }
+    }, [show, message, setBufferedContent, setTemporaryContent]);
 
     const sendCommand = (command, args) => {
         Comms.send([command, args].join(' '));
@@ -36,8 +38,9 @@ export default function Terminal({ show, onClose }) {
                         showControlButtons={false}
                         showControlBar={false}
                         theme='material-dark'
-                        prompt={'cnc # '}
+                        prompt={<span style={{ marginRight: 0 }}>cnc # </span>}
                         defaultHandler={sendCommand}
+                        caret={false}
                     />
                 </div>
             </Grid>
