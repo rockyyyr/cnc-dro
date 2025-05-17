@@ -1,8 +1,8 @@
 import { PROBE, REL, ABS, OFFSET, SET_COORDS, RAPID, MACHINE_COORD, WORK_COORD } from './Gcode/Commands';
 import { Comms } from './FluidNC';
 
-const seekProbeSpeed = 300;
-const feedProbeSpeed = 50;
+const seekProbeSpeed = 150;
+const feedProbeSpeed = 30;
 const ToolSetterPosition = {
     x: 25,
     y: 350,
