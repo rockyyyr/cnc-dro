@@ -6,29 +6,29 @@ import { ReactTerminal, TerminalContext } from "react-terminal";
 
 
 export default function Terminal({ show, onClose }) {
-    const { setBufferedContent, setTemporaryContent } = useContext(TerminalContext);
+    // const { setBufferedContent, setTemporaryContent } = useContext(TerminalContext);
 
     const sendCommand = (command, args) => {
         Comms.send([command, args].join(' '));
     };
 
-    useEffect(() => {
-        const receiveMessage = message => {
-            if (!message || message.startsWith('<')) {
-                return;
-            }
+    // useEffect(() => {
+    //     const receiveMessage = message => {
+    //         if (!message || message.startsWith('<')) {
+    //             return;
+    //         }
 
-            setBufferedContent(prev => (
-                <>
-                    {prev}
-                    <span>&gt; {message}</span>
-                    <br />
-                </>
-            ));
-            setTemporaryContent('');
-        };
-        Comms.onmessage(receiveMessage);
-    }, [setBufferedContent, setTemporaryContent]);
+    //         setBufferedContent(prev => (
+    //             <>
+    //                 {prev}
+    //                 <span>&gt; {message}</span>
+    //                 <br />
+    //             </>
+    //         ));
+    //         setTemporaryContent('');
+    //     };
+    //     Comms.onmessage(receiveMessage);
+    // }, [setBufferedContent, setTemporaryContent]);
 
     return (
         <Modal
