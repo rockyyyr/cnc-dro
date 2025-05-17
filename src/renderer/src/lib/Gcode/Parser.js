@@ -15,6 +15,10 @@ export default class Gcode {
         this.firstX;
         this.firstY;
         this.firstZ;
+        this.prevX;
+        this.prevY;
+        this.prevZ;
+        this.prevFeedrate;
         this.firstCommand;
         this.spindleSpeed;
         this.minZ = Number.MAX_SAFE_INTEGER;
@@ -25,6 +29,10 @@ export default class Gcode {
         this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
         this.length = this.lines.length;
+        this.durationMinutes = this.lines.reduce((acc, line) => acc + line.duration, 0);
+
+        console.log(this.durationMinutes);
+
     }
 
     updateWorkOffset(workOffset) {
@@ -87,6 +95,10 @@ export default class Gcode {
                 continue;
             }
 
+            if (part.startsWith('N')) {
+                result.lineNumber = parseInt(part.substring(1));
+            }
+
             if (part.startsWith('G')) {
                 result.command = part;
                 if (this.firstCommand === undefined) {
@@ -122,6 +134,7 @@ export default class Gcode {
 
             } else if (part.startsWith('F')) {
                 result.f = parseFloat(part.substring(1));
+                this.prevFeedrate = result.f;
 
             } else if (part.startsWith('S')) {
                 result.s = parseFloat(part.substring(1));
@@ -139,6 +152,59 @@ export default class Gcode {
                 result.j = parseFloat(part.substring(1));
             }
         }
+
+        result.duration = this._computeTimeOfSegment(result);
+
         return result;
+    }
+
+    _computeTimeOfSegment(line) {
+        if (![Commands.G0, Commands.G1, Commands.G2, Commands.G3].includes(line.command)) {
+            return 0;
+        }
+
+        if (line.x === undefined && line.y === undefined && line.z === undefined) {
+            return 0;
+        }
+
+        let feedrate;
+
+        if (line.command === Commands.G0) {
+            feedrate = 3000;
+
+        } else {
+            feedrate = line.f || this.prevFeedrate;
+        }
+
+
+        const prev = {
+            x: this.prevX === undefined ? this.firstX : this.prevX,
+            y: this.prevY === undefined ? this.firstY : this.prevY,
+            z: this.prevZ === undefined ? this.firstZ : this.prevZ
+        };
+
+        const cur = {
+            x: line.x === undefined ? prev.x : line.x,
+            y: line.y === undefined ? prev.y : line.y,
+            z: line.z === undefined ? prev.z : line.z
+        };
+
+        const dX = Math.pow(cur.x - prev.x, 2);
+        const dY = Math.pow(cur.y - prev.y, 2);
+        const dZ = Math.pow(cur.z - prev.z, 2);
+
+        const distance = Math.sqrt(dX + dY + dZ);
+
+        this.prevX = cur.x;
+        this.prevY = cur.y;
+        this.prevZ = cur.z;
+
+        if (feedrate && !isNaN(distance)) {
+            return distance / feedrate;
+
+        } else {
+            return 0;
+        }
+
     }
 }

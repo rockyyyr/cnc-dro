@@ -11,9 +11,16 @@ import Play from '../../assets/img/play.svg';
 import Stop from '../../assets/img/stop.svg';
 import FileSelector from './FileSelector';
 
+const decToMinSec = dm => {
+    let min = Math.floor(dm);
+    let sec = Math.round((dm - min) * 60);
+    if (sec === 60) { sec = 0; min += 1; }
+    return `${min}:${String(sec).padStart(2, '0')}`;
+};
+
 function Visualizer() {
     const ref = useRef(null);
-    const { machinePosition, state, workOffset } = useContext(Context);
+    const { machinePosition, state, workOffset, message } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -36,17 +43,17 @@ function Visualizer() {
         setGcode(new Gcode(data, workOffset));
     };
 
-    // const loadGcode = async () => {
-    //     const { name, data } = await Files.getLatestFile();
+    const loadGcode = async () => {
+        const { name, data } = await Files.getLatestFile();
 
-    //     if (name && data) {
-    //         setFileName(name);
-    //         setGcode(new Gcode(data, workOffset));
-    //     } else {
-    //         setFileName(null);
-    //         setGcode(null);
-    //     }
-    // };
+        if (name && data) {
+            setFileName(name);
+            setGcode(new Gcode(data, workOffset));
+        } else {
+            setFileName(null);
+            setGcode(null);
+        }
+    };
 
     useEffect(() => {
         const scene = new Scene(ref);
@@ -69,11 +76,12 @@ function Visualizer() {
 
     }, [workOffset, gcode, scene]);
 
-    // useEffect(() => {
-    //     if (Files.hasNewFile(newMessage)) {
-    //         loadGcode();
-    //     }
-    // }, [newMessage]);
+    useEffect(() => {
+        if (Files.hasNewFile(message)) {
+            loadGcode();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [message]);
 
     useEffect(() => {
         if (state === States.IDLE) {
@@ -120,6 +128,9 @@ function Visualizer() {
         };
 
     }, [gcode, scene]);
+
+
+
     return (
         <Grid x={10} y={6}>
             <FileSelector
@@ -136,7 +147,8 @@ function Visualizer() {
                                 <h3>{fileName}</h3>
                                 {tools && (<p>Tools: {tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
                                 {spindleSpeed && (<p>Spindle: {spindleSpeed}rpm</p>)}
-                                {gcode.length && (<p>Lines: {gcode.length}</p>)}
+                                {/* {gcode.length && (<p>Lines: {gcode.length}</p>)} */}
+                                {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
