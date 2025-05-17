@@ -8,7 +8,7 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = 220;
+        this.size = 450;
         this.divisions = 20;
 
         this.colorMap = {
