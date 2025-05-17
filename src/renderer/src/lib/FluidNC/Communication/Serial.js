@@ -21,7 +21,6 @@ export default class Serial {
 
     autoReport = () => {
         if (this.port) {
-            console.log('Auto reporting enabled');
             this.forceSend(`$Report/Interval=${REPORT_INTERVAL}`);
         }
     };
@@ -49,7 +48,6 @@ export default class Serial {
         if (this.port) {
             this.port.onData(line => {
                 const message = Messages.parseSerialMessage(line);
-                // console.log(JSON.stringify({ received: message }));
                 callback(message);
                 this.message = message;
             });
@@ -64,7 +62,6 @@ export default class Serial {
 
     forceSend = data => {
         if (this.port && this.ready) {
-            // console.log(JSON.stringify({ sent: data }));
             this.port.send(`${data}\r\n`, console.error);
         }
     };

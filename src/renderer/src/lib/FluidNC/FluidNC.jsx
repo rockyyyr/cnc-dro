@@ -20,10 +20,6 @@ const FluidNC = ({ children }) => {
     const [workY, setWorkY] = useState(0);
     const [workZ, setWorkZ] = useState(0);
 
-    // const [machineX, setMachineX] = useState(0);
-    // const [machineY, setMachineY] = useState(0);
-    // const [machineZ, setMachineZ] = useState(0);
-
     const [workOffsetX, setWorkOffsetX] = useState(0);
     const [workOffsetY, setWorkOffsetY] = useState(0);
     const [workOffsetZ, setWorkOffsetZ] = useState(0);
@@ -38,7 +34,6 @@ const FluidNC = ({ children }) => {
     useEffect(() => {
         Comms.open();
         Comms.onopen(() => {
-            console.log('comms open');
             setReady(true);
 
             Comms.addQueue(new Queue(Comms));
@@ -68,12 +63,6 @@ const FluidNC = ({ children }) => {
                         safeSetNumber(message.workPosition.y, setWorkY);
                         safeSetNumber(message.workPosition.z, setWorkZ);
                     }
-
-                    // if (message.machinePosition) {
-                    //     safeSetNumber(message.machinePosition.x, setMachineX);
-                    //     safeSetNumber(message.machinePosition.y, setMachineY);
-                    //     safeSetNumber(message.machinePosition.z, setMachineZ);
-                    // }
 
                     safeSetNumber(message.feedrate, setFeedrate);
                     safeSetNumber(message.spindleSpeed, setSpindleSpeed);
@@ -137,8 +126,6 @@ const FluidNC = ({ children }) => {
         feedrate,
         spindleSpeed
     };
-
-    console.log(status);
 
     return (
         <FluidNCContext.Provider value={status}>

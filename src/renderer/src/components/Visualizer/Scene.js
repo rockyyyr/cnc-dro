@@ -266,7 +266,6 @@ export default class Scene {
     }
 
     cleanUp() {
-        console.log('cleaning up');
         cancelAnimationFrame(this.animationFrame);
 
         if (this.domElement && this.domElement.parentNode) {

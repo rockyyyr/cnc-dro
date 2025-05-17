@@ -19,7 +19,6 @@ export default class Websocket {
 
     autoReport = () => {
         if (this.socket) {
-            console.log('Auto reporting enabled');
             this.invterval = setInterval(() => {
                 this.forceSend(`?`);
             }, PING_INTERVAL);

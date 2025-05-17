@@ -14,21 +14,23 @@ export default function UtilityPanel() {
     const [showProbePanel, setShowProbePanel] = useState(false);
     const [showTerminal, setShowTerminal] = useState(false);
     const [airEnabled, setAirEnabled] = useState(false);
+    const [mistEnabled, setMistEnabled] = useState(false);
     const { limits } = useContext(Context);
 
     const toggleAir = () => {
-        if (airEnabled) {
-            Coolant.disableAir();
-        } else {
-            Coolant.enableAir();
-        }
+        Coolant.toggleAir();
         setAirEnabled(!airEnabled);
+    };
+
+    const toggleMist = () => {
+        Coolant.toggleMist();
+        setMistEnabled(!mistEnabled);
     };
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(prev => !prev), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '' },
         { icon: Air, onClick: toggleAir, variant: airEnabled ? 'info' : '' },
-        { icon: Mist, onClick: Coolant.toggleMist },
+        { icon: Mist, onClick: toggleMist, variant: mistEnabled ? 'success' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
     ];
 

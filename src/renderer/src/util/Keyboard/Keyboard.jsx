@@ -14,7 +14,7 @@ export default function Keyboard({ show, initial, onChange, onClose }) {
     };
 
     const backspace = {
-        label: 'delete',
+        label: 'del',
         onClick: () => setValue(value.slice(0, -1)),
         size: 1,
     };

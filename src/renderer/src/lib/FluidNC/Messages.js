@@ -80,11 +80,6 @@ const parseStateMessage = message => {
             y: status.WCO.y,
             z: status.WCO.z,
         },
-        // machinePosition: (!status.WPos || !status.WCO) ? null : {
-        //     x: roundTo(status.WPos.x + status.WCO.x, 3),
-        //     y: roundTo(status.WPos.y + status.WCO.y, 3),
-        //     z: roundTo(status.WPos.z + status.WCO.z, 3),
-        // },
         limits: !status.Pn ? null : {
             x: status.Pn.includes('X'),
             y: status.Pn.includes('Y'),

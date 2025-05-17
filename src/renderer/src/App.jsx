@@ -10,35 +10,38 @@ import UtilityPanel from './components/UtilityPanel';
 import FluidNC from './lib/FluidNC';
 import { NumpadProvider } from './util/Numpad/Context';
 import { KeyboardProvider } from './util/Keyboard/Context';
+import { TerminalContextProvider } from "react-terminal";
 import Notification from './components/Notification';
 
 
 function App() {
     return (
         <FluidNC>
-            <NumpadProvider>
-                <KeyboardProvider>
-                    <Notification />
-                    <div className="flex-row" style={{ margin: '0 3px' }}>
-                        <ButtonPanel />
-                        <Spacer x={0.5} y={6} vLine />
-                        <div className="flex-col">
-                            <PositionsPanel />
-                            <JogPanel />
+            <TerminalContextProvider>
+                <NumpadProvider>
+                    <KeyboardProvider>
+                        <Notification />
+                        <div className="flex-row" style={{ margin: '0 3px' }}>
+                            <ButtonPanel />
+                            <Spacer x={0.5} y={6} vLine />
+                            <div className="flex-col">
+                                <PositionsPanel />
+                                <JogPanel />
+                            </div>
+                            <Spacer x={0.5} y={6} vLine />
+                            <div className="flex-col">
+                                <UtilityPanel />
+                                <Spacer y={0.5} x={4} hLine />
+                                <Spindle />
+                                <Spacer y={0.5} x={4} hLine />
+                                <Feeds />
+                            </div>
+                            <Spacer x={0.5} y={6} vLine />
+                            <GCode />
                         </div>
-                        <Spacer x={0.5} y={6} vLine />
-                        <div className="flex-col">
-                            <UtilityPanel />
-                            <Spacer y={0.5} x={4} hLine />
-                            <Spindle />
-                            <Spacer y={0.5} x={4} hLine />
-                            <Feeds />
-                        </div>
-                        <Spacer x={0.5} y={6} vLine />
-                        <GCode />
-                    </div>
-                </KeyboardProvider>
-            </NumpadProvider>
+                    </KeyboardProvider>
+                </NumpadProvider>
+            </TerminalContextProvider>
         </FluidNC>
     );
 }

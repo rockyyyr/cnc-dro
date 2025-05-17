@@ -143,7 +143,7 @@ export default function ProbePanel({ show, onClose }) {
                 {probeResults?.length > 0 && (
                     <>
                         <Spacer y={3.5} x={0.5} vLine />
-                        <Grid x={3} y={3.5} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
+                        <Grid x={5} y={3.5} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
                             <table style={{ width: '100%' }}>
                                 <tbody>
                                     {probeResults.map((result, i) => (
