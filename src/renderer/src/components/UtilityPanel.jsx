@@ -18,12 +18,16 @@ export default function UtilityPanel() {
     const { limits } = useContext(Context);
 
     const toggleAir = () => {
-        Coolant.toggleAir();
+        if (airEnabled) {
+            Coolant.disableAir();
+        } else {
+            Coolant.enableAir();
+        }
         setAirEnabled(!airEnabled);
     };
 
     const toggleMist = () => {
-        Coolant.toggleMist();
+        // Coolant.toggleMist();
         setMistEnabled(!mistEnabled);
     };
 
