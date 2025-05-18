@@ -33,8 +33,8 @@ export default function UtilityPanel() {
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(prev => !prev), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '' },
-        { icon: Air, onClick: toggleAir, variant: accessories.air ? 'info' : '' },
-        { icon: Mist, onClick: toggleMist, variant: accessories.mist ? 'success' : '' },
+        { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
+        { icon: Mist, onClick: toggleMist, variant: accessories?.mist ? 'success' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
     ];
 

@@ -19,7 +19,7 @@ export default function Spindle() {
     });
 
     const spindleButtons = [
-        { icon: Rotate, onClick: () => clockwise(spindleSetting), variant: accessories.spindle ? 'info' : '' },
+        { icon: Rotate, onClick: () => clockwise(spindleSetting), variant: accessories?.spindle ? 'info' : '' },
         { icon: RotateStop, onClick: off },
     ];
 

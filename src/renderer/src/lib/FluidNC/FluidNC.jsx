@@ -80,13 +80,13 @@ const FluidNC = ({ children }) => {
 
                 } else if (message.type === Messages.MessageType.INFO) {
                     if (message.value) {
-                        setMessage(message.value);
+                        setMessage(message);
                         setNotification(message);
                     }
 
                 } else if (message.type === Messages.MessageType.PROBE) {
                     if (message.value) {
-                        setMessage(message.value);
+                        setMessage(message);
                         setNotification({
                             level: message.success ? Messages.MessageLevels.INFO : Messages.MessageLevels.ERROR,
                             value: message.success ? 'Probe successful' : 'Probe failed',
@@ -99,7 +99,7 @@ const FluidNC = ({ children }) => {
                     }
 
                 } else if (message.type === Messages.MessageType.GENERIC) {
-                    setMessage(GenericDescriptions[message.value] || message.value);
+                    setMessage(message);
 
                     if (['ALARM', 'error'].some(val => message.value.includes(val))) {
                         setNotification({
