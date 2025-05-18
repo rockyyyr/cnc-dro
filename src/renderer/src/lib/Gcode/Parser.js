@@ -11,7 +11,8 @@ const TOOLTABLE = /(?<=\( Tools Table:\)\s*\()[\s\S]+?(?=\)\s*\(\s*\))/gm;
 
 export default class Gcode {
 
-    constructor(gcode, workOffset) {
+    constructor(gcode, workOffset, initialPosition) {
+        this.initialPosition = initialPosition;
         this.firstX;
         this.firstY;
         this.firstZ;
@@ -19,6 +20,7 @@ export default class Gcode {
         this.prevY;
         this.prevZ;
         this.prevFeedrate;
+        this.currentCommand;
         this.firstCommand;
         this.spindleSpeed;
         this.minZ = Number.MAX_SAFE_INTEGER;
@@ -30,9 +32,6 @@ export default class Gcode {
         this.lines = this._format(gcode);
         this.length = this.lines.length;
         this.durationMinutes = this.lines.reduce((acc, line) => acc + line.duration, 0);
-
-        console.log(this.durationMinutes);
-
     }
 
     updateWorkOffset(workOffset) {
@@ -96,7 +95,11 @@ export default class Gcode {
             }
 
             if (part.startsWith('N')) {
-                result.lineNumber = parseInt(part.substring(1));
+                result.line = parseInt(part.substring(1));
+            }
+
+            if (part.startsWith('M')) {
+                result.m = parseInt(part.substring(1));
             }
 
             if (part.startsWith('G')) {
@@ -123,7 +126,7 @@ export default class Gcode {
 
             } else if (part.startsWith('Z')) {
                 const z = parseFloat(part.substring(1));
-                result.z = roundTo(z + (this.workOffset?.z || 0), 3);
+                result.z = roundTo(z, 3);
 
                 if (this.firstZ === undefined) {
                     this.firstZ = result.z;
@@ -134,7 +137,9 @@ export default class Gcode {
 
             } else if (part.startsWith('F')) {
                 result.f = parseFloat(part.substring(1));
-                this.prevFeedrate = result.f;
+                if (result.f) {
+                    this.prevFeedrate = result.f;
+                }
 
             } else if (part.startsWith('S')) {
                 result.s = parseFloat(part.substring(1));
@@ -153,13 +158,100 @@ export default class Gcode {
             }
         }
 
-        result.duration = this._computeTimeOfSegment(result);
+        result.duration = this.computeTimePerLine(result);
 
         return result;
     }
 
+    computeTimePerLine(line) {
+        const cmd = line.command || this.currentCommand;
+        // only handle G0, G1, G2, G3
+        if (!['G0', 'G1', 'G2', 'G3'].includes(cmd)) {
+            return 0;
+        }
+
+        // determine feedrate (mm/min)
+        let feed;
+        if (cmd === 'G0') {
+            feed = 3000;
+        } else {
+            feed = line.f || this.prevFeedrate;
+        }
+        if (!feed || feed <= 0) {
+            return 0;
+        }
+
+        // starting position
+        const x0 = this.prevX != null ? this.prevX : this.initialPosition.x;
+        const y0 = this.prevY != null ? this.prevY : this.initialPosition.y;
+        const z0 = this.prevZ != null ? this.prevZ : this.initialPosition.z;
+
+        // ending position (if not specified, no move)
+        const x1 = line.x != null ? line.x : x0;
+        const y1 = line.y != null ? line.y : y0;
+        const z1 = line.z != null ? line.z : z0;
+
+        if (x1 === x0 && y1 === y0 && z1 === z0) {
+            // no motion
+            return 0;
+        }
+
+        let length = 0;
+
+        if (cmd === 'G0' || cmd === 'G1') {
+            // straight-line move
+            const dx = x1 - x0;
+            const dy = y1 - y0;
+            const dz = z1 - z0;
+            length = Math.hypot(dx, dy, dz);
+        } else {
+            // G2/G3 arc move in XY plane; needs i,j offsets
+            if (line.i === undefined || line.j === undefined) {
+                // can't compute arc without center offsets
+                return 0;
+            }
+            const cx = x0 + line.i;
+            const cy = y0 + line.j;
+            const r = Math.hypot(line.i, line.j);
+
+            let theta0 = Math.atan2(y0 - cy, x0 - cx);
+            let theta1 = Math.atan2(y1 - cy, x1 - cx);
+            let dTheta = theta1 - theta0;
+
+            if (cmd === 'G2') {
+                // clockwise — ensure negative sweep
+                if (dTheta > 0) dTheta -= 2 * Math.PI;
+            } else {
+                // G3: counter-clockwise — ensure positive sweep
+                if (dTheta < 0) dTheta += 2 * Math.PI;
+            }
+
+            length = Math.abs(r * dTheta);
+        }
+
+        // time in minutes = length (mm) / feedrate (mm/min)
+        const timeMin = length / feed;
+
+        // update state for next line
+        this._updateState(x1, y1, z1, feed, cmd);
+
+        return timeMin;
+    }
+
+    _updateState(x, y, z, feedrate, command) {
+        this.prevX = x;
+        this.prevY = y;
+        this.prevZ = z;
+        this.prevFeedrate = feedrate;
+        this.currentCommand = command;
+    }
+
     _computeTimeOfSegment(line) {
-        if (![Commands.G0, Commands.G1, Commands.G2, Commands.G3].includes(line.command)) {
+        if (line.command) {
+            this.currentCommand = line.command;
+        }
+
+        if (![Commands.G0, Commands.G1, Commands.G2, Commands.G3].includes(this.currentCommand)) {
             return 0;
         }
 
@@ -169,18 +261,17 @@ export default class Gcode {
 
         let feedrate;
 
-        if (line.command === Commands.G0) {
+        if (this.currentCommand === Commands.G0) {
             feedrate = 3000;
 
         } else {
             feedrate = line.f || this.prevFeedrate;
         }
 
-
         const prev = {
-            x: this.prevX === undefined ? this.firstX : this.prevX,
-            y: this.prevY === undefined ? this.firstY : this.prevY,
-            z: this.prevZ === undefined ? this.firstZ : this.prevZ
+            x: this.prevX === undefined ? this.initialPosition.x : this.prevX,
+            y: this.prevY === undefined ? this.initialPosition.y : this.prevY,
+            z: this.prevZ === undefined ? this.initialPosition.z : this.prevZ
         };
 
         const cur = {
@@ -194,6 +285,12 @@ export default class Gcode {
         const dZ = Math.pow(cur.z - prev.z, 2);
 
         const distance = Math.sqrt(dX + dY + dZ);
+
+        if (line.line === 16) {
+            console.log(feedrate);
+            console.log(prev);
+            console.log(cur);
+        }
 
         this.prevX = cur.x;
         this.prevY = cur.y;

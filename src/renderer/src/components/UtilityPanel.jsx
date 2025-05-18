@@ -15,7 +15,7 @@ export default function UtilityPanel() {
     const [showTerminal, setShowTerminal] = useState(false);
     const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
-    const { limits } = useContext(Context);
+    const { limits, accessories } = useContext(Context);
 
     const toggleAir = () => {
         if (airEnabled) {
@@ -33,8 +33,8 @@ export default function UtilityPanel() {
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(prev => !prev), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '' },
-        { icon: Air, onClick: toggleAir, variant: airEnabled ? 'info' : '' },
-        { icon: Mist, onClick: toggleMist, variant: mistEnabled ? 'success' : '' },
+        { icon: Air, onClick: toggleAir, variant: accessories.air ? 'info' : '' },
+        { icon: Mist, onClick: toggleMist, variant: accessories.mist ? 'success' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
     ];
 

@@ -184,13 +184,13 @@ export default class Scene {
             const startY = y;
             const startZ = z;
 
-            if (line.x) {
+            if (line.x !== undefined) {
                 x = line.x;
             }
-            if (line.y) {
+            if (line.y !== undefined) {
                 y = line.y;
             }
-            if (line.z) {
+            if (line.z !== undefined) {
                 z = line.z;
             }
 

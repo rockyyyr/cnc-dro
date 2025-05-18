@@ -1,4 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
+import { useContext } from 'react';
+import { Context } from '../../lib/FluidNC';
 import Modal from '../../util/Modal';
 import Grid from '../../util/Grid';
 import { Files } from '../../lib/FluidNC';
@@ -26,22 +29,30 @@ const fileLine = (file, action) => {
 
 export default function FileSelector({ show, onClose, onChange, onFilesLoaded }) {
     const [files, setFiles] = useState([]);
+    const { message } = useContext(Context);
 
     const selectFile = file => {
         onChange(file);
         onClose();
     };
 
+    const getFiles = async () => {
+        const files = await Files.getFileList();
+        if (files.length > 0) {
+            setFiles(files);
+            onFilesLoaded(files);
+        }
+    };
+
     useEffect(() => {
-        const getFiles = async () => {
-            const files = await Files.getFileList();
-            if (files.length > 0) {
-                setFiles(files);
-                onFilesLoaded(files);
-            }
-        };
+        if (Files.hasNewFile(message)) {
+            getFiles();
+        }
+    }, [message]);
+
+    useEffect(() => {
         getFiles();
-    }, []);
+    }, [onFilesLoaded]);
 
     return (
         <Modal

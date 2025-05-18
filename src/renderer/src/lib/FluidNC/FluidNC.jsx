@@ -29,6 +29,9 @@ const FluidNC = ({ children }) => {
     const [feedrate, setFeedrate] = useState(0);
     const [spindleSpeed, setSpindleSpeed] = useState(0);
     const [message, setMessage] = useState(null);
+    const [line, setLine] = useState(null);
+    const [overrides, setOverrides] = useState(null);
+    const [accessories, setAccessories] = useState(null);
 
     const safeSetNumber = (value, setter) => ![undefined, null].includes(value) && !isNaN(value) && setter(value);
 
@@ -65,9 +68,15 @@ const FluidNC = ({ children }) => {
                         safeSetNumber(message.workPosition.z, setWorkZ);
                     }
 
+                    if (message.overrides) {
+                        setOverrides(message.overrides);
+                    }
+
                     safeSetNumber(message.feedrate, setFeedrate);
                     safeSetNumber(message.spindleSpeed, setSpindleSpeed);
+                    safeSetNumber(message.line, setLine);
                     setLimits(message.limits);
+                    setAccessories(message.accessories);
 
                 } else if (message.type === Messages.MessageType.INFO) {
                     if (message.value) {
@@ -111,6 +120,12 @@ const FluidNC = ({ children }) => {
         message,
         notification,
         probeResults,
+        limits,
+        feedrate,
+        spindleSpeed,
+        line,
+        overrides,
+        accessories,
         workPosition: {
             x: workX,
             y: workY,
@@ -125,10 +140,7 @@ const FluidNC = ({ children }) => {
             x: workOffsetX,
             y: workOffsetY,
             z: workOffsetZ,
-        },
-        limits,
-        feedrate,
-        spindleSpeed
+        }
     };
 
     return (

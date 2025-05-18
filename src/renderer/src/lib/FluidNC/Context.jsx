@@ -11,7 +11,10 @@ const FluidNCContext = createContext({
     spindleSpeed: null,
     message: null,
     notification: null,
-    probeResults: null
+    probeResults: null,
+    accessories: null,
+    line: null,
+    overrides: null
 });
 
 export default FluidNCContext;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState, useContext } from "react";
 import Gcode from '../../lib/Gcode';
 import Scene from './Scene';
@@ -11,6 +12,8 @@ import Play from '../../assets/img/play.svg';
 import Stop from '../../assets/img/stop.svg';
 import FileSelector from './FileSelector';
 
+// import testGcode from '../../assets/test/threadedholes';
+
 const decToMinSec = dm => {
     let min = Math.floor(dm);
     let sec = Math.round((dm - min) * 60);
@@ -18,9 +21,21 @@ const decToMinSec = dm => {
     return `${min}:${String(sec).padStart(2, '0')}`;
 };
 
+// const workOffset = {
+//     x: 0,
+//     y: 0,
+//     z: 0,
+// };
+
+// const machinePosition = {
+//     x: 382.638,
+//     y: -4.65,
+//     z: 15
+// };
+
 function Visualizer() {
     const ref = useRef(null);
-    const { machinePosition, state, workOffset, message } = useContext(Context);
+    const { state, message, workOffset, machinePosition } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -33,6 +48,7 @@ function Visualizer() {
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
+        Job.abort();
         setFileName(null);
         setGcode(null);
     };
@@ -40,7 +56,7 @@ function Visualizer() {
     const loadSelectedFile = async file => {
         const { data } = await Files.getFile(file.name);
         setFileName(file.name);
-        setGcode(new Gcode(data, workOffset));
+        setGcode(new Gcode(data, workOffset, machinePosition));
     };
 
     const loadGcode = async () => {
@@ -48,7 +64,7 @@ function Visualizer() {
 
         if (name && data) {
             setFileName(name);
-            setGcode(new Gcode(data, workOffset));
+            setGcode(new Gcode(data, workOffset, machinePosition));
         } else {
             setFileName(null);
             setGcode(null);
@@ -63,6 +79,9 @@ function Visualizer() {
         scene.animate();
         setScene(scene);
 
+        // setGcode(new Gcode(testGcode, workOffset, machinePosition));
+        // setFileName('test.gcode');
+
         return () => scene.cleanUp(ref);
     }, []);
 
@@ -73,14 +92,12 @@ function Visualizer() {
                 scene.draw(gcode);
             }
         }
-
-    }, [workOffset, gcode, scene]);
+    }, [workOffset]);
 
     useEffect(() => {
         if (Files.hasNewFile(message)) {
             loadGcode();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message]);
 
     useEffect(() => {
@@ -95,7 +112,6 @@ function Visualizer() {
         } else {
             setDisableStop(false);
         }
-
     }, [state]);
 
 
@@ -108,7 +124,7 @@ function Visualizer() {
                 scene.drawTool(machinePosition);
             }
         }
-    }, [scene, machinePosition]);
+    }, [machinePosition]);
 
     useEffect(() => {
         if (gcode) {
@@ -126,10 +142,7 @@ function Visualizer() {
             setSpindleSpeed(null);
             setTools(null);
         };
-
-    }, [gcode, scene]);
-
-
+    }, [gcode]);
 
     return (
         <Grid x={10} y={6}>

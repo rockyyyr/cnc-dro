@@ -43,6 +43,16 @@ const parseSpeeds = speedsString => {
     return { feedrate, spindleSpeed };
 };
 
+const parseOverrides = overridesString => {
+    if (!overridesString) {
+        return null;
+    }
+    const [feedrate, rapid, spindleSpeed] = overridesString
+        .split(',')
+        .map(override => parseFloat(override));
+    return { feedrate, rapid, spindleSpeed };
+};
+
 const parseStatusMessage = message => {
     const data = message
         .replaceAll('<', '')
@@ -62,9 +72,17 @@ const parseStatusMessage = message => {
         if (key && value) {
             if (['WPos', 'MPos', 'WCO'].includes(key)) {
                 status[key] = parsePosition(value);
+
             } else if (key === 'FS') {
                 status[key] = parseSpeeds(value);
-            } else if (key === 'Pn') {
+
+            } else if (key === 'Ln') {
+                status[key] = parseInt(value);
+
+            } else if (key === 'Ov') {
+                status[key] = parseOverrides(value);
+
+            } else if (['Pn', 'A'].includes(key)) {
                 status[key] = value;
             }
         }
@@ -74,6 +92,9 @@ const parseStatusMessage = message => {
         type: MessageType.STATUS,
         state: status.state,
         substate: status.substate,
+        line: status.Ln,
+        feedrate: status.FS?.feedrate,
+        spindleSpeed: status.FS?.spindleSpeed,
         workPosition: !status.WPos ? null : {
             x: status.WPos.x,
             y: status.WPos.y,
@@ -90,8 +111,16 @@ const parseStatusMessage = message => {
             z: status.Pn.includes('Z'),
             probe: status.Pn.includes('P'),
         },
-        feedrate: status.FS?.feedrate,
-        spindleSpeed: status.FS?.spindleSpeed,
+        accessories: !status.A ? null : {
+            air: status.A.includes('F'),
+            mist: status.A.includes('M'),
+            spindle: status.A.includes('S'),
+        },
+        overrides: !status.Ov ? null : {
+            feedrate: status.Ov.feedrate || 0,
+            spindleSpeed: status.Ov.spindleSpeed || 0,
+            rapid: status.Ov.rapid || 0,
+        }
     };
 };
 

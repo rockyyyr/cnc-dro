@@ -12,14 +12,14 @@ import RotateStop from '../assets/img/rotate-stop.svg';
 export default function Spindle() {
     const { show } = useNumpad();
     const [spindleSetting, setSpindleSetting] = useState(0);
-    const { spindleSpeed } = useContext(Context);
+    const { spindleSpeed, accessories } = useContext(Context);
 
     const showNumpad = () => show({
         onChange: value => setSpindleSetting(value)
     });
 
     const spindleButtons = [
-        { icon: Rotate, onClick: () => clockwise(spindleSetting), variant: spindleSpeed > 0 ? 'info' : '' },
+        { icon: Rotate, onClick: () => clockwise(spindleSetting), variant: accessories.spindle ? 'info' : '' },
         { icon: RotateStop, onClick: off },
     ];
 
