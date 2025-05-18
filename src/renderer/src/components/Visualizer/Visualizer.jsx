@@ -48,7 +48,7 @@ function Visualizer() {
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
-        Job.abort();
+        Job.reset();
         setFileName(null);
         setGcode(null);
     };
