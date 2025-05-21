@@ -1,5 +1,43 @@
-.jog-panel {}
+.advanced-jog-machine {
+    /* border-radius: 8px; */
+    /* border: 1px solid var(--button-background); */
+    /* overflow: hidden; */
+    background: black;
+    border-left: 1.5px solid var(--button-background);
+}
 
-.jog-panel-row {
-    display: flex;
+.advanced-jog-machine-grid {
+    margin-top: -1px;
+    margin-left: -1px;
+    background-image:
+        repeating-linear-gradient(#333 0 1px, transparent 1px 100%),
+        repeating-linear-gradient(90deg, #333 0 1px, transparent 1px 100%);
+    background-size: 50px 50px;
+    position: relative;
+}
+
+.advanced-jog-position {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--info);
+    width: 20px;
+    height: 20px;
+    transition: all 0.1s ease-in-out;
+    z-index: 100;
+}
+
+.advanced-jog-target {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--success);
+    width: 20px;
+    height: 20px;
+    transition: all 200ms ease-in-out;
+    transition: opacity 200ms ease-out;
+    opacity: 0;
+    z-index: 99;
+}
+
+.advanced-jog-target-visible {
+    opacity: 1;
 }

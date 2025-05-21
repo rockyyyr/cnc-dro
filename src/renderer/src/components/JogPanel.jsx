@@ -18,7 +18,7 @@ import AdvancedJogPanel from './AdvancedJogPanel';
 
 export default function JogPanel() {
     const [jogValue, setJogValue] = useState(5);
-    const [showPanel, setShowPanel] = useState(false);
+    const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
     const { show } = useNumpad();
 
     const showNumpad = () => show({
@@ -34,7 +34,8 @@ export default function JogPanel() {
 
     const row2 = [
         { icon: ArrowLeft, onClick: () => Jog.left(jogValue) },
-        { label: 'XY0', onClick: () => Jog.xyZero(), labelSize: 'xs' },
+        // { label: 'XY0', onClick: () => Jog.xyZero(), labelSize: 'xs' },
+        { label: 'Go To', onClick: () => setShowAdvancedPanel(true), labelSize: 'xs' },
         { icon: ArrowRight, onClick: () => Jog.right(jogValue) },
         { label: jogValue, onClick: showNumpad, labelSize: 'xs', outline: true }
     ];
@@ -49,8 +50,8 @@ export default function JogPanel() {
     return (
         <div>
             <AdvancedJogPanel
-                show={showPanel}
-                onClose={() => setShowPanel(false)}
+                show={showAdvancedPanel}
+                onClose={() => setShowAdvancedPanel(false)}
             />
             <div className='flex-row'>
                 {row1.map((button, index) => (

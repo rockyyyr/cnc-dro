@@ -16,8 +16,6 @@ const fileLine = (file, action) => {
             labelSize='xs'
             onClick={() => action(file)}
             style={{
-                // borderLeft: 'none',
-                // borderRight: 'none',
                 height: 50,
                 width: '100%',
                 border: 'none',
@@ -52,7 +50,7 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
 
     useEffect(() => {
         getFiles();
-    }, [onFilesLoaded]);
+    }, []);
 
     return (
         <Modal

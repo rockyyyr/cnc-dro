@@ -8,7 +8,7 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = 450;
+        this.size = 420;
         this.divisions = 20;
 
         this.colorMap = {
@@ -37,7 +37,7 @@ export default class Scene {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.domElement = this.renderer.domElement;
         ref.current.appendChild(this.domElement);
-        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
+        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 10000);
         this.controls = new TrackballControls(this.camera, this.renderer.domElement);
         this.controls.addEventListener('change', () => this.needsRender = true);
     }
@@ -206,29 +206,40 @@ export default class Scene {
 
             } else if ([Commands.G2, Commands.G3].includes(currentCommand)) {
                 const isClockwise = currentCommand === Commands.G2;
-                const centerX = line.i !== undefined ? startX + line.i : startX; // I is the X distance to the center
-                const centerY = line.j !== undefined ? startY + line.j : startY; // J is the Y distance to the center
-                const radius = Math.sqrt((startX - centerX) ** 2 + (startY - centerY) ** 2);
-
+                const centerX = line.i != null ? startX + line.i : startX;
+                const centerY = line.j != null ? startY + line.j : startY;
+                const radius = Math.hypot(startX - centerX, startY - centerY);
                 const startAngle = Math.atan2(startY - centerY, startX - centerX);
                 const endAngle = Math.atan2(y - centerY, x - centerX);
 
+                const deltaZ = z - startZ;
+
                 const curve = new THREE.EllipseCurve(
-                    centerX,
-                    centerY,
-                    radius,
-                    radius,
-                    startAngle,
-                    endAngle,
-                    isClockwise
+                    centerX, centerY, radius, radius,
+                    startAngle, endAngle, isClockwise
                 );
 
-                const points = curve.getPoints(12);
+                const N = 12;
+                const pts2D = curve.getPoints(N);
 
-                for (let i = 0; i < points.length - 1; i++) {
-                    const p1 = points[i], p2 = points[i + 1];
-                    positions.push(p1.x, p1.y, startZ, p2.x, p2.y, startZ);
-                    colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+                for (let i = 0; i < pts2D.length - 1; i++) {
+                    const p1 = pts2D[i];
+                    const p2 = pts2D[i + 1];
+
+                    const t1 = i / (pts2D.length - 1);
+                    const t2 = (i + 1) / (pts2D.length - 1);
+
+                    const z1 = startZ + deltaZ * t1;
+                    const z2 = startZ + deltaZ * t2;
+
+                    positions.push(
+                        p1.x, p1.y, z1,
+                        p2.x, p2.y, z2
+                    );
+                    colors.push(
+                        color.r, color.g, color.b,
+                        color.r, color.g, color.b
+                    );
                 }
             }
         }
@@ -282,10 +293,42 @@ export default class Scene {
 
     disposeGcode() {
         if (this.gcodeGroup) {
-            this.gcodeGroup.clear();
+            this.disposeGroup(this.gcodeGroup);
             this.cncGroup.remove(this.gcodeGroup);
-            this.gcodeGroup = null;
             this.renderer.render(this.scene, this.camera);
+            this.gcodeGroup = null;
+        }
+    }
+
+    disposeGroup(group) {
+        group.traverse((obj) => {
+            if (obj.isMesh || obj.isLine || obj.isPoints) {
+                if (obj.geometry) {
+                    obj.geometry.dispose();
+                }
+                if (obj.material) {
+                    const disposeMaterial = (material) => {
+                        for (const key in material) {
+                            const value = material[key];
+                            if (value && value.isTexture) {
+                                value.dispose();
+                            }
+                        }
+                        material.dispose();
+                    };
+
+                    if (Array.isArray(obj.material)) {
+                        obj.material.forEach(disposeMaterial);
+                    } else {
+                        disposeMaterial(obj.material);
+                    }
+                }
+            }
+        });
+
+        while (group.children.length > 0) {
+            const child = group.children[0];
+            group.remove(child);
         }
     }
 }

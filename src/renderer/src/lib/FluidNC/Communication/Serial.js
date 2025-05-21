@@ -16,7 +16,10 @@ export default class Serial {
     open = () => {
         this.port = window.serial;
         this.port.open();
-        this.port.onOpen(() => this.ready = true);
+        this.port.onOpen(() => {
+            this.ready = true;
+
+        });
     };
 
     autoReport = () => {
@@ -55,13 +58,13 @@ export default class Serial {
     };
 
     send = data => {
-        if (this.port && this.ready) {
+        if (this.port) {
             this.queue.add(data);
         }
     };
 
     forceSend = data => {
-        if (this.port && this.ready) {
+        if (this.port) {
             this.port.send(`${data}\r\n`, console.error);
         }
     };

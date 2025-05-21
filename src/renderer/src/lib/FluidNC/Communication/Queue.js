@@ -12,6 +12,7 @@ export default class Queue {
 
         this.processing = false;
         this.state = null;
+        this.resetCallbacks = [];
 
         this.setMessageListener();
     }
@@ -22,6 +23,12 @@ export default class Queue {
             this.setState(message);
             this.ready = true;
         });
+    };
+
+    onReset = callback => {
+        if (callback) {
+            this.resetCallbacks.push(callback);
+        }
     };
 
     add = message => {
@@ -39,6 +46,12 @@ export default class Queue {
 
             if (message === RESET) {
                 this.clear();
+
+                if (this.resetCallbacks.length > 0) {
+                    for (const callback of this.resetCallbacks) {
+                        callback();
+                    }
+                }
             }
 
         } else {

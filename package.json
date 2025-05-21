@@ -21,6 +21,7 @@
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",
         "@electron-toolkit/utils": "^4.0.0",
+        "@ramonak/react-progress-bar": "^5.4.0",
         "@serialport/parser-readline": "^13.0.0",
         "axios": "^1.8.4",
         "colornames": "^1.1.1",
@@ -35,6 +36,7 @@
     "devDependencies": {
         "@electron-toolkit/eslint-config": "^2.0.0",
         "@electron-toolkit/eslint-config-prettier": "^3.0.0",
+        "@types/node-hid": "^3.0.0",
         "@types/react": "^19.1.2",
         "@types/three": "^0.175.0",
         "@vitejs/plugin-react": "^4.3.4",

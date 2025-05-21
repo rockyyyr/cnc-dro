@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import '../assets/modal.css';
 
-function Modal({ children, show, onClose, noPadding = false }) {
+function Modal({ children, show, onClose, noPadding = false, style = {} }) {
 
     useEffect(() => {
         function handleClickOutside(e) {
@@ -13,9 +13,14 @@ function Modal({ children, show, onClose, noPadding = false }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [show, onClose]);
 
+    const innerStyle = {
+        ...style,
+        padding: noPadding ? 0 : undefined,
+    };
+
     return (
         <div className={`modal-container ${show ? 'modal-visible' : ''}`}>
-            <div className='modal-inner' style={noPadding ? { padding: 0 } : {}}>
+            <div className='modal-inner' style={innerStyle}>
                 {children}
             </div>
         </div>

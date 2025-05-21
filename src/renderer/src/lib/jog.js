@@ -19,7 +19,7 @@ const jog = (directions, distance) => {
     return Commands.JOG + command.join(' ');
 };
 
-const goTo = axes => {
+const goToPosition = axes => {
     const command = [MM, ABS];
     const keys = Object.keys(axes);
 
@@ -40,4 +40,5 @@ export const rightUp = distance => Comms.send(jog({ x: 1, y: 1 }, distance));
 export const rightDown = distance => Comms.send(jog({ x: 1, y: -1 }, distance));
 export const zUp = distance => Comms.send(jog({ z: 1 }, distance));
 export const zDown = distance => Comms.send(jog({ z: -1 }, distance));
-export const xyZero = () => Comms.send(goTo({ x: 0, y: 0 }));
+export const xyZero = () => Comms.send(goToPosition({ x: 0, y: 0 }));
+export const goTo = axes => Comms.send(goToPosition(axes));

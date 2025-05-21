@@ -8,6 +8,7 @@ import Comms from './Communication';
 import Queue from './Communication/Queue';
 
 import * as Messages from './Messages';
+import States from './States';
 
 const FluidNC = ({ children }) => {
     const [ready, setReady] = useState(false);
@@ -40,7 +41,10 @@ const FluidNC = ({ children }) => {
         Comms.onopen(() => {
             setReady(true);
 
-            Comms.addQueue(new Queue(Comms));
+            const queue = new Queue(Comms);
+            queue.onReset(() => setState(States.RESET));
+
+            Comms.addQueue(queue);
             Comms.autoReport();
         });
         Comms.onclose(() => setReady(false));

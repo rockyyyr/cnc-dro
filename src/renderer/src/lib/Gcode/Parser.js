@@ -31,6 +31,8 @@ export default class Gcode {
         this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
         this.length = this.lines.length;
+        this.minLineNumber = this.lines[0]?.line || -1;
+        this.maxLineNumber = this.lines[this.lines.length - 1]?.line || -1;
         this.durationMinutes = this.lines.reduce((acc, line) => acc + line.duration, 0);
     }
 

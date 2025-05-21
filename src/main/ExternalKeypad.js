@@ -59,7 +59,15 @@ export default class Keypad {
     }
 
     probeZ() {
-
+        this.send(`
+            G91
+            G38.2 Z-20 F150
+            G0 Z2
+            G38.2 Z-3 F30
+            G10 L20 P1 Z10
+            G0 Z5
+            G90
+        `);
     }
 
     send(command) {

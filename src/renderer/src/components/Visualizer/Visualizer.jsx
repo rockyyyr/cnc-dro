@@ -5,6 +5,7 @@ import Scene from './Scene';
 import { Files, Context, States } from '../../lib/FluidNC';
 import Button from '../Button';
 import Grid from '../../util/Grid';
+import Progress from '../../util/Progress';
 import * as Job from '../../lib/job';
 
 import '../../assets/visualizer.css';
@@ -35,7 +36,7 @@ const decToMinSec = dm => {
 
 function Visualizer() {
     const ref = useRef(null);
-    const { state, message, workOffset, machinePosition } = useContext(Context);
+    const { state, message, line, machinePosition, workOffset } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -45,6 +46,8 @@ function Visualizer() {
     const [tools, setTools] = useState(null);
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
+
+    // const [workOffsetX, workOffsetY, workOffsetZ] = [workOffset.x, workOffset.y, workOffset.z];
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
@@ -86,13 +89,15 @@ function Visualizer() {
     }, []);
 
     useEffect(() => {
+        console.log('workOffset', workOffset);
+
         if (workOffset) {
             if (gcode) {
                 gcode.updateWorkOffset(workOffset);
                 scene.draw(gcode);
             }
         }
-    }, [workOffset]);
+    }, [workOffset.x, workOffset.y, workOffset.z]);
 
     useEffect(() => {
         if (Files.hasNewFile(message)) {
@@ -145,7 +150,7 @@ function Visualizer() {
     }, [gcode]);
 
     return (
-        <Grid x={10} y={6}>
+        <Grid x={10} y={6} style={{ marginLeft: -22, height: 550, maxHeight: 550 }} noPad>
             <FileSelector
                 show={showFileSelector}
                 onClose={() => setShowFileSelector(false)}
@@ -157,10 +162,14 @@ function Visualizer() {
                     ? (
                         <>
                             <div className="visualizer-info">
+                                <Progress
+                                    show={gcode.maxLineNumber && line !== null}
+                                    completed={line}
+                                    maxCompleted={gcode.maxLineNumber}
+                                />
                                 <h3>{fileName}</h3>
                                 {tools && (<p>Tools: {tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
                                 {spindleSpeed && (<p>Spindle: {spindleSpeed}rpm</p>)}
-                                {/* {gcode.length && (<p>Lines: {gcode.length}</p>)} */}
                                 {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
                             </div>
                             <div className='visualizer-controls'>

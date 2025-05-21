@@ -5,6 +5,7 @@
 .visualizer-info {
     position: fixed;
     top: 10px;
+    margin-left: 20px;
 }
 
 .visualizer-info p,
@@ -16,7 +17,7 @@
     position: absolute;
     text-align: center;
     top: -260px;
-    left: -10px;
+    left: 15px;
 }
 
 .visualizer-controls {

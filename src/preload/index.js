@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-import Serial from '../main/Serial';
+import SerialPort from '../main/Serial';
+import MockSerial from '../main/MockSerial';
 
+const Serial = process.env.MOCK_SERIAL ? MockSerial : SerialPort;
 
 if (process.contextIsolated) {
     try {
@@ -29,7 +31,6 @@ if (process.contextIsolated) {
     } catch (error) {
         console.error(error);
     }
-
 
 } else {
     window.electron = electronAPI;

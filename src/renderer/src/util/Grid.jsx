@@ -8,7 +8,7 @@ const columns = 20;
 const cellHeight = Math.floor(totalHeightPixels / rows);
 const cellWidth = Math.floor(totalWidthPixels / columns);
 
-function Grid({ x = 1, y = 1, children, style, noPad = false }) {
+function Grid({ x = 1, y = 1, children, style, className = '', noPad = false }) {
     const height = cellHeight * y;
     const width = cellWidth * x;
 
@@ -19,7 +19,7 @@ function Grid({ x = 1, y = 1, children, style, noPad = false }) {
     }
 
     return (
-        <div className='grid' style={{
+        <div className={`grid ${className}`} style={{
             height,
             width,
             maxHeight: height,

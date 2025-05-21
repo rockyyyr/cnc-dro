@@ -6,5 +6,6 @@ export default {
     JOG: 'Jog',
     PROBE: 'Probe',
     HOME: 'Home',
-    EMERG: 'Door'
+    EMERG: 'Door',
+    RESET: 'RST'
 };
