@@ -5,6 +5,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
+import Keypad from './ExternalKeypad';
 
 if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
@@ -37,6 +38,13 @@ function createWindow() {
     }
 
     mainWindow.on('ready-to-show', () => {
+        try {
+            new Keypad();
+        } catch (error) {
+            console.error('Error initializing external keypad');
+            console.error(error);
+
+        }
         mainWindow.show();
     });
 
