@@ -12,7 +12,6 @@ try {
 } catch (error) {
     console.error('Error initializing external keypad');
     console.error(error);
-
 }
 
 if (process.env.DEVICE === 'pi') {
