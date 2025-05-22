@@ -34,15 +34,17 @@ export default class Keypad {
     }
 
     parseKeyStroke(data) {
-        try {
-            if (Serial.port) {
-                const key = data[2];
-                this.createCommand(key);
-            }
+        console.log('hello', data);
 
-        } catch (error) {
-            console.error('Error parsing key stroke:\n', error);
-        }
+        // try {
+        //     if (Serial.port) {
+        //         const key = data[2];
+        //         this.createCommand(key);
+        //     }
+
+        // } catch (error) {
+        //     console.error('Error parsing key stroke:\n', error);
+        // }
     }
 
     createCommand(key) {
