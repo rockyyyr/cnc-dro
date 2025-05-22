@@ -1,19 +1,15 @@
-import HID from 'node-hid';
+import { HID } from 'node-hid';
 import Serial from './Serial';
 
-// const VENDOR_ID = 12625;
-// const PRODUCT_ID = 12288;
-
-const DEVICE_PATH = '1-1.1:1.1';
+const VENDOR_ID = 12625;
+const PRODUCT_ID = 12288;
 
 export default class Keypad {
 
     constructor() {
         this.distance = 5;
 
-        console.log('HID.devices() →', HID.devices());
-
-        this.device = new HID.HID(DEVICE_PATH);
+        this.device = new HID(VENDOR_ID, PRODUCT_ID);
         this.device.on('data', this.parseKeyStroke);
 
         this.commands = {
