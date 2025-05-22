@@ -1,4 +1,4 @@
-import { MM, ABS, FEEDRATE, REL } from './Gcode/Commands';
+import { MM, ABS, FEEDRATE, REL, MACHINE_COORD } from './Gcode/Commands';
 import { Commands, Comms } from './FluidNC';
 
 const jog = (directions, distance) => {
@@ -30,6 +30,17 @@ const goToPosition = axes => {
     return Commands.JOG + command.join(' ');
 };
 
+const goToMachinePosition = axes => {
+    const command = [MACHINE_COORD, MM, ABS];
+    const keys = Object.keys(axes);
+
+    for (const key of keys) {
+        command.push(`${key.toUpperCase()}${axes[key]}`);
+    }
+    command.push(`${FEEDRATE}3000`);
+    return Commands.JOG + command.join(' ');
+};
+
 export const left = distance => Comms.send(jog({ x: -1 }, distance));
 export const right = distance => Comms.send(jog({ x: 1 }, distance));
 export const up = distance => Comms.send(jog({ y: 1 }, distance));
@@ -42,3 +53,4 @@ export const zUp = distance => Comms.send(jog({ z: 1 }, distance));
 export const zDown = distance => Comms.send(jog({ z: -1 }, distance));
 export const xyZero = () => Comms.send(goToPosition({ x: 0, y: 0 }));
 export const goTo = axes => Comms.send(goToPosition(axes));
+export const goToMachine = axes => Comms.send(goToMachinePosition(axes));
