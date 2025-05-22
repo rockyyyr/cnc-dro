@@ -51,7 +51,7 @@ export default function AdvancedJogPanel({ show, onClose }) {
             const y = Math.round(elementY / scaleFactor);
 
             // bufferMovement({ z: 10 });
-            bufferMovement({ x, y, z: 10 }, Jog.goToMachine);
+            bufferMovement({ x, y, z: -10 }, Jog.goToMachine);
             setTargetPosition(position({ x, y }));
             setShowTarget(true);
         }
@@ -59,7 +59,7 @@ export default function AdvancedJogPanel({ show, onClose }) {
 
     const buttons = [
         { label: 'XY0', onClick: () => bufferMovement({ x: 0, y: 0 }) },
-        { label: 'ZUp', onClick: () => bufferMovement({ z: 10 }, Jog.goToMachine) }
+        { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) }
     ];
 
     useEffect(() => {
