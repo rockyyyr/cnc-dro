@@ -4,7 +4,7 @@ import Serial from './Serial';
 // const VENDOR_ID = 12625;
 // const PRODUCT_ID = 12288;
 
-const DEVICE_PATH = '/dev/hidraw1';
+const DEVICE_PATH = '1-1.1:1.1';
 
 export default class Keypad {
 
