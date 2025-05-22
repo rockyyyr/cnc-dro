@@ -13,7 +13,7 @@ export default class Keypad {
 
         this.device.on('data', data => {
             try {
-                this.parseKeyStroke(data).bind(this);
+                this.parseKeyStroke(data);
             } catch (error) {
                 console.error('Error parsing key stroke:\n', error);
             }
