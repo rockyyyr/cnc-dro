@@ -11,12 +11,13 @@ export default class Keypad {
 
         this.device = new HID(VENDOR_ID, PRODUCT_ID);
 
-        this.device.on('data', data => {
-            try {
-                this.parseKeyStroke(data);
-            } catch (error) {
-                console.error('Error parsing key stroke:\n', error);
-            }
+        this.device.on('data', () => {
+            console.log('hello');
+            // try {
+            //     this.parseKeyStroke(data);
+            // } catch (error) {
+            //     console.error('Error parsing key stroke:\n', error);
+            // }
         });
 
         this.device.on('error', (err) => {
