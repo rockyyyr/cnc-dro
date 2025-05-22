@@ -1,8 +1,8 @@
 import { HID } from 'node-hid';
 import Serial from './Serial';
 
-const VENDOR_ID = '12625';
-const PRODUCT_ID = '12288';
+const VENDOR_ID = 12625;
+const PRODUCT_ID = 12288;
 
 export default class Keypad {
 
