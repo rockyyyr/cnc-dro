@@ -38,7 +38,11 @@ const goToMachinePosition = axes => {
         command.push(`${key.toUpperCase()}${axes[key]}`);
     }
     command.push(`${FEEDRATE}3000`);
-    return Commands.JOG + command.join(' ');
+    const fullCommand = Commands.JOG + command.join(' ');
+    console.log(fullCommand);
+
+    return fullCommand;
+
 };
 
 export const left = distance => Comms.send(jog({ x: -1 }, distance));
