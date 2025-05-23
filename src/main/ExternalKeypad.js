@@ -1,17 +1,17 @@
 import { HID } from 'node-hid';
 import Serial from './Serial';
 
-const VENDOR_ID = 12625;
-const PRODUCT_ID = 12288;
+const VENDOR_ID = 0x3151;
+const PRODUCT_ID = 0x3000;
 
 export default class Keypad {
 
     constructor() {
         this.distance = 5;
 
-        this.device = new HID(VENDOR_ID, PRODUCT_ID);
+        const device = new HID(VENDOR_ID, PRODUCT_ID);
 
-        this.device.on('data', () => {
+        device.on('data', () => {
             console.log('hello');
             // try {
             //     this.parseKeyStroke(data);
@@ -20,7 +20,7 @@ export default class Keypad {
             // }
         });
 
-        this.device.on('error', (err) => {
+        device.on('error', (err) => {
             console.error('HID device error:', err);
         });
 
