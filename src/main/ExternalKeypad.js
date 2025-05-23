@@ -12,18 +12,16 @@ export default class Keypad {
         HID.setDriverType('libusb');
 
         const device = new HID.HID(VENDOR_ID, PRODUCT_ID);
-        device.resume();
-
         console.log(device);
 
-        // device.on('data', () => {
-        //     console.log('hello');
-        //     // try {
-        //     //     this.parseKeyStroke(data);
-        //     // } catch (error) {
-        //     //     console.error('Error parsing key stroke:\n', error);
-        //     // }
-        // });
+        device.on('data', () => {
+            console.log('hello');
+            // try {
+            //     this.parseKeyStroke(data);
+            // } catch (error) {
+            //     console.error('Error parsing key stroke:\n', error);
+            // }
+        });
 
         // device.on('error', (err) => {
         //     console.error('HID device error:', err);
