@@ -10,19 +10,21 @@ export default class Keypad {
         this.distance = 5;
 
         const device = new HID(VENDOR_ID, PRODUCT_ID);
+        console.log(device);
 
-        device.on('data', () => {
-            console.log('hello');
-            // try {
-            //     this.parseKeyStroke(data);
-            // } catch (error) {
-            //     console.error('Error parsing key stroke:\n', error);
-            // }
-        });
 
-        device.on('error', (err) => {
-            console.error('HID device error:', err);
-        });
+        // device.on('data', () => {
+        //     console.log('hello');
+        //     // try {
+        //     //     this.parseKeyStroke(data);
+        //     // } catch (error) {
+        //     //     console.error('Error parsing key stroke:\n', error);
+        //     // }
+        // });
+
+        // device.on('error', (err) => {
+        //     console.error('HID device error:', err);
+        // });
 
         this.commands = {
             87: () => this.move('Z', -this.distance), // +
