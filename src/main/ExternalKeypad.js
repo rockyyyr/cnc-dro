@@ -1,4 +1,4 @@
-import { HID } from 'node-hid';
+import HID from 'node-hid';
 import Serial from './Serial';
 
 const VENDOR_ID = 0x3151;
@@ -9,9 +9,12 @@ export default class Keypad {
     constructor() {
         this.distance = 5;
 
-        const device = new HID(VENDOR_ID, PRODUCT_ID);
-        console.log(device);
+        HID.setDriverType('libusb');
 
+        const device = new HID.HID(VENDOR_ID, PRODUCT_ID);
+        device.resume();
+
+        console.log(device);
 
         // device.on('data', () => {
         //     console.log('hello');
