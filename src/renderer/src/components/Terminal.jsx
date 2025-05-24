@@ -14,7 +14,7 @@ export default function Terminal({ show, onClose }) {
             setBufferedContent(prev => (
                 <>
                     {prev}
-                    <span>&gt; {message}</span>
+                    <span>&gt; {message.value || message.level}</span>
                     <br />
                 </>
             ));

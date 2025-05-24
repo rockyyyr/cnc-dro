@@ -5,22 +5,22 @@ import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
-import Keypad from './ExternalKeypad';
+// import Keypad from './ExternalKeypad';
 
-process.on('uncaughtException', err => {
-    console.error('🔥 Uncaught Exception:', err);
-});
+// process.on('uncaughtException', err => {
+//     console.error('🔥 Uncaught Exception:', err);
+// });
 
-process.on('unhandledRejection', (reason, p) => {
-    console.error('🔥 Unhandled Rejection at:', p, 'reason:', reason);
-});
+// process.on('unhandledRejection', (reason, p) => {
+//     console.error('🔥 Unhandled Rejection at:', p, 'reason:', reason);
+// });
 
-try {
-    new Keypad();
-} catch (error) {
-    console.error('Error initializing external keypad');
-    console.error(error);
-}
+// try {
+//     new Keypad();
+// } catch (error) {
+//     console.error('Error initializing external keypad');
+//     console.error(error);
+// }
 
 if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
