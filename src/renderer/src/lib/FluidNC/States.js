@@ -7,5 +7,5 @@ export default {
     PROBE: 'Probe',
     HOME: 'Home',
     EMERG: 'Door',
-    RESET: 'RST'
+    RESET: 'RST',
 };

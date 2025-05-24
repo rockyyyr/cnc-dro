@@ -12,7 +12,7 @@ import Pause from '../assets/img/pause.svg';
 import Locked from '../assets/img/locked.svg';
 import Unlocked from '../assets/img/unlocked.svg';
 
-const { RESET, ALARM, RUN, HOLD, IDLE, JOG, PROBE, EMERG } = States;
+const { RESET, ALARM, RUN, HOLD, IDLE, JOG, PROBE, EMERG, HOME } = States;
 
 export default function ButtonPanel() {
     const [locked, setLocked] = useState(false);
@@ -52,6 +52,8 @@ export default function ButtonPanel() {
             case EMERG:
                 return 'danger';
             case RUN:
+                return 'success';
+            case HOME:
                 return 'success';
             case HOLD:
                 return 'warning';
