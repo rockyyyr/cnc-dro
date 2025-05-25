@@ -13,8 +13,6 @@ import Play from '../../assets/img/play.svg';
 import Stop from '../../assets/img/stop.svg';
 import FileSelector from './FileSelector';
 
-// import testGcode from '../../assets/test/threadedholes';
-
 const decToMinSec = dm => {
     let min = Math.floor(dm);
     let sec = Math.round((dm - min) * 60);
@@ -22,19 +20,7 @@ const decToMinSec = dm => {
     return `${min}:${String(sec).padStart(2, '0')}`;
 };
 
-// const workOffset = {
-//     x: 0,
-//     y: 0,
-//     z: 0,
-// };
-
-// const machinePosition = {
-//     x: 382.638,
-//     y: -4.65,
-//     z: 15
-// };
-
-function Visualizer() {
+export default function Visualizer() {
     const ref = useRef(null);
     const { state, message, line, machinePosition, workOffset } = useContext(Context);
     const [scene, setScene] = useState(null);
@@ -46,8 +32,6 @@ function Visualizer() {
     const [tools, setTools] = useState(null);
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
-
-    // const [workOffsetX, workOffsetY, workOffsetZ] = [workOffset.x, workOffset.y, workOffset.z];
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
@@ -82,15 +66,10 @@ function Visualizer() {
         scene.animate();
         setScene(scene);
 
-        // setGcode(new Gcode(testGcode, workOffset, machinePosition));
-        // setFileName('test.gcode');
-
         return () => scene.cleanUp(ref);
     }, []);
 
     useEffect(() => {
-        console.log('workOffset', workOffset);
-
         if (workOffset) {
             if (gcode) {
                 gcode.updateWorkOffset(workOffset);
@@ -203,5 +182,3 @@ function Visualizer() {
         </Grid>
     );
 }
-
-export default Visualizer;

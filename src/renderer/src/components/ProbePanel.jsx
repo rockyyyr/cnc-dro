@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
-import { Context } from '../lib/FluidNC';
+import { Context, Constants } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
 import Input from './Input';
-import { probeZ, probeXY, probeX, probeY, probeWithTouchProbe, probeWithToolSetter } from '../lib/probe';
+import { probeZ, probeXY, probeX, probeY, probeWithToolSetter } from '../lib/probe';
 import Spacer from '../util/Spacer';
 
 import DownLeft from '../assets/img/arrow-down-left.svg';
@@ -12,12 +12,26 @@ import DownRight from '../assets/img/arrow-down-right.svg';
 import UpLeft from '../assets/img/arrow-up-left.svg';
 import UpRight from '../assets/img/arrow-up-right.svg';
 import TouchProbe from '../assets/img/touchprobe.svg';
+import TouchPlate from '../assets/img/touchplate.svg';
 import ToolSetter from '../assets/img/tool-setter.svg';
+
+import Success from '../assets/img/check.svg';
+import Failed from '../assets/img/cancel.svg';
 
 const Storage = {
     ProbeHeight: 'probePanel/probeHeight',
     ProbeWidth: 'probePanel/probeWidth',
     ToolDiameter: 'probePanel/toolDiameter',
+};
+
+const THStyle = {
+    textAlign: 'left',
+    fontWeight: 'bold',
+    fontSize: 28,
+};
+
+const TDStyle = {
+    width: 170
 };
 
 export default function ProbePanel({ show, onClose }) {
@@ -47,13 +61,27 @@ export default function ProbePanel({ show, onClose }) {
     const runProbeXY = () => probeXY(probeWidth, toolDiameter, probeDirection);
     const runProbeX = () => probeX(probeWidth, toolDiameter, probeDirection);
     const runProbeY = () => probeY(probeWidth, toolDiameter, probeDirection);
-    const runTouchProbe = () => probeWithTouchProbe(probeDirection);
+
+    const presetTouchProbe = () => {
+        const { width, height, diameter } = Constants.Dimensions.TouchProbe;
+        setProbeHeight(height);
+        setProbeWidth(width);
+        setToolDiameter(diameter);
+    };
+
+    const presetTouchPlate = () => {
+        const { width, height, diameter } = Constants.Dimensions.TouchPlate;
+        setProbeHeight(height);
+        setProbeWidth(width);
+        setToolDiameter(diameter);
+    };
+
     const runToolSetter = () => probeWithToolSetter(probeDirection);
 
-    const runAndClose = command => () => {
-        command();
-        onClose();
-    };
+    // const runAndClose = command => () => {
+    //     command();
+    //     onClose();
+    // };
 
     const updateAndSaveSetting = (data, command, storageName) => {
         command(data);
@@ -68,15 +96,20 @@ export default function ProbePanel({ show, onClose }) {
     ];
 
     const probeButtons = [
-        { label: 'Z', onClick: runAndClose(runProbeZ) },
-        { label: 'XY', onClick: runAndClose(runProbeXY) },
-        { label: 'X', onClick: runAndClose(runProbeX) },
-        { label: 'Y', onClick: runAndClose(runProbeY) },
+        { label: 'Z', onClick: runProbeZ },
+        { label: 'XY', onClick: runProbeXY },
+        { label: 'X', onClick: runProbeX },
+        { label: 'Y', onClick: runProbeY },
+    ];
+
+    const presets = [
+        { icon: TouchProbe, onClick: presetTouchProbe, variant: 'warning' },
+        { icon: TouchPlate, onClick: presetTouchPlate, variant: 'warning' },
     ];
 
     const macros = [
-        { icon: TouchProbe, onClick: runAndClose(runTouchProbe), variant: 'info' },
-        { icon: ToolSetter, onClick: runAndClose(runToolSetter), variant: 'success' },
+        { _blank: true },
+        { icon: ToolSetter, onClick: runToolSetter, variant: 'success' },
     ];
 
     return (
@@ -97,9 +130,16 @@ export default function ProbePanel({ show, onClose }) {
                         ))}
                     </div>
                     <div className="flex-row">
-                        {macros.map((button, index) => (
+                        {presets.map((button, index) => (
                             <Grid key={index}>
                                 <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                            </Grid>
+                        ))}
+                        {macros.map((button, index) => (
+                            <Grid key={index}>
+                                {button._blank ? null : (
+                                    <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                                )}
                             </Grid>
                         ))}
                     </div>
@@ -142,16 +182,30 @@ export default function ProbePanel({ show, onClose }) {
                 </div>
                 {probeResults?.length > 0 && (
                     <>
-                        <Spacer y={3.5} x={0.5} vLine />
-                        <Grid x={5} y={3.5} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
+                        <Spacer y={5.2} x={0.5} vLine />
+                        <Grid x={7} y={5.2} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
                             <table style={{ width: '100%' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={THStyle}>X</th>
+                                        <th style={THStyle}>Y</th>
+                                        <th style={THStyle}>Z</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {probeResults.map((result, i) => (
                                         <tr key={i}>
-                                            <td>X: {result.value.x}</td>
-                                            <td>Y: {result.value.y}</td>
-                                            <td>Z: {result.value.z}</td>
-                                            <td style={{ paddingLeft: 25 }}>{result.success ? 'Success' : 'Failed'}</td>
+                                            <td style={TDStyle}>{result.value.x}</td>
+                                            <td style={TDStyle}>{result.value.y}</td>
+                                            <td style={TDStyle}>{result.value.z}</td>
+                                            <td>{result.success
+                                                ? <img src={Success} className='success-icon' />
+                                                : <img src={Failed} className='failed-icon' />
+                                            }</td>
+                                            {result.timestamp && (
+                                                <td style={{ paddingLeft: 25 }}>{new Date(result.timestamp).toTimeString().split(' ')[0]}</td>
+
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>

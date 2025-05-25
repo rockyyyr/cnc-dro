@@ -1,5 +1,8 @@
 import { MM, ABS, FEEDRATE, REL, MACHINE_COORD } from './Gcode/Commands';
-import { Commands, Comms } from './FluidNC';
+import { Commands, Comms, Constants } from './FluidNC';
+
+const f = speed => `${FEEDRATE}${speed}`;
+const MACHINE_POSITION = true;
 
 const jog = (directions, distance) => {
     if (!distance) {
@@ -8,41 +11,29 @@ const jog = (directions, distance) => {
 
     const command = [REL, MM];
 
-    const keys = Object.keys(directions);
-
-    for (const key of keys) {
+    for (const key of Object.keys(directions)) {
         command.push(`${key.toUpperCase()}${directions[key] * distance}`);
     }
 
-    command.push(`${FEEDRATE}3000`);
-
+    command.push(`${f(Constants.RAPID_SPEED)}`);
     return Commands.JOG + command.join(' ');
 };
 
-const goToPosition = axes => {
-    const command = [MM, ABS];
-    const keys = Object.keys(axes);
+const goToPosition = (axes, machinePosition) => {
+    const command = [];
 
-    for (const key of keys) {
+    if (machinePosition) {
+        command.push(MACHINE_COORD);
+    }
+
+    command.push(ABS, MM);
+
+    for (const key of Object.keys(axes)) {
         command.push(`${key.toUpperCase()}${axes[key]}`);
     }
-    command.push(`${FEEDRATE}3000`);
+
+    command.push(`${f(Constants.RAPID_SPEED)}`);
     return Commands.JOG + command.join(' ');
-};
-
-const goToMachinePosition = axes => {
-    const command = [MACHINE_COORD, MM, ABS];
-    const keys = Object.keys(axes);
-
-    for (const key of keys) {
-        command.push(`${key.toUpperCase()}${axes[key]}`);
-    }
-    command.push(`${FEEDRATE}3000`);
-    const fullCommand = Commands.JOG + command.join(' ');
-    console.log(fullCommand);
-
-    return fullCommand;
-
 };
 
 export const left = distance => Comms.send(jog({ x: -1 }, distance));
@@ -57,4 +48,4 @@ export const zUp = distance => Comms.send(jog({ z: 1 }, distance));
 export const zDown = distance => Comms.send(jog({ z: -1 }, distance));
 export const xyZero = () => Comms.send(goToPosition({ x: 0, y: 0 }));
 export const goTo = axes => Comms.send(goToPosition(axes));
-export const goToMachine = axes => Comms.send(goToMachinePosition(axes));
+export const goToMachine = axes => Comms.send(goToPosition(axes, MACHINE_POSITION));

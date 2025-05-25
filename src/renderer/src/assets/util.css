@@ -10,3 +10,13 @@
 .flex-start {
     justify-content: flex-start;
 }
+
+.success-icon {
+    background-color: var(--success);
+    margin-bottom: -4px;
+}
+
+.failed-icon {
+    background-color: var(--danger);
+    margin-bottom: -4px;
+}

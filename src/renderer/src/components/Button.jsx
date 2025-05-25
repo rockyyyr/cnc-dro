@@ -55,7 +55,7 @@ export default function Button({ label, onClick, icon, disabled, actuallyDisable
         <button className={`button ${classes.join(' ')}`} onClick={onClick} style={style} disabled={actuallyDisable && disabled}>
             {icon
                 ? (<img src={icon} alt={label} style={{ width: 50, height: 50 }} />)
-                : label
+                : label !== undefined && label !== null
                     ? (<div style={{ fontSize }}>{label}</div>)
                     : children
             }

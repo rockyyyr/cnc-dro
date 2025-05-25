@@ -59,6 +59,8 @@ export default function AdvancedJogPanel({ show, onClose }) {
 
     const buttons = [
         { label: 'XY0', onClick: () => bufferMovement({ x: 0, y: 0 }) },
+        { label: 'X0', onClick: () => bufferMovement({ x: 0 }) },
+        { label: 'Y0', onClick: () => bufferMovement({ y: 0 }) },
         { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) }
     ];
 

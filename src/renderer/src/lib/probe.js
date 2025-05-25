@@ -26,18 +26,15 @@ const probeHorizontal = (probeWidth, toolDiameter, direction, axis) => {
     const offset = probeWidth + toolRadius;
     const pos = amount => `${axis}${amount * direction}`;
 
-    return Comms.send([
-        REL,
-        // `${RAPID} Z15`,
-        // `${RAPID} ${pos(15)}`,
-        // `${RAPID} Z-15`,
-        `${PROBE} ${pos(-40)} F${seekProbeSpeed}`,
-        `${RAPID} ${pos(2)}`,
-        `${PROBE} ${pos(-3)} F${feedProbeSpeed}`,
-        `${OFFSET} ${SET_COORDS} P1 ${pos(offset)}`,
-        `${RAPID} ${pos(5)}`,
-        ABS,
-    ]);
+    return Comms.send(`
+        ${REL}
+        ${PROBE} ${pos(-40)} F${seekProbeSpeed}
+        ${RAPID} ${pos(2)}
+        ${PROBE} ${pos(-3)} F${feedProbeSpeed}
+        ${OFFSET} ${SET_COORDS} P1 ${pos(offset)}
+        ${RAPID} ${pos(5)}
+        ${ABS}
+    `);
 };
 
 export const probeX = (probeWidth, toolDiameter, directions) => {
