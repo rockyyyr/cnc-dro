@@ -29,54 +29,31 @@ export default class ExternalNumpad {
         // };
 
         this.commands = {
-            '-': () => Jog.zUp(this.distance), // -
-            '+': () => Jog.zDown(this.distance), // +
-            '4': () => Jog.left(this.distance), // arrow: left
-            '6': () => Jog.right(this.distance), // arrow: right
-            '8': () => Jog.up(this.distance), // arrow: up
-            '2': () => Jog.down(this.distance), // arrow: down
-            '1': () => Jog.leftDown(this.distance), // arrow: End
-            '7': () => Jog.leftUp(this.distance), // arrow: home
-            '3': () => Jog.rightDown(this.distance), // arrow: Page Down
-            '9': () => Jog.rightUp(this.distance), // arrow: Page up
-            '5': () => Jog.xyZero(), // Key: 5
-            '.': () => Probe.probeWithToolSetter(), // .
-            '/': () => this.distance = 1, // key: /
-            '*': () => this.distance = 5, // key: *
-            'Backspace': () => this.distance = 10, // key: Backspace
-            // 88: () => '' // Key: OK or Enter
+            '-': () => Jog.zUp(this.distance),
+            '+': () => Jog.zDown(this.distance),
+            '4': () => Jog.left(this.distance),
+            '6': () => Jog.right(this.distance),
+            '8': () => Jog.up(this.distance),
+            '2': () => Jog.down(this.distance),
+            '1': () => Jog.leftDown(this.distance),
+            '7': () => Jog.leftUp(this.distance),
+            '3': () => Jog.rightDown(this.distance),
+            '9': () => Jog.rightUp(this.distance),
+            '5': () => Jog.xyZero(),
+            '.': () => Probe.probeWithToolSetter(),
+            'NumLock': () => this.distance = 0.1,
+            '/': () => this.distance = 1,
+            '*': () => this.distance = 5,
+            'Backspace': () => this.distance = 10,
         };
     }
 
     async open() {
-        // if (!NUMPAD_VENDOR_ID || !NUMPAD_PRODUCT_ID) {
-        //     throw new Error('NUMPAD_VENDOR_ID and NUMPAD_PRODUCT_ID environment variables must be set');
-        // }
-
-        // const [device] = await navigator.hid.requestDevice({
-        //     filters: []
-        // });
-
-        // if (device) {
-        //     console.log(device);
-
-        //     await device.open();
-
-        //     device.oninputreport = event => {
-        //         console.log('hello', event);
-        //     };
-
-        // } else {
-        //     throw new Error('No HID device found');
-        // }
-
         window.addEventListener('keyup', event => {
             console.log(event);
-            if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
-
+            if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD || ['Backspace', 'NumLock'].includes(event.key)) {
                 this.createCommand(event.key);
             }
-
         });
     }
 
