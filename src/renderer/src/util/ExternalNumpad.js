@@ -63,7 +63,7 @@ export default class ExternalNumpad {
 
             await device.open();
 
-            device.addEventListener('inputreport', event => {
+            device.oninputreport(event => {
                 console.log('hello', event);
             });
 
