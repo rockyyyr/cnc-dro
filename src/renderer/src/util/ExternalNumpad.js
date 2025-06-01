@@ -50,26 +50,31 @@ export default class ExternalNumpad {
     }
 
     async open() {
-        if (!NUMPAD_VENDOR_ID || !NUMPAD_PRODUCT_ID) {
-            throw new Error('NUMPAD_VENDOR_ID and NUMPAD_PRODUCT_ID environment variables must be set');
-        }
+        // if (!NUMPAD_VENDOR_ID || !NUMPAD_PRODUCT_ID) {
+        //     throw new Error('NUMPAD_VENDOR_ID and NUMPAD_PRODUCT_ID environment variables must be set');
+        // }
 
-        const [device] = await navigator.hid.requestDevice({
-            filters: []
+        // const [device] = await navigator.hid.requestDevice({
+        //     filters: []
+        // });
+
+        // if (device) {
+        //     console.log(device);
+
+        //     await device.open();
+
+        //     device.oninputreport = event => {
+        //         console.log('hello', event);
+        //     };
+
+        // } else {
+        //     throw new Error('No HID device found');
+        // }
+
+        window.addEventListener('keyup', event => {
+            console.log(event);
+
         });
-
-        if (device) {
-            console.log(device);
-
-            await device.open();
-
-            device.oninputreport = event => {
-                console.log('hello', event);
-            };
-
-        } else {
-            throw new Error('No HID device found');
-        }
     }
 
     parseKeyStroke(dataRaw) {
