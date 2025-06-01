@@ -71,7 +71,9 @@ export default class ExternalNumpad {
         // }
 
         window.addEventListener('keyup', event => {
+            console.log(event);
             if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
+
                 this.createCommand(event.key);
             }
 
