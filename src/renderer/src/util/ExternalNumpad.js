@@ -59,6 +59,8 @@ export default class ExternalNumpad {
         });
 
         if (device) {
+            console.log(device);
+
             await device.open();
 
             device.addEventListener('inputreport', event => {
