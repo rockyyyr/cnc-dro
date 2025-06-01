@@ -63,9 +63,9 @@ export default class ExternalNumpad {
 
             await device.open();
 
-            device.oninputreport(event => {
+            device.oninputreport = event => {
                 console.log('hello', event);
-            });
+            };
 
         } else {
             throw new Error('No HID device found');
