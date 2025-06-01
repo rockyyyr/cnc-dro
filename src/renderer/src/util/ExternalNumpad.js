@@ -29,23 +29,22 @@ export default class ExternalNumpad {
         // };
 
         this.commands = {
-            86: () => Jog.zUp(this.distance), // -
-            87: () => Jog.zDown(this.distance), // +
-            92: () => Jog.left(this.distance), // arrow: left
-            94: () => Jog.right(this.distance), // arrow: right
-            96: () => Jog.up(this.distance), // arrow: up
-            90: () => Jog.down(this.distance), // arrow: down
-            89: () => Jog.leftDown(this.distance), // arrow: End
-            95: () => Jog.leftUp(this.distance), // arrow: home
-            91: () => Jog.rightDown(this.distance), // arrow: Page Down
-            97: () => Jog.rightUp(this.distance), // arrow: Page up
-            93: () => Jog.xyZero(), // Key: 5
-            99: () => Probe.probeWithToolSetter(), // .
-            98: () => '', // key: Backspace
-            84: () => this.distance = 1, // key: /
-            85: () => this.distance = 5, // key: *
-            42: () => this.distance = 10, // key: Backspace
-            88: () => '' // Key: OK or Enter
+            '-': () => Jog.zUp(this.distance), // -
+            '+': () => Jog.zDown(this.distance), // +
+            '4': () => Jog.left(this.distance), // arrow: left
+            '6': () => Jog.right(this.distance), // arrow: right
+            '8': () => Jog.up(this.distance), // arrow: up
+            '2': () => Jog.down(this.distance), // arrow: down
+            '1': () => Jog.leftDown(this.distance), // arrow: End
+            '7': () => Jog.leftUp(this.distance), // arrow: home
+            '3': () => Jog.rightDown(this.distance), // arrow: Page Down
+            '9': () => Jog.rightUp(this.distance), // arrow: Page up
+            '5': () => Jog.xyZero(), // Key: 5
+            '.': () => Probe.probeWithToolSetter(), // .
+            '/': () => this.distance = 1, // key: /
+            '*': () => this.distance = 5, // key: *
+            'Backspace': () => this.distance = 10, // key: Backspace
+            // 88: () => '' // Key: OK or Enter
         };
     }
 
@@ -72,25 +71,11 @@ export default class ExternalNumpad {
         // }
 
         window.addEventListener('keyup', event => {
-            console.log(event);
+            if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
+                this.createCommand(event.key);
+            }
 
         });
-    }
-
-    parseKeyStroke(dataRaw) {
-        const data = dataRaw.getUint8Array(0);
-        console.log(data);
-
-
-        // try {
-        //     if (Serial.port) {
-        //         const key = data[2];
-        //         this.createCommand(key);
-        //     }
-
-        // } catch (error) {
-        //     console.error('Error parsing key stroke:\n', error);
-        // }
     }
 
     createCommand(key) {
