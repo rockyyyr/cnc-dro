@@ -1,10 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Context, States } from '../lib/FluidNC';
+import { Context, States, Constants } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
 import Spacer from '../util/Spacer';
 import * as Jog from '../lib/jog';
+
+import Park from '../assets/img/park.svg';
 
 const jogContainerSize = 487;
 const actualMachineSize = 410;
@@ -61,7 +63,8 @@ export default function AdvancedJogPanel({ show, onClose }) {
         { label: 'XY0', onClick: () => bufferMovement({ x: 0, y: 0 }) },
         { label: 'X0', onClick: () => bufferMovement({ x: 0 }) },
         { label: 'Y0', onClick: () => bufferMovement({ y: 0 }) },
-        { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) }
+        { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) },
+        { icon: Park, onClick: () => bufferMovement({ x: Constants.Dimensions.Machine.x / 2, y: Constants.Dimensions.Machine.y, z: 0 }, Jog.goToMachine) },
     ];
 
     useEffect(() => {
@@ -80,6 +83,7 @@ export default function AdvancedJogPanel({ show, onClose }) {
                         {buttons.map((button, index) => (
                             <Grid key={index}>
                                 <Button
+                                    icon={button.icon}
                                     label={button.label}
                                     labelSize='sm'
                                     onClick={button.onClick}

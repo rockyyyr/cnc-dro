@@ -1,26 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+const { NUMPAD_VENDOR_ID, NUMPAD_PRODUCT_ID, FULLSCREEN } = process.env;
+
 import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
-// import Keypad from './ExternalKeypad';
-
-// process.on('uncaughtException', err => {
-//     console.error('🔥 Uncaught Exception:', err);
-// });
-
-// process.on('unhandledRejection', (reason, p) => {
-//     console.error('🔥 Unhandled Rejection at:', p, 'reason:', reason);
-// });
-
-// try {
-//     new Keypad();
-// } catch (error) {
-//     console.error('Error initializing external keypad');
-//     console.error(error);
-// }
 
 if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
@@ -28,6 +14,7 @@ if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('enable-webgl');
     app.commandLine.appendSwitch('enable-unsafe-swiftshader');
     app.commandLine.appendSwitch('use-angle', 'egl');
+    app.commandLine.appendSwitch('disable-hid-blocklist');
 }
 
 const isMac = process.platform === 'darwin';
@@ -37,7 +24,7 @@ function createWindow() {
         width: 1920,
         height: 550,
         show: false,
-        fullscreen: process.env.FULLSCREEN,
+        fullscreen: FULLSCREEN,
         autoHideMenuBar: true,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
@@ -45,7 +32,9 @@ function createWindow() {
             sandbox: false,
             webSecurity: false,
             contextIsolation: true,
-            nodeIntegration: false
+            nodeIntegration: false,
+            enableBlinkFeatures: 'WebHID',          // turn on WebHID
+            experimentalFeatures: true,
         }
     });
 
@@ -55,6 +44,11 @@ function createWindow() {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
+
+        mainWindow.webContents.executeJavaScript(
+            `document.querySelector("#autoload-external-numpad")?.click();`,
+            true,
+        );
     });
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -67,6 +61,22 @@ function createWindow() {
     } else {
         mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
     }
+
+    mainWindow.webContents.session.setPermissionCheckHandler(() => true);
+    mainWindow.webContents.session.setDevicePermissionHandler(() => true);
+    mainWindow.webContents.session.on('select-hid-device', (event, details, callback) => {
+        event.preventDefault();
+
+        if (!NUMPAD_VENDOR_ID || !NUMPAD_PRODUCT_ID) {
+            return callback(null);
+        }
+
+        const selectedDevice = details.deviceList.find(({ vendorId, productId }) => {
+            return vendorId === parseInt(NUMPAD_VENDOR_ID) && productId === parseInt(NUMPAD_PRODUCT_ID);
+        });
+
+        callback(selectedDevice?.deviceId);
+    });
 }
 
 app.whenReady().then(() => {

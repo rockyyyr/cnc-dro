@@ -23,6 +23,8 @@ export default class Gcode {
         this.currentCommand;
         this.firstCommand;
         this.spindleSpeed;
+        this.air;
+        this.mist;
         this.minZ = Number.MAX_SAFE_INTEGER;
 
         this.workOffset = workOffset;
@@ -102,6 +104,12 @@ export default class Gcode {
 
             if (part.startsWith('M')) {
                 result.m = parseInt(part.substring(1));
+
+                if (result.m === 7) {
+                    this.mist = true;
+                } else if (result.m === 8) {
+                    this.air = true;
+                }
             }
 
             if (part.startsWith('G')) {

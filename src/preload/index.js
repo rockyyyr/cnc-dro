@@ -9,7 +9,7 @@ if (process.contextIsolated) {
     try {
         contextBridge.exposeInMainWorld('electron', electronAPI);
         contextBridge.exposeInMainWorld('env', {
-            COMMS: process.env.COMMS,
+            ...process.env
         });
 
         contextBridge.exposeInMainWorld('api', {
@@ -32,15 +32,4 @@ if (process.contextIsolated) {
         console.error(error);
     }
 
-} else {
-    window.electron = electronAPI;
-    window.serial = {
-        open: () => { },
-        send: () => { },
-        onData: () => { },
-        close: () => { }
-    };
-    window.env = {
-        COMMS: process.env.COMMS,
-    };
 }

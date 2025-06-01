@@ -1,8 +1,8 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Grid from '../util/Grid';
 import Button from './Button';
 import ProbePanel from './ProbePanel';
-import { Context } from '../lib/FluidNC';
+import { Context, States } from '../lib/FluidNC';
 import Probe from '../assets/img/probe.svg';
 import Air from '../assets/img/air.svg';
 import Mist from '../assets/img/mist.svg';
@@ -15,19 +15,23 @@ export default function UtilityPanel() {
     const [showTerminal, setShowTerminal] = useState(false);
     const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
-    const { limits, accessories } = useContext(Context);
+    const [override, setOverride] = useState(false);
+    const { state, limits, accessories } = useContext(Context);
+
+    useEffect(() => {
+        setOverride(state === States.RUN);
+    }, [state]);
 
     const toggleAir = () => {
         if (airEnabled) {
-            Coolant.disableAir();
+            Coolant.disableAir(override);
         } else {
-            Coolant.enableAir();
+            Coolant.enableAir(override);
         }
         setAirEnabled(!airEnabled);
     };
 
     const toggleMist = () => {
-        // Coolant.toggleMist();
         setMistEnabled(!mistEnabled);
     };
 

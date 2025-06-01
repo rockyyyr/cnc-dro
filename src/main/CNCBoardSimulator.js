@@ -14,7 +14,7 @@ export default class CNCBoardSimulator {
     }
 
     // called when you parse a G0/G1 command
-    moveTo({ x, y, z }) {
+    moveTo({ x, y }) {
         this.targetX = x;
         this.targetY = y;
 
@@ -80,8 +80,6 @@ export default class CNCBoardSimulator {
     startAutoReport(broadcast) {
         this.autoReportInterval = setInterval(() => {
             const autoReport = `<${this.state}|WPos:${this.roundTo(this.x, 3)},${this.roundTo(this.y, 3)},${this.roundTo(this.z, 3)}|WCO:0,0,0|FS:${this.roundTo(this.velocity * 60, 1)},0>`;
-            console.log(autoReport);
-
             broadcast(autoReport);
 
         }, this.autoReportIntervalTime);

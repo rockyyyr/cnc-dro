@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FluidNCContext from "./Context";
 
 import GenericDescriptions from './GenericDescriptions.json';
 import { roundTo } from '../../util/numbers';
+import ExternalNumpad from '../../util/ExternalNumpad';
 
 import Comms from './Communication';
 import Queue from './Communication/Queue';
-
 import * as Messages from './Messages';
 import States from './States';
 
 const FluidNC = ({ children }) => {
+    const externalNumpadRef = useRef(null);
+
     const [ready, setReady] = useState(false);
     const [notification, setNotification] = useState(null);
 
@@ -36,16 +38,37 @@ const FluidNC = ({ children }) => {
 
     const safeSetNumber = (value, setter) => ![undefined, null].includes(value) && !isNaN(value) && setter(value);
 
+    const loadExternalKeypad = async () => {
+        try {
+            const keypad = new ExternalNumpad();
+            await keypad.open();
+
+            setNotification({
+                level: Messages.MessageLevels.INFO,
+                value: 'External keypad connected'
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            setNotification({
+                level: Messages.MessageLevels.ERROR,
+                value: 'Failed to connect external keypad'
+            });
+        }
+    };
+
     useEffect(() => {
         Comms.open();
-        Comms.onopen(() => {
+        Comms.onopen(async () => {
             setReady(true);
-
             const queue = new Queue(Comms);
             queue.onReset(() => setState(States.RESET));
 
             Comms.addQueue(queue);
             Comms.autoReport();
+
+            setTimeout(() => externalNumpadRef.current?.click(), 2000);
         });
         Comms.onclose(() => setReady(false));
         return () => Comms.close();
@@ -156,6 +179,7 @@ const FluidNC = ({ children }) => {
                 </div>
             )} */}
             {children}
+            <button style={{ display: 'none' }} ref={externalNumpadRef} onClick={loadExternalKeypad} />
         </FluidNCContext.Provider>
     );
 };

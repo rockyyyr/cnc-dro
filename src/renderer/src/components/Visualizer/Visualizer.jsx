@@ -22,14 +22,13 @@ const decToMinSec = dm => {
 
 export default function Visualizer() {
     const ref = useRef(null);
+
     const { state, message, line, machinePosition, workOffset } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
     const [gcode, setGcode] = useState(null);
     const [fileName, setFileName] = useState(null);
-    const [spindleSpeed, setSpindleSpeed] = useState(0);
-    const [tools, setTools] = useState(null);
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
 
@@ -114,17 +113,8 @@ export default function Visualizer() {
         if (gcode) {
             scene.draw(gcode);
 
-            if (gcode.spindleSpeed) {
-                setSpindleSpeed(gcode.spindleSpeed);
-            }
-            if (gcode.tools) {
-                setTools(gcode.tools);
-            }
-
         } else {
             scene?.disposeGcode();
-            setSpindleSpeed(null);
-            setTools(null);
         };
     }, [gcode]);
 
@@ -147,8 +137,15 @@ export default function Visualizer() {
                                     maxCompleted={gcode.maxLineNumber}
                                 />
                                 <h3>{fileName}</h3>
-                                {tools && (<p>Tools: {tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
-                                {spindleSpeed && (<p>Spindle: {spindleSpeed}rpm</p>)}
+                                {(gcode.air || gcode.mist) && (
+                                    <p>
+                                        {gcode.air && <span style={{ paddingRight: 20 }} className='text-success'>Air</span>}
+                                        {gcode.mist && <span className='text-info'>Mist</span>}
+                                    </p>
+                                )}
+                                {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
+                                {<p className={gcode.minZ < 0 ? 'text-warning' : 'text-success'}>Min Z: {gcode.minZ}</p>}
+                                {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)}
                                 {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
                             </div>
                             <div className='visualizer-controls'>
@@ -179,6 +176,6 @@ export default function Visualizer() {
                     )}
             </div>
             <div ref={ref} style={{ height: '100%', width: '100%' }}></div>
-        </Grid>
+        </Grid >
     );
 }

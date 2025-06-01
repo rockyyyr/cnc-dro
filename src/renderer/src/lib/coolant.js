@@ -1,7 +1,7 @@
-import { Comms } from './FluidNC';
+import { Comms, Commands } from './FluidNC';
 
-export const enableAir = () => Comms.send('M8');
-export const disableAir = () => Comms.send('M9');
+export const enableAir = override => Comms.send(override ? Commands.AIR_OVERRIDE : 'M8');
+export const disableAir = override => Comms.send(override ? Commands.AIR_OVERRIDE : 'M9');
 
 export const toggleAir = () => Comms.send('#T-FLOODCOOLANT#');
 export const toggleMist = () => Comms.send('#T-MISTCOOLANT#');

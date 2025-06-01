@@ -20,7 +20,7 @@ export const SPINDLE_CLOCKWISE = 'M3';
 export const SPINDLE_COUNTERCLOCKWISE = 'M4';
 export const SPINDLE_OFF = 'M5';
 export const MIST_ON = 'M7';
-export const COOLANT_ON = 'M8';
+export const AIR_ON = 'M8';
 export const COOLANT_OFF = 'M9';
 
 export const SPINDLE_SPEED = 'S';

@@ -40,6 +40,8 @@ export default function ProbePanel({ show, onClose }) {
     const [probeWidth, setProbeWidth] = useState(5);
     const [toolDiameter, setToolDiameter] = useState(6);
     const [probeDirection, setProbeDirection] = useState({ y: -1, x: -1, label: 'downleft' });
+    const [touchPlatePresetActive, setTouchPlatePresetActive] = useState(false);
+    const [touchProbePresetActive, setTouchProbePresetActive] = useState(false);
 
     useEffect(() => {
         const savedProbeHeight = localStorage.getItem(Storage.ProbeHeight);
@@ -67,6 +69,8 @@ export default function ProbePanel({ show, onClose }) {
         setProbeHeight(height);
         setProbeWidth(width);
         setToolDiameter(diameter);
+        setTouchPlatePresetActive(false);
+        setTouchProbePresetActive(true);
     };
 
     const presetTouchPlate = () => {
@@ -74,6 +78,8 @@ export default function ProbePanel({ show, onClose }) {
         setProbeHeight(height);
         setProbeWidth(width);
         setToolDiameter(diameter);
+        setTouchPlatePresetActive(true);
+        setTouchProbePresetActive(false);
     };
 
     const runToolSetter = () => probeWithToolSetter(probeDirection);
@@ -85,6 +91,8 @@ export default function ProbePanel({ show, onClose }) {
 
     const updateAndSaveSetting = (data, command, storageName) => {
         command(data);
+        setTouchProbePresetActive(false);
+        setTouchPlatePresetActive(false);
         localStorage.setItem(storageName, data);
     };
 
@@ -103,8 +111,8 @@ export default function ProbePanel({ show, onClose }) {
     ];
 
     const presets = [
-        { icon: TouchProbe, onClick: presetTouchProbe, variant: 'warning' },
-        { icon: TouchPlate, onClick: presetTouchPlate, variant: 'warning' },
+        { icon: TouchProbe, onClick: presetTouchProbe, variant: touchProbePresetActive ? 'info' : 'warning' },
+        { icon: TouchPlate, onClick: presetTouchPlate, variant: touchPlatePresetActive ? 'info' : 'warning' },
     ];
 
     const macros = [
@@ -125,7 +133,7 @@ export default function ProbePanel({ show, onClose }) {
                     <div className="flex-row">
                         {probeButtons.map((button, index) => (
                             <Grid key={index}>
-                                <Button label={button.label} onClick={button.onClick} />
+                                <Button label={button.label} onClick={button.onClick} bold />
                             </Grid>
                         ))}
                     </div>
@@ -152,9 +160,11 @@ export default function ProbePanel({ show, onClose }) {
                         ))}
                     </div>
 
+                    <Spacer y={0.2} x={4} hLine />
+
                     <div className='flex-row'>
                         <Input
-                            labelSize='xs'
+                            labelSize='xxs'
                             inputWidth={1}
                             label='Probe Height'
                             value={probeHeight}
@@ -162,7 +172,7 @@ export default function ProbePanel({ show, onClose }) {
                         />
 
                         <Input
-                            labelSize='xs'
+                            labelSize='xxs'
                             inputWidth={1}
                             label='Probe Width'
                             value={probeWidth}
@@ -172,7 +182,7 @@ export default function ProbePanel({ show, onClose }) {
 
                     <div className='flex-row'>
                         <Input
-                            labelSize='xs'
+                            labelSize='xxs'
                             inputWidth={1}
                             label='Tool ⌀'
                             value={toolDiameter}

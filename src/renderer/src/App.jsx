@@ -31,9 +31,9 @@ function App() {
                             <Spacer x={0.5} y={6} vLine />
                             <div className="flex-col">
                                 <UtilityPanel />
-                                <Spacer y={0.5} x={4} hLine />
+                                <Spacer y={0.25} x={4} hLine />
                                 <Spindle />
-                                <Spacer y={0.5} x={4} hLine />
+                                <Spacer y={0.25} x={4} hLine />
                                 <Feeds />
                             </div>
                             <Spacer x={0.5} y={6} vLine />

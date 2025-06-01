@@ -1,8 +1,11 @@
 import '../assets/button.css';
 
-export default function Button({ label, onClick, icon, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className }) {
+export default function Button({ label, onClick, icon, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className, bold }) {
     let fontSize;
     switch (labelSize) {
+        case 'xxs':
+            fontSize = 19;
+            break;
         case 'xs':
             fontSize = 22;
             break;
@@ -56,7 +59,7 @@ export default function Button({ label, onClick, icon, disabled, actuallyDisable
             {icon
                 ? (<img src={icon} alt={label} style={{ width: 50, height: 50 }} />)
                 : label !== undefined && label !== null
-                    ? (<div style={{ fontSize }}>{label}</div>)
+                    ? (<div style={{ fontSize, fontWeight: bold ? 'bold' : '' }}>{label}</div>)
                     : children
             }
         </button>
