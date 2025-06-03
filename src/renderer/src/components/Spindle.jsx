@@ -27,7 +27,7 @@ export default function Spindle() {
     });
 
     const spindleButtons = [
-        { icon: Rotate, onClick: () => clockwise(spindleSetting, override), variant: accessories?.spindle ? 'info' : '' },
+        { icon: Rotate, onClick: () => clockwise(spindleSetting, override), variant: accessories?.spindle && spindleSpeed > 0 ? 'info' : '' },
         { icon: RotateStop, onClick: () => off(override) },
     ];
 
