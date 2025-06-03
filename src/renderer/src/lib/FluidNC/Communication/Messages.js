@@ -47,10 +47,10 @@ const parseOverrides = overridesString => {
     if (!overridesString) {
         return null;
     }
-    const [feedrate, rapid, spindleSpeed] = overridesString
+    const [feedrate, rapid, spindle] = overridesString
         .split(',')
         .map(override => parseFloat(override));
-    return { feedrate, rapid, spindleSpeed };
+    return { feedrate, rapid, spindle };
 };
 
 const parseStatusMessage = message => {
@@ -126,7 +126,7 @@ const parseStatusMessage = message => {
                 : null,
         overrides: !status.Ov ? null : {
             feedrate: status.Ov.feedrate || 0,
-            spindleSpeed: status.Ov.spindleSpeed || 0,
+            spindle: status.Ov.spindle || 0,
             rapid: status.Ov.rapid || 0,
         }
     };
