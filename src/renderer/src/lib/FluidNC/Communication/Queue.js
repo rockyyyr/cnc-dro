@@ -57,6 +57,8 @@ export default class Queue {
     _queue = message => {
         if (this.IMMEDIATE.includes(message)) {
             this.comm.forceSend(message);
+            console.log(`Sending immediate command: ${message}`);
+
 
             if (message === RESET) {
                 this.clear();

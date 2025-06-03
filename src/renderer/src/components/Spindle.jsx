@@ -31,9 +31,6 @@ export default function Spindle() {
         { icon: RotateStop, onClick: () => off(override) },
     ];
 
-    console.log(overrides?.spindle);
-
-
     return (
         <div>
             <Grid x={4}>
