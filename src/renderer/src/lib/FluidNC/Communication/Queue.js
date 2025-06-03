@@ -57,6 +57,7 @@ export default class Queue {
     _queue = message => {
         if (this.IMMEDIATE.includes(message)) {
             this.comm.forceSend(message);
+            this.comm.forceSend([STATUS, STATUS, STATUS].join('\r\n'));
 
             if (message === RESET) {
                 this.clear();
