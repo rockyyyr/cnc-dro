@@ -54,7 +54,6 @@ export default class Serial {
 
                 if (window.env.LOG_COMMS) {
                     console.log(line);
-                    console.log(message);
                 }
             });
         }
