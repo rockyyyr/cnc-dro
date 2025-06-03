@@ -111,11 +111,19 @@ const parseStatusMessage = message => {
             z: status.Pn.includes('Z'),
             probe: status.Pn.includes('P'),
         },
-        accessories: !status.A ? null : {
-            air: status.A.includes('F'),
-            mist: status.A.includes('M'),
-            spindle: status.A.includes('S'),
-        },
+        accessories: status.A
+            ? {
+                air: status.A.includes('F'),
+                mist: status.A.includes('M'),
+                spindle: status.A.includes('S'),
+            }
+            : status.Ov
+                ? {
+                    air: false,
+                    mist: false,
+                    spindle: false,
+                }
+                : null,
         overrides: !status.Ov ? null : {
             feedrate: status.Ov.feedrate || 0,
             spindleSpeed: status.Ov.spindleSpeed || 0,
