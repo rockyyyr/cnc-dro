@@ -3,15 +3,15 @@ import { Context } from '../lib/FluidNC';
 import '../assets/position-panel.css';
 import Grid from '../util/Grid';
 import DataBlock from './DataBlock';
-import { zeroAxis } from '../lib/positions';
+import { zeroWorkAxis } from '../lib/positions';
 
 export default function PositionsPanel() {
     const { workPosition, machinePosition, limits } = useContext(Context);
 
     const blocks = [
-        { label: 'X', value: workPosition.x, secondaryValue: machinePosition.x, unit: 'mm', onClick: () => zeroAxis('X'), variant: limits?.x ? 'danger' : '' },
-        { label: 'Y', value: workPosition.y, secondaryValue: machinePosition.y, unit: 'mm', onClick: () => zeroAxis('Y'), variant: limits?.y ? 'danger' : '' },
-        { label: 'Z', value: workPosition.z, secondaryValue: machinePosition.z, unit: 'mm', onClick: () => zeroAxis('Z'), variant: limits?.z ? 'danger' : '' },
+        { label: 'X', value: workPosition.x, secondaryValue: machinePosition.x, unit: 'mm', onClick: () => zeroWorkAxis('X'), variant: limits?.x ? 'danger' : '' },
+        { label: 'Y', value: workPosition.y, secondaryValue: machinePosition.y, unit: 'mm', onClick: () => zeroWorkAxis('Y'), variant: limits?.y ? 'danger' : '' },
+        { label: 'Z', value: workPosition.z, secondaryValue: machinePosition.z, unit: 'mm', onClick: () => zeroWorkAxis('Z'), variant: limits?.z ? 'danger' : '' },
     ];
 
     return (

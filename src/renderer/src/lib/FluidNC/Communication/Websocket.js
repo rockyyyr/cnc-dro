@@ -1,5 +1,5 @@
 import { WS, PING_INTERVAL } from '../Constants';
-import * as Messages from '../Messages';
+import * as Messages from './Messages';
 
 export default class Websocket {
 

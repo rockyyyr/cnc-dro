@@ -1,6 +1,6 @@
 import api from "./Communication/Api";
 import { FILE_UPLOADED } from './Events';
-import * as Messages from './Messages';
+import * as Messages from './Communication/Messages';
 
 export const getFileList = async () => {
     const response = await api.get('/upload?path=%2F&action=list');
@@ -13,6 +13,10 @@ export const getFile = async filename => {
         name: filename,
         data,
     };
+};
+
+export const deleteFile = async filename => {
+    return api.get(`/upload?path=%2F&filename=${encodeURI(filename)}&action=delete`);
 };
 
 export const getLatestFile = async () => {

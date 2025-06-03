@@ -1,10 +1,20 @@
-import * as Messages from '../Messages';
+import * as Messages from './Messages';
 import States from '../States';
-import { WAIT_FOR_JOG, RESET, STATUS, HOLD, RESUME } from '../Commands';
+import {
+    WAIT_FOR_JOG, RESET, STATUS, HOLD, RESUME,
+    FEED_OVERRIDE_MINUS, FEED_OVERRIDE_PLUS, FEED_OVERRIDE_RESET,
+    SPINDLE_OVERRIDE_MINUS, SPINDLE_OVERRIDE_PLUS, SPINDLE_OVERRIDE_RESET, SPINDLE_OVERRIDE_STOP,
+    AIR_OVERRIDE, MIST_OVERRIDE
+} from '../Commands';
 
 export default class Queue {
 
-    IMMEDIATE = [STATUS, RESET, HOLD, RESUME];
+    IMMEDIATE = [
+        WAIT_FOR_JOG, RESET, STATUS, HOLD, RESUME,
+        FEED_OVERRIDE_MINUS, FEED_OVERRIDE_PLUS, FEED_OVERRIDE_RESET,
+        SPINDLE_OVERRIDE_MINUS, SPINDLE_OVERRIDE_PLUS, SPINDLE_OVERRIDE_RESET, SPINDLE_OVERRIDE_STOP,
+        AIR_OVERRIDE, MIST_OVERRIDE
+    ];
 
     constructor(comm) {
         this.queue = [];

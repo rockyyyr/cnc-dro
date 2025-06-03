@@ -19,7 +19,7 @@ export default function Spindle() {
     const { state, spindleSpeed, accessories, overrides } = useContext(Context);
 
     useEffect(() => {
-        setOverride(state === States.RUN);
+        setOverride(state === States.HOLD);
     }, [state]);
 
     const showNumpad = () => show({

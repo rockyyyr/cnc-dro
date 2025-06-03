@@ -23,6 +23,17 @@ export const Dimensions = {
     }
 };
 
+export const VacuumMode = {
+    min: {
+        x: 50,
+        y: 100,
+    },
+    max: {
+        x: 360,
+        y: 410,
+    }
+};
+
 
 export const ToolSetterPosition = {
     x: 0,

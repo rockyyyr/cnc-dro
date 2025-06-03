@@ -1,4 +1,4 @@
-import * as Messages from '../Messages';
+import * as Messages from './Messages';
 import { REPORT_INTERVAL } from '../Constants';
 
 export default class Serial {
@@ -6,7 +6,6 @@ export default class Serial {
     constructor() {
         this.ready = false;
         this.reconnectInterval = null;
-        this.message = null;
     }
 
     addQueue = queue => {
@@ -52,7 +51,10 @@ export default class Serial {
             this.port.onData(line => {
                 const message = Messages.parseSerialMessage(line);
                 callback(message);
-                this.message = message;
+
+                if (window.env.LOG_COMMS) {
+                    console.log(line);
+                }
             });
         }
     };

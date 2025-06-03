@@ -79,7 +79,7 @@ export default class CNCBoardSimulator {
 
     startAutoReport(broadcast) {
         this.autoReportInterval = setInterval(() => {
-            const autoReport = `<${this.state}|WPos:${this.roundTo(this.x, 3)},${this.roundTo(this.y, 3)},${this.roundTo(this.z, 3)}|WCO:0,0,0|FS:${this.roundTo(this.velocity * 60, 1)},0>`;
+            const autoReport = `<${this.state}|WPos:${this.roundTo(this.x, 3)},${this.roundTo(this.y, 3)},${this.roundTo(this.z, 3)}|WCO:0,0,0|FS:${this.roundTo((this.velocity || 0) * 60, 1)},0|A:FS>`;
             broadcast(autoReport);
 
         }, this.autoReportIntervalTime);

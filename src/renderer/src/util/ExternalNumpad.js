@@ -28,7 +28,6 @@ export default class ExternalNumpad {
 
     async open() {
         window.addEventListener('keyup', event => {
-            console.log(event);
             if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD || ['Backspace', 'NumLock'].includes(event.code)) {
                 this.createCommand(event.code);
             }
