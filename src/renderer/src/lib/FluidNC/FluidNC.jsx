@@ -4,14 +4,14 @@ import FluidNCContext from "./Context";
 import GenericDescriptions from './GenericDescriptions.json';
 import { roundTo } from '../../util/numbers';
 import ExternalNumpad from '../../util/ExternalNumpad';
-import * as Positions from '../positions';
+// import * as Positions from '../positions';
+// import * as Constants from './Constants';
 
 import Comms from './Communication';
 import Queue from './Communication/Queue';
 import * as Messages from './Communication/Messages';
 import States from './States';
 import * as Commands from './Commands';
-import * as Constants from './Constants';
 
 const FluidNC = ({ children }) => {
     const externalNumpadRef = useRef(null);
@@ -85,22 +85,22 @@ const FluidNC = ({ children }) => {
         return () => Comms.close();
     }, []);
 
-    useEffect(() => {
-        if (vacuumMode) {
-            const mPos = {
-                x: roundTo(workX + workOffsetX, 3),
-                y: roundTo(workY + workOffsetY, 3)
-            };
+    // useEffect(() => {
+    //     if (vacuumMode) {
+    //         const mPos = {
+    //             x: roundTo(workX + workOffsetX, 3),
+    //             y: roundTo(workY + workOffsetY, 3)
+    //         };
 
-            Positions.constrainPosition(Constants.VacuumMode, mPos, message => {
-                Comms.send(Commands.HOLD);
-                setNotification({
-                    level: Messages.MessageLevels.ERROR,
-                    value: message
-                });
-            });
-        }
-    }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
+    //         Positions.constrainPosition(Constants.VacuumMode, mPos, message => {
+    //             Comms.send(Commands.HOLD);
+    //             setNotification({
+    //                 level: Messages.MessageLevels.ERROR,
+    //                 value: message
+    //             });
+    //         });
+    //     }
+    // }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
 
     useEffect(() => {
         if (ready) {
@@ -124,7 +124,7 @@ const FluidNC = ({ children }) => {
                     }
 
                     if (message.overrides) {
-                        setOverrides(message.overrides);
+                        setOverrides({ ...message.overrides });
                     }
 
                     if (message.accessories) {

@@ -5,7 +5,7 @@ import Button from './Button';
 
 export default function OverridePanel({ value, onPlus, onMinus }) {
     const { state } = useContext(Context);
-    const disabled = state !== States.RUN;
+    const disabled = state !== States.RUN && state !== States.HOLD;
 
     return (
         <div className="flex-row">
