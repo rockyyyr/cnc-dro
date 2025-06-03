@@ -71,7 +71,10 @@ const FluidNC = ({ children }) => {
         Comms.onopen(async () => {
             setReady(true);
             const queue = new Queue(Comms);
-            queue.onReset(() => setState(States.RESET));
+            queue.onReset(() => {
+                setState(States.RESET);
+                Comms.send(Commands.STATUS);
+            });
 
             Comms.addQueue(queue);
             Comms.autoReport();

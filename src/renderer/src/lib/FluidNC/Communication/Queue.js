@@ -32,6 +32,10 @@ export default class Queue {
             this.acknowledge(message);
             this.setState(message);
             this.ready = true;
+
+            if (this.isWelcomeMessage(message)) {
+                this.comm.forceSend(STATUS);
+            }
         });
     };
 
@@ -124,6 +128,10 @@ export default class Queue {
         }
         this.shouldWaitForJog = false;
         this.startedJogging = false;
+    };
+
+    isWelcomeMessage = message => {
+        return message?.value?.include('Grbl');
     };
 
 };
