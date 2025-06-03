@@ -131,7 +131,7 @@ export default class Queue {
     };
 
     isWelcomeMessage = message => {
-        return message?.value?.include('Grbl');
+        return message?.value?.includes('Grbl');
     };
 
 };
