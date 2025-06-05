@@ -93,7 +93,7 @@ const FluidNC = ({ children }) => {
             };
 
             Positions.constrainPosition(Constants.VacuumMode, mPos, message => {
-                Comms.send(Commands.HOLD);
+                Comms.send(Commands.E_STOP);
                 setNotification({
                     level: Messages.MessageLevels.ERROR,
                     value: message
