@@ -10,7 +10,7 @@ import Probe from '../assets/img/probe.svg';
 import Air from '../assets/img/air.svg';
 import Mist from '../assets/img/mist.svg';
 import TerminalIcon from '../assets/img/terminal.svg';
-import Vacuum from '../assets/img/vacuum.svg';
+// import Vacuum from '../assets/img/vacuum.svg';
 import VacuumPanel from './VacuumPanel';
 
 export default function UtilityPanel() {
@@ -20,7 +20,7 @@ export default function UtilityPanel() {
     const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
-    const { state, limits, accessories, vacuumMode } = useContext(Context);
+    const { state, limits, accessories } = useContext(Context);
 
     useEffect(() => {
         setOverride([States.RUN, States.HOLD].includes(state));
@@ -44,7 +44,7 @@ export default function UtilityPanel() {
         { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: Mist, onClick: toggleMist, variant: accessories?.mist ? 'success' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
-        { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },
+        // { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },
     ];
 
     return (
@@ -54,7 +54,7 @@ export default function UtilityPanel() {
                 onClose={() => setShowProbePanel(false)}
             />
             {buttons.map((button, index) => (
-                <Grid key={index} x={4 / 5}>
+                <Grid key={index}>
                     <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
                 </Grid>
             ))}
