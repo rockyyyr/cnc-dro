@@ -85,22 +85,22 @@ const FluidNC = ({ children }) => {
         return () => Comms.close();
     }, []);
 
-    useEffect(() => {
-        if (vacuumMode) {
-            const mPos = {
-                x: roundTo(workX + workOffsetX, 3),
-                y: roundTo(workY + workOffsetY, 3)
-            };
+    // useEffect(() => {
+    //     if (vacuumMode) {
+    //         const mPos = {
+    //             x: roundTo(workX + workOffsetX, 3),
+    //             y: roundTo(workY + workOffsetY, 3)
+    //         };
 
-            Positions.constrainPosition(Constants.VacuumMode, mPos, message => {
-                Comms.send(Commands.E_STOP);
-                setNotification({
-                    level: Messages.MessageLevels.ERROR,
-                    value: message
-                });
-            });
-        }
-    }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
+    //         Positions.constrainPosition(Constants.VacuumMode, mPos, message => {
+    //             Comms.send(Commands.E_STOP);
+    //             setNotification({
+    //                 level: Messages.MessageLevels.ERROR,
+    //                 value: message
+    //             });
+    //         });
+    //     }
+    // }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
 
     useEffect(() => {
         if (ready) {
