@@ -7,8 +7,8 @@ export const RAPID_SPEED = 3200;
 
 export const Dimensions = {
     Machine: {
-        x: 410,
-        y: 410,
+        x: 408,
+        y: 420,
         z: 148,
     },
     TouchProbe: {
@@ -25,12 +25,12 @@ export const Dimensions = {
 
 export const VacuumMode = {
     min: {
-        x: 50,
-        y: 100,
+        x: 55,
+        y: 85,
     },
     max: {
-        x: 360,
-        y: 410,
+        x: 353,
+        y: 420,
     }
 };
 
