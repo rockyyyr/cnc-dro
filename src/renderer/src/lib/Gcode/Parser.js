@@ -129,7 +129,7 @@ export default class Gcode {
 
             } else if (part.startsWith('X')) {
                 const x = parseFloat(part.substring(1));
-                result.x = roundTo(x - (this.workOffset?.x || 0), 3);
+                result.x = roundTo(x + (this.workOffset?.x || 0), 3);
 
                 if (this.firstX === undefined) {
                     this.firstX = result.x;
@@ -137,7 +137,7 @@ export default class Gcode {
 
             } else if (part.startsWith('Y')) {
                 const y = parseFloat(part.substring(1));
-                result.y = roundTo(y - (this.workOffset?.y || 0), 3);
+                result.y = roundTo(y + (this.workOffset?.y || 0), 3);
 
                 if (this.firstY === undefined) {
                     this.firstY = result.y;
