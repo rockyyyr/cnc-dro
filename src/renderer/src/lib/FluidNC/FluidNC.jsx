@@ -128,8 +128,8 @@ const FluidNC = ({ children }) => {
                     }
 
                     if (message.accessories) {
-                        setAir(message.accessories.air);
-                        setMist(message.accessories.mist);
+                        // setAir(message.accessories.air);
+                        // setMist(message.accessories.mist);
                         setSpindle(message.accessories.spindle);
                     }
 
