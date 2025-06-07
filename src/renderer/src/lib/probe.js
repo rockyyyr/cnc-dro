@@ -9,13 +9,15 @@ const ToolSetterPosition = {
     z: -2
 };
 
+const CORRECTION = 0.12;
+
 export const probeZ = (probeHeight, retract) => {
     return Comms.send(`
         ${REL}
         ${PROBE} Z-20 F${seekProbeSpeed}
         ${RAPID} Z2
         ${PROBE} Z-3 F${feedProbeSpeed}
-        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight - 0.3}
+        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight - CORRECTION}
         ${RAPID} Z${retract || 5}
         ${ABS}
     `);
