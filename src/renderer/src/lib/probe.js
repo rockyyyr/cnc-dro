@@ -15,7 +15,7 @@ export const probeZ = (probeHeight, retract) => {
         ${PROBE} Z-20 F${seekProbeSpeed}
         ${RAPID} Z2
         ${PROBE} Z-3 F${feedProbeSpeed}
-        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight}
+        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight - 0.3}
         ${RAPID} Z${retract || 5}
         ${ABS}
     `);
