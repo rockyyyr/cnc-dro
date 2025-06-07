@@ -17,7 +17,7 @@ export default function UtilityPanel() {
     const [showProbePanel, setShowProbePanel] = useState(false);
     const [showVacuumPanel, setShowVacuumPanel] = useState(false);
     const [showTerminal, setShowTerminal] = useState(false);
-    const [airEnabled, setAirEnabled] = useState(false);
+    // const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
     const { state, limits, accessories, setAir } = useContext(Context);
@@ -27,7 +27,7 @@ export default function UtilityPanel() {
     }, [state]);
 
     const toggleAir = () => {
-        if (airEnabled) {
+        if (accessories?.air) {
             Coolant.disableAir(override);
             setAir(false);
 
@@ -35,7 +35,6 @@ export default function UtilityPanel() {
             Coolant.enableAir(override);
             setAir(true);
         }
-        setAirEnabled(!airEnabled);
     };
 
     const toggleMist = () => {
