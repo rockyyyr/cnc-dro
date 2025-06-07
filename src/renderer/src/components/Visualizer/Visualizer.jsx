@@ -85,6 +85,8 @@ export default function Visualizer() {
 
     useEffect(() => {
         if (line) {
+            console.log(line);
+
             if (gcode?.airEnableLine && gcode.airEnableLine === line - 1) {
                 setAir(true);
             }
