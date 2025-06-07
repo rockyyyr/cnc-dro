@@ -1,7 +1,7 @@
 import { Comms } from './FluidNC';
 import { OFFSET, SET_COORDS } from './Gcode/Commands';
 
-export const zeroWorkAxis = axis => Comms.send(`${OFFSET} ${SET_COORDS} P0 ${axis.toUpperCase()}0`);
+export const zeroWorkAxis = axis => Comms.send(`${OFFSET} ${SET_COORDS} P1 ${axis.toUpperCase()}0`);
 
 export const constrainPosition = ({ min, max }, mPos, callback) => {
     if (mPos.x < min.x || mPos.x > max.x) {
