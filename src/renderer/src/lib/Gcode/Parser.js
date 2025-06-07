@@ -24,7 +24,10 @@ export default class Gcode {
         this.firstCommand;
         this.spindleSpeed;
         this.air;
+        this.airEnableLine;
         this.mist;
+        this.mistEnableLine;
+        this.coolantDisableLine;
         this.minZ = Number.MAX_SAFE_INTEGER;
 
         this.workOffset = workOffset;
@@ -107,8 +110,14 @@ export default class Gcode {
 
                 if (result.m === 7) {
                     this.mist = true;
+                    this.mistEnableLine = result.line;
+
                 } else if (result.m === 8) {
                     this.air = true;
+                    this.airEnableLine = result.line;
+
+                } else if (result.m === 9) {
+                    this.coolantDisableLine = result.line;
                 }
             }
 

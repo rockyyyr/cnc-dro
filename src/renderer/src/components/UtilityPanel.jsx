@@ -20,7 +20,7 @@ export default function UtilityPanel() {
     const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
-    const { state, limits, accessories } = useContext(Context);
+    const { state, limits, accessories, setAir } = useContext(Context);
 
     useEffect(() => {
         setOverride([States.RUN, States.HOLD].includes(state));
@@ -29,8 +29,11 @@ export default function UtilityPanel() {
     const toggleAir = () => {
         if (airEnabled) {
             Coolant.disableAir(override);
+            setAir(false);
+
         } else {
             Coolant.enableAir(override);
+            setAir(true);
         }
         setAirEnabled(!airEnabled);
     };

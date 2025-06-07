@@ -206,7 +206,9 @@ const FluidNC = ({ children }) => {
             z: workOffsetZ,
         },
         vacuumMode,
-        enableVacuumMode: enabled => setVacuumMode(enabled)
+        enableVacuumMode: enabled => setVacuumMode(enabled),
+        setAir,
+        setMist
     };
 
     return (

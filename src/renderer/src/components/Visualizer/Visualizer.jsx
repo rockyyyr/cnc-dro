@@ -23,7 +23,7 @@ const decToMinSec = dm => {
 export default function Visualizer() {
     const ref = useRef(null);
 
-    const { state, message, line, machinePosition, workOffset } = useContext(Context);
+    const { state, message, line, machinePosition, workOffset, setAir, setMist } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -82,6 +82,21 @@ export default function Visualizer() {
             loadGcode();
         }
     }, [message]);
+
+    useEffect(() => {
+        if (line) {
+            if (gcode?.airEnableLine && gcode.airEnableLine === line) {
+                setAir(true);
+            }
+            if (gcode?.mistEnableLine && gcode.mistEnableLine === line) {
+                setMist(true);
+            }
+            if (gcode?.coolantDisableLine && gcode.coolantDisableLine === line) {
+                setAir(false);
+                setMist(false);
+            }
+        }
+    }, [line]);
 
     useEffect(() => {
         if (state === States.IDLE) {
