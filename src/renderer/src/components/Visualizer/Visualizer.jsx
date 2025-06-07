@@ -23,7 +23,7 @@ const decToMinSec = dm => {
 export default function Visualizer() {
     const ref = useRef(null);
 
-    const { state, message, line, machinePosition, workOffset, setAir, setMist } = useContext(Context);
+    const { state, message, line, workPosition, machinePosition, workOffset, setAir, setMist } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -85,8 +85,6 @@ export default function Visualizer() {
 
     useEffect(() => {
         if (line) {
-            console.log(line);
-
             if (gcode?.airEnableLine && line - gcode.airEnableLine < 5) {
                 setAir(true);
             }
@@ -116,15 +114,15 @@ export default function Visualizer() {
 
 
     useEffect(() => {
-        if (scene && machinePosition) {
+        if (scene && workPosition && machinePosition) {
             scene.needsRender = true;
             if (scene.tool) {
-                scene.updateTool(machinePosition);
+                scene.updateTool({ ...machinePosition, z: workPosition.z });
             } else {
-                scene.drawTool(machinePosition);
+                scene.drawTool({ ...machinePosition, z: workPosition.z });
             }
         }
-    }, [machinePosition]);
+    }, [workPosition, machinePosition]);
 
     useEffect(() => {
         if (gcode) {
