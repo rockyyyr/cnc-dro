@@ -87,13 +87,13 @@ export default function Visualizer() {
         if (line) {
             console.log(line);
 
-            if (gcode?.airEnableLine && gcode.airEnableLine === line - 1) {
+            if (gcode?.airEnableLine && line - gcode.airEnableLine < 5) {
                 setAir(true);
             }
-            if (gcode?.mistEnableLine && gcode.mistEnableLine === line - 2) {
+            if (gcode?.mistEnableLine && line - gcode.mistEnableLine < 5) {
                 setMist(true);
             }
-            if (gcode?.coolantDisableLine && gcode.coolantDisableLine === line) {
+            if (gcode?.coolantDisableLine && gcode.coolantDisableLine - line < 3) {
                 setAir(false);
                 setMist(false);
             }
