@@ -34,7 +34,7 @@ export default function Visualizer() {
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
-        Job.reset();
+        Job.abort([setAir, setMist]);
         setFileName(null);
         setGcode(null);
     };
