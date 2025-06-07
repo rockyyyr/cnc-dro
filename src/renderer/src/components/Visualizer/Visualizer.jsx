@@ -23,7 +23,7 @@ const decToMinSec = dm => {
 export default function Visualizer() {
     const ref = useRef(null);
 
-    const { state, message, line, workPosition, machinePosition, workOffset, setAir, setMist } = useContext(Context);
+    const { state, message, line, workPosition, machinePosition, workOffset, setAir, setMist, accessories } = useContext(Context);
     const [scene, setScene] = useState(null);
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
@@ -34,7 +34,7 @@ export default function Visualizer() {
 
     const startJob = () => Job.run(fileName);
     const abortJob = () => {
-        Job.abort([setAir, setMist]);
+        Job.abort({ accessories }, [setAir, setMist]);
         setFileName(null);
         setGcode(null);
     };
