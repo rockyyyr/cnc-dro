@@ -74,6 +74,8 @@ const FluidNC = ({ children }) => {
             queue.onReset(() => {
                 setState(States.RESET);
                 Comms.send(Commands.STATUS);
+                setAir(false);
+                setMist(false);
             });
 
             Comms.addQueue(queue);
