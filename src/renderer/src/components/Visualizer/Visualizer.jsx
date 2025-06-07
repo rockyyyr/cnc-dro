@@ -85,18 +85,13 @@ export default function Visualizer() {
 
     useEffect(() => {
         if (line) {
-            console.log(line);
-
-            if (gcode?.airEnableLine && gcode.airEnableLine === line) {
+            if (gcode?.airEnableLine && gcode.airEnableLine <= line) {
                 setAir(true);
-
-                console.log('Air enabled');
-
             }
-            if (gcode?.mistEnableLine && gcode.mistEnableLine === line) {
+            if (gcode?.mistEnableLine && gcode.mistEnableLine <= line) {
                 setMist(true);
             }
-            if (gcode?.coolantDisableLine && gcode.coolantDisableLine === line) {
+            if (gcode?.coolantDisableLine && gcode.coolantDisableLine <= line) {
                 setAir(false);
                 setMist(false);
             }
