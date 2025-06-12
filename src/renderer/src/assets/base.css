@@ -15,6 +15,9 @@
     --text-2: rgba(235, 235, 245, 0.6);
     --text-3: rgba(235, 235, 245, 0.38);
 
+    --blue: #1890ff;
+    --dark-blue: #313f54;
+
     --ev-button-alt-border: transparent;
     --ev-button-alt-text: var(--text-3);
     --ev-button-alt-bg: var(--gray-1);
@@ -28,7 +31,7 @@
     --danger: #f63537;
     --warning: #faad14;
     --success: #52c41a;
-    --info: #1890ff;
+    --info: var(--blue);
 
     --border-radius: 4px;
 

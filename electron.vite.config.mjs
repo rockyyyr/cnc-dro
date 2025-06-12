@@ -10,6 +10,7 @@ export default defineConfig({
         plugins: [externalizeDepsPlugin()]
     },
     renderer: defineViteConfig(() => ({
+        assetsInclude: ['**/*.gcode', '**/*.nc'],
         resolve: {
             alias: {
                 '@renderer': resolve('src/renderer/src')

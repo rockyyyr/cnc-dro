@@ -6,3 +6,4 @@ out
 .vscode
 *.log*
 .env
+src/renderer/src/test

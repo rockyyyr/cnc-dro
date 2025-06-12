@@ -18,7 +18,7 @@ export default class ExternalNumpad {
             'Numpad3': () => Jog.rightDown(this.distance),
             'Numpad9': () => Jog.rightUp(this.distance),
             'Numpad5': () => Jog.xyZero(),
-            'NumpadDecimal': () => Probe.probeWithToolSetter(),
+            'NumpadDecimal': () => Probe.probeZ(10),
             'NumLock': () => this.distance = 0.1,
             'NumpadDivide': () => this.distance = 1,
             'NumpadMultiply': () => this.distance = 5,

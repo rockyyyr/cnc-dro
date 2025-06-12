@@ -192,7 +192,7 @@ export default class Gcode {
         // determine feedrate (mm/min)
         let feed;
         if (cmd === 'G0') {
-            feed = 3000;
+            feed = 2800;
         } else {
             feed = line.f || this.prevFeedrate;
         }
@@ -281,7 +281,7 @@ export default class Gcode {
         let feedrate;
 
         if (this.currentCommand === Commands.G0) {
-            feedrate = 3000;
+            feedrate = 2800;
 
         } else {
             feedrate = line.f || this.prevFeedrate;

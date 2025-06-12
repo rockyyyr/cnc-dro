@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
-
+import { Constants } from '../../lib/FluidNC';
 import { Commands } from '../../lib/Gcode/Parser';
 
 export default class Scene {
@@ -8,7 +8,7 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = 420;
+        this.size = Math.max(Constants.Dimensions.Machine.x, Constants.Dimensions.Machine.y);
         this.divisions = 20;
 
         this.colorMap = {
@@ -198,7 +198,12 @@ export default class Scene {
                 currentCommand = line.command;
             }
 
-            const color = this.colorMap[currentCommand] || new THREE.Color(0xffffff);
+            console.log(line.f);
+
+
+            const color = line.f >= 3000
+                ? this.colorMap[Commands.G0]
+                : this.colorMap[currentCommand] || new THREE.Color(0xffffff);
 
             if ([Commands.G0, Commands.G1].includes(currentCommand)) {
                 positions.push(startX, startY, startZ, x, y, z);

@@ -60,7 +60,7 @@ export default function ButtonPanel() {
             case JOG:
                 return 'info';
             case PROBE:
-                return 'info';
+                return 'success';
             case IDLE:
                 return '';
         }
@@ -68,7 +68,7 @@ export default function ButtonPanel() {
 
     const buttons = [
         { label: state, disabled: true, variant: alarmVariant(state) },
-        { icon: Home, onClick: () => Comms.send(Commands.HOME) },
+        { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true },
         { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
         { icon: Reset, onClick: () => Comms.send(Commands.RESET) },
         { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '' },
@@ -86,6 +86,7 @@ export default function ButtonPanel() {
                         onClick={button.onClick}
                         variant={button.variant}
                         disabled={button.disabled}
+                        bufferClick={button.bufferClick}
                     />
                 </Grid>
             ))

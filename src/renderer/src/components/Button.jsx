@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import '../assets/button.css';
 
-export default function Button({ label, onClick, icon, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className, bold }) {
+const CLICK_BUFFER_TIMEOUT = 1000;
+
+export default function Button({ label, onClick, icon, invertIcon, iconSize = 50, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className, bold, bufferClick }) {
+    const [buffered, setBuffered] = useState(false);
+
     let fontSize;
     switch (labelSize) {
         case 'xxs':
@@ -54,10 +59,25 @@ export default function Button({ label, onClick, icon, disabled, actuallyDisable
         }
     }
 
+    const clickHandler = () => {
+        if (!onClick || buffered || actuallyDisable || disabled) {
+            return;
+        }
+
+        if (bufferClick) {
+            onClick();
+            setBuffered(true);
+            setTimeout(() => setBuffered(false), CLICK_BUFFER_TIMEOUT);
+
+        } else {
+            onClick();
+        }
+    };
+
     return (
-        <button className={`button ${classes.join(' ')}`} onClick={onClick} style={style} disabled={actuallyDisable && disabled}>
+        <button className={`button ${classes.join(' ')}`} onClick={clickHandler} style={style} disabled={actuallyDisable && disabled}>
             {icon
-                ? (<img src={icon} alt={label} style={{ width: 50, height: 50 }} />)
+                ? (<img src={icon} alt={label} style={{ width: iconSize, height: iconSize, filter: invertIcon ? 'invert(1)' : null }} />)
                 : label !== undefined && label !== null
                     ? (<div style={{ fontSize, fontWeight: bold ? 'bold' : '' }}>{label}</div>)
                     : children

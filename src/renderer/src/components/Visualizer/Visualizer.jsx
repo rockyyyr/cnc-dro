@@ -40,9 +40,9 @@ export default function Visualizer() {
     };
 
     const loadSelectedFile = async file => {
-        const { data } = await Files.getFile(file.name);
+        // const { data } = await Files.getFile(file.name);
         setFileName(file.name);
-        setGcode(new Gcode(data, workOffset, machinePosition));
+        setGcode(new Gcode(file.data, workOffset, machinePosition));
     };
 
     const loadGcode = async () => {
@@ -134,7 +134,7 @@ export default function Visualizer() {
     }, [gcode]);
 
     return (
-        <Grid x={10} y={6} style={{ marginLeft: -22, height: 550, maxHeight: 550 }} noPad>
+        <Grid x={10.4} y={6} style={{ marginLeft: -8, height: 550, maxHeight: 550 }} noPad>
             <FileSelector
                 show={showFileSelector}
                 onClose={() => setShowFileSelector(false)}
@@ -158,7 +158,7 @@ export default function Visualizer() {
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
-                                {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)}
+                                {/* {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)} */}
                                 {<p className={gcode.minZ < 0 ? 'text-warning' : 'text-success'}>Min Z: {gcode.minZ}</p>}
                                 {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)}
                                 {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}

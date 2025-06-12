@@ -15,6 +15,11 @@
     justify-content: space-between;
 }
 
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
 .success-icon {
     background-color: var(--success);
     margin-bottom: -4px;

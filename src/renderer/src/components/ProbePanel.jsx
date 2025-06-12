@@ -133,7 +133,7 @@ export default function ProbePanel({ show, onClose }) {
                     <div className="flex-row">
                         {probeButtons.map((button, index) => (
                             <Grid key={index}>
-                                <Button label={button.label} onClick={button.onClick} bold />
+                                <Button label={button.label} onClick={button.onClick} bold bufferClick />
                             </Grid>
                         ))}
                     </div>

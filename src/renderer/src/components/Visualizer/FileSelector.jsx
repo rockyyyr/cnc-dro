@@ -4,34 +4,33 @@ import { useContext } from 'react';
 import { Context } from '../../lib/FluidNC';
 import Modal from '../../util/Modal';
 import Grid from '../../util/Grid';
-import { Files } from '../../lib/FluidNC';
+import * as ProdFiles from '../../lib/FluidNC/Files';
+import * as DevFiles from '../../lib/FluidNC/DevFiles';
 import Button from '../Button';
 
-import '../../assets/file-selector.css';
+const Files = window.env.NODE_ENV === 'development'
+    ? DevFiles
+    : ProdFiles;
 
-const fileLine = (file, action) => {
-    return (
-        <Button outline
-            label={file.name}
-            labelSize='xs'
-            onClick={() => action(file)}
-            style={{
-                height: 50,
-                width: '100%',
-                border: 'none',
-                justifyContent: 'flex-start',
-                textAlign: 'left',
-            }} />
-    );
-};
+import '../../assets/file-selector.css';
+import Delete from '../../assets/img/cancel.svg';
 
 export default function FileSelector({ show, onClose, onChange, onFilesLoaded }) {
     const [files, setFiles] = useState([]);
     const { message } = useContext(Context);
 
-    const selectFile = file => {
+    const selectFile = async file => {
+        const { data } = await Files.getFile(file.name);
+        file.data = data;
         onChange(file);
         onClose();
+    };
+
+    const deleteFile = async file => {
+        if (window.confirm(`Are you sure you want to delete ${file.name}?`)) {
+            await Files.deleteFile(file.name);
+            setFiles(files.filter(f => f.name !== file.name));
+        }
     };
 
     const getFiles = async () => {
@@ -50,6 +49,7 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
 
     useEffect(() => {
         getFiles();
+        selectFile({ name: '1001.gcode' });
     }, []);
 
     return (
@@ -67,7 +67,34 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
                             {files.map((file, i) => (
                                 <tr key={i}>
                                     <td>
-                                        {fileLine(file, selectFile)}
+                                        <div className='flex-row flex-center'>
+                                            <Button
+                                                outline
+                                                bufferClick
+                                                label={file.name}
+                                                labelSize='xs'
+                                                onClick={() => selectFile(file)}
+                                                style={{
+                                                    height: 50,
+                                                    width: '100%',
+                                                    border: 'none',
+                                                    justifyContent: 'flex-start',
+                                                    textAlign: 'left',
+                                                }} />
+                                            <Button
+                                                icon={Delete}
+                                                invertIcon={true}
+                                                iconSize={30}
+                                                bufferClick
+                                                onClick={() => deleteFile(file)}
+                                                style={{
+                                                    width: 50,
+                                                    height: 50,
+                                                    border: 'none',
+                                                    background: 'none',
+                                                    borderRadius: 0,
+                                                }} />
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

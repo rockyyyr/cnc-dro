@@ -13,3 +13,7 @@
 .file-selector tr:nth-child(odd) {
     background-color: #686767;
 }
+
+.file-selector td {
+    padding: 0;
+}

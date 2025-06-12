@@ -5,7 +5,7 @@ import PositionsPanel from './components/PositionsPanel';
 import JogPanel from './components/JogPanel';
 import Spindle from './components/Spindle';
 import Feeds from './components/Feeds';
-import GCode from './components/Visualizer';
+import Visualizer from './components/Visualizer';
 import UtilityPanel from './components/UtilityPanel';
 import FluidNC from './lib/FluidNC';
 import { NumpadProvider } from './util/Numpad/Context';
@@ -23,12 +23,12 @@ function App() {
                         <Notification />
                         <div className="flex-row" style={{ margin: '0 3px' }}>
                             <ButtonPanel />
-                            <Spacer x={0.5} y={6} vLine />
+                            <Spacer x={0.2} y={6} vLine />
                             <div className="flex-col">
                                 <PositionsPanel />
                                 <JogPanel />
                             </div>
-                            <Spacer x={0.5} y={6} vLine />
+                            <Spacer x={0.2} y={6} vLine />
                             <div className="flex-col">
                                 <UtilityPanel />
                                 <Spacer y={0.25} x={4} hLine />
@@ -36,8 +36,8 @@ function App() {
                                 <Spacer y={0.25} x={4} hLine />
                                 <Feeds />
                             </div>
-                            <Spacer x={0.5} y={6} vLine />
-                            <GCode />
+                            <Spacer x={0.2} y={6} vLine />
+                            <Visualizer />
                         </div>
                     </KeyboardProvider>
                 </NumpadProvider>
