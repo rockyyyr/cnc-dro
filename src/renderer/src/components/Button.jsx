@@ -60,7 +60,7 @@ export default function Button({ label, onClick, icon, invertIcon, iconSize = 50
     }
 
     const clickHandler = () => {
-        if (!onClick || buffered || actuallyDisable || disabled) {
+        if (!onClick || buffered || (actuallyDisable && disabled)) {
             return;
         }
 
