@@ -49,7 +49,7 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
 
     useEffect(() => {
         getFiles();
-        selectFile({ name: '1001.gcode' });
+        selectFile({ name: 'full.gcode' });
     }, []);
 
     return (

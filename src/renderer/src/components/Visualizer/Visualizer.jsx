@@ -152,16 +152,16 @@ export default function Visualizer() {
                                     maxCompleted={gcode.maxLineNumber}
                                 />
                                 <h3>{fileName}</h3>
+                                {/* {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)} */}
+                                {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)}
+                                {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
+                                {<p className={gcode.minZ < 0 ? 'text-warning' : 'text-success'}>Min Z: {gcode.minZ}</p>}
                                 {(gcode.air || gcode.mist) && (
                                     <p>
                                         {gcode.air && <span style={{ paddingRight: 20 }} className='text-success'>Air</span>}
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
-                                {/* {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)} */}
-                                {<p className={gcode.minZ < 0 ? 'text-warning' : 'text-success'}>Min Z: {gcode.minZ}</p>}
-                                {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)}
-                                {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>

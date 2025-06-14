@@ -198,12 +198,7 @@ export default class Scene {
                 currentCommand = line.command;
             }
 
-            console.log(line.f);
-
-
-            const color = line.f >= 3000
-                ? this.colorMap[Commands.G0]
-                : this.colorMap[currentCommand] || new THREE.Color(0xffffff);
+            const color = this.colorMap[currentCommand] || new THREE.Color(0xffffff);
 
             if ([Commands.G0, Commands.G1].includes(currentCommand)) {
                 positions.push(startX, startY, startZ, x, y, z);

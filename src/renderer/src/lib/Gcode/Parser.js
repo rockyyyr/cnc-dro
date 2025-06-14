@@ -1,4 +1,5 @@
 import { roundTo } from '../../util/numbers';
+import { Constants } from '../FluidNC';
 
 export const Commands = {
     G0: 'G0',
@@ -29,6 +30,7 @@ export default class Gcode {
         this.mistEnableLine;
         this.coolantDisableLine;
         this.minZ = Number.MAX_SAFE_INTEGER;
+        this.accelerationCompensation = 0.2777;
 
         this.workOffset = workOffset;
         this.gcode = gcode;
@@ -39,6 +41,7 @@ export default class Gcode {
         this.minLineNumber = this.lines[0]?.line || -1;
         this.maxLineNumber = this.lines[this.lines.length - 1]?.line || -1;
         this.durationMinutes = this.lines.reduce((acc, line) => acc + line.duration, 0);
+        this.durationMinutes = this.durationMinutes + (this.durationMinutes * this.accelerationCompensation);
     }
 
     updateWorkOffset(workOffset) {
@@ -184,77 +187,70 @@ export default class Gcode {
 
     computeTimePerLine(line) {
         const cmd = line.command || this.currentCommand;
-        // only handle G0, G1, G2, G3
-        if (!['G0', 'G1', 'G2', 'G3'].includes(cmd)) {
+
+        if (!Object.values(Commands).includes(cmd)) {
             return 0;
         }
 
-        // determine feedrate (mm/min)
         let feed;
-        if (cmd === 'G0') {
-            feed = 2800;
+
+        if (cmd === Commands.G0) {
+            feed = Constants.RAPID_SPEED;
+
         } else {
             feed = line.f || this.prevFeedrate;
         }
+
         if (!feed || feed <= 0) {
             return 0;
         }
 
-        // starting position
         const x0 = this.prevX != null ? this.prevX : this.initialPosition.x;
         const y0 = this.prevY != null ? this.prevY : this.initialPosition.y;
         const z0 = this.prevZ != null ? this.prevZ : this.initialPosition.z;
 
-        // ending position (if not specified, no move)
         const x1 = line.x != null ? line.x : x0;
         const y1 = line.y != null ? line.y : y0;
         const z1 = line.z != null ? line.z : z0;
 
         if (x1 === x0 && y1 === y0 && z1 === z0) {
-            // no motion
             return 0;
         }
 
         let length = 0;
 
-        if (cmd === 'G0' || cmd === 'G1') {
-            // straight-line move
+        if (cmd === Commands.G0 || cmd === Commands.G1) {
             const dx = x1 - x0;
             const dy = y1 - y0;
             const dz = z1 - z0;
             length = Math.hypot(dx, dy, dz);
+
         } else {
-            // G2/G3 arc move in XY plane; needs i,j offsets
             if (line.i === undefined || line.j === undefined) {
-                // can't compute arc without center offsets
                 return 0;
             }
+
             const cx = x0 + line.i;
             const cy = y0 + line.j;
             const r = Math.hypot(line.i, line.j);
 
-            let theta0 = Math.atan2(y0 - cy, x0 - cx);
-            let theta1 = Math.atan2(y1 - cy, x1 - cx);
+            const theta0 = Math.atan2(y0 - cy, x0 - cx);
+            const theta1 = Math.atan2(y1 - cy, x1 - cx);
             let dTheta = theta1 - theta0;
 
-            if (cmd === 'G2') {
-                // clockwise — ensure negative sweep
+            if (cmd === Commands.G2) {
                 if (dTheta > 0) dTheta -= 2 * Math.PI;
             } else {
-                // G3: counter-clockwise — ensure positive sweep
                 if (dTheta < 0) dTheta += 2 * Math.PI;
             }
 
             length = Math.abs(r * dTheta);
         }
 
-        // time in minutes = length (mm) / feedrate (mm/min)
-        const timeMin = length / feed;
-
-        // update state for next line
         this._updateState(x1, y1, z1, feed, cmd);
 
-        return timeMin;
+        const timeInMinutes = length / feed;
+        return timeInMinutes;
     }
 
     _updateState(x, y, z, feedrate, command) {
@@ -263,64 +259,5 @@ export default class Gcode {
         this.prevZ = z;
         this.prevFeedrate = feedrate;
         this.currentCommand = command;
-    }
-
-    _computeTimeOfSegment(line) {
-        if (line.command) {
-            this.currentCommand = line.command;
-        }
-
-        if (![Commands.G0, Commands.G1, Commands.G2, Commands.G3].includes(this.currentCommand)) {
-            return 0;
-        }
-
-        if (line.x === undefined && line.y === undefined && line.z === undefined) {
-            return 0;
-        }
-
-        let feedrate;
-
-        if (this.currentCommand === Commands.G0) {
-            feedrate = 2800;
-
-        } else {
-            feedrate = line.f || this.prevFeedrate;
-        }
-
-        const prev = {
-            x: this.prevX === undefined ? this.initialPosition.x : this.prevX,
-            y: this.prevY === undefined ? this.initialPosition.y : this.prevY,
-            z: this.prevZ === undefined ? this.initialPosition.z : this.prevZ
-        };
-
-        const cur = {
-            x: line.x === undefined ? prev.x : line.x,
-            y: line.y === undefined ? prev.y : line.y,
-            z: line.z === undefined ? prev.z : line.z
-        };
-
-        const dX = Math.pow(cur.x - prev.x, 2);
-        const dY = Math.pow(cur.y - prev.y, 2);
-        const dZ = Math.pow(cur.z - prev.z, 2);
-
-        const distance = Math.sqrt(dX + dY + dZ);
-
-        if (line.line === 16) {
-            console.log(feedrate);
-            console.log(prev);
-            console.log(cur);
-        }
-
-        this.prevX = cur.x;
-        this.prevY = cur.y;
-        this.prevZ = cur.z;
-
-        if (feedrate && !isNaN(distance)) {
-            return distance / feedrate;
-
-        } else {
-            return 0;
-        }
-
     }
 }
