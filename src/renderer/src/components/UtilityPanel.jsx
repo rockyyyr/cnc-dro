@@ -20,7 +20,7 @@ export default function UtilityPanel() {
     // const [airEnabled, setAirEnabled] = useState(false);
     const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
-    const { state, limits, accessories, setAir } = useContext(Context);
+    const { state, limits, accessories, setAir, disableMovement } = useContext(Context);
 
     useEffect(() => {
         setOverride([States.RUN, States.HOLD].includes(state));
@@ -42,7 +42,7 @@ export default function UtilityPanel() {
     };
 
     const buttons = [
-        { icon: Probe, onClick: () => setShowProbePanel(true), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '' },
+        { icon: Probe, onClick: () => setShowProbePanel(true), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
         { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: Mist, onClick: toggleMist, variant: accessories?.mist ? 'success' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
@@ -57,7 +57,7 @@ export default function UtilityPanel() {
             />
             {buttons.map((button, index) => (
                 <Grid key={index}>
-                    <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                    <Button icon={button.icon} onClick={button.onClick} variant={button.variant} actuallyDisable disabled={button.disabled} />
                 </Grid>
             ))}
             <Terminal

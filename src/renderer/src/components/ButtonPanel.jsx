@@ -18,7 +18,7 @@ export default function ButtonPanel() {
     const [locked, setLocked] = useState(false);
     const [run, setRun] = useState(false);
     const [hold, setHold] = useState(false);
-    const { state } = useContext(Context);
+    const { state, disableMovement } = useContext(Context);
 
     useEffect(() => {
         if (state === ALARM) {
@@ -68,7 +68,7 @@ export default function ButtonPanel() {
 
     const buttons = [
         { label: state, disabled: true, variant: alarmVariant(state) },
-        { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true },
+        { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true, disabled: disableMovement, actuallyDisable: true },
         { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
         { icon: Reset, onClick: () => Comms.send(Commands.RESET) },
         { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '' },
@@ -86,11 +86,11 @@ export default function ButtonPanel() {
                         onClick={button.onClick}
                         variant={button.variant}
                         disabled={button.disabled}
+                        actuallyDisable={button.actuallyDisable}
                         bufferClick={button.bufferClick}
                     />
                 </Grid>
-            ))
-            }
+            ))}
         </div >
     );
 }

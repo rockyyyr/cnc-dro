@@ -43,6 +43,7 @@ const FluidNC = ({ children }) => {
     const [spindle, setSpindle] = useState(false);
 
     const [vacuumMode, setVacuumMode] = useState(false);
+    const [disableMovement, setDisableMovement] = useState(false);
 
     const safeSetNumber = (value, setter) => ![undefined, null].includes(value) && !isNaN(value) && setter(value);
 
@@ -103,6 +104,12 @@ const FluidNC = ({ children }) => {
     //         });
     //     }
     // }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
+
+    useEffect(() => {
+        setDisableMovement(
+            ![States.IDLE, States.JOG].includes(state)
+        );
+    }, [state]);
 
     useEffect(() => {
         if (ready) {
@@ -210,7 +217,8 @@ const FluidNC = ({ children }) => {
         vacuumMode,
         enableVacuumMode: enabled => setVacuumMode(enabled),
         setAir,
-        setMist
+        setMist,
+        disableMovement
     };
 
     return (

@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import '../assets/jog-panel.css';
 import Button from './Button';
 import Grid from '../util/Grid';
+import * as Jog from '../lib/jog';
+import { Context } from '../lib/FluidNC';
+import { useNumpad } from '../util/Numpad';
+import AdvancedJogPanel from './AdvancedJogPanel';
 
 import ArrowUp from '../assets/img/arrow-up.svg';
 import ArrowDown from '../assets/img/arrow-down.svg';
@@ -12,14 +16,12 @@ import ArrowUpRight from '../assets/img/arrow-up-right.svg';
 import ArrowDownLeft from '../assets/img/arrow-down-left.svg';
 import ArrowDownRight from '../assets/img/arrow-down-right.svg';
 
-import * as Jog from '../lib/jog';
-import { useNumpad } from '../util/Numpad';
-import AdvancedJogPanel from './AdvancedJogPanel';
 
 export default function JogPanel() {
     const [jogValue, setJogValue] = useState(5);
     const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
     const { show } = useNumpad();
+    const { disableMovement } = useContext(Context);
 
     const showNumpad = () => show({
         onChange: value => value && setJogValue(value)
@@ -56,21 +58,21 @@ export default function JogPanel() {
             <div className='flex-row'>
                 {row1.map((button, index) => (
                     <Grid key={index} x={button.width || 1}>
-                        <Button icon={button.icon} label={button.label} onClick={button.onClick} />
+                        <Button icon={button.icon} label={button.label} onClick={button.onClick} actuallyDisable disabled={disableMovement} />
                     </Grid>
                 ))}
             </div>
             <div className='flex-row'>
                 {row2.map((button, index) => (
                     <Grid key={index} x={button.width || 1}>
-                        <Button icon={button.icon} label={button.label} onClick={button.onClick} labelSize={button.labelSize} outline={button.outline} />
+                        <Button icon={button.icon} label={button.label} onClick={button.onClick} labelSize={button.labelSize} outline={button.outline} actuallyDisable disabled={disableMovement} />
                     </Grid>
                 ))}
             </div>
             <div className='flex-row'>
                 {row3.map((button, index) => (
                     <Grid key={index} x={button.width || 1}>
-                        <Button icon={button.icon} label={button.label} onClick={button.onClick} />
+                        <Button icon={button.icon} label={button.label} onClick={button.onClick} actuallyDisable disabled={disableMovement} />
                     </Grid>
                 ))}
             </div>
