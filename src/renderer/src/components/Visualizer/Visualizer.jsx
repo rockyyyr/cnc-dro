@@ -162,6 +162,7 @@ export default function Visualizer() {
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
+                                {gcode.movement && (<h4>Movement - {gcode.movement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>

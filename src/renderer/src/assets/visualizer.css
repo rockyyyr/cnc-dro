@@ -8,6 +8,12 @@
     margin-left: 20px;
 }
 
+.visualizer-info-movement {
+    position: fixed;
+    top: 500px;
+    margin-left: 20px;
+}
+
 .visualizer-info p,
 .visualizer-info td {
     font-size: 0.8rem;

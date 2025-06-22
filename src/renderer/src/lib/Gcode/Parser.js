@@ -1,5 +1,6 @@
 import { roundTo } from '../../util/numbers';
 import { Constants } from '../FluidNC';
+import { isMovement, isSectionEnd, displayMovement } from './Comments';
 
 export const Commands = {
     G0: 'G0',
@@ -86,7 +87,7 @@ export default class Gcode {
         if (line.includes(';')) {
             return line.split(';')[0].trim();
         }
-        if (line.includes('(')) {
+        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line)) {
             return line.split('(')[0].trim();
         }
         if (line.includes('%')) {
@@ -96,14 +97,23 @@ export default class Gcode {
     }
 
     _toObject(line) {
-        const parts = line.split(' ');
         const result = {};
 
-        for (const part of parts) {
-            if (part === '') {
-                continue;
-            }
+        if (isMovement(line)) {
+            this.movement = displayMovement(line);
+            return { duration: 0 };
+        }
 
+        if (isSectionEnd(line)) {
+            this.movement = null;
+            return { duration: 0 };
+        }
+
+        const parts = line
+            .split(' ')
+            .filter(part => part.trim() !== '');
+
+        for (const part of parts) {
             if (part.startsWith('N')) {
                 result.line = parseInt(part.substring(1));
             }
