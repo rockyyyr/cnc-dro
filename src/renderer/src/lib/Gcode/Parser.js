@@ -30,6 +30,7 @@ export default class Gcode {
         this.mist;
         this.mistEnableLine;
         this.coolantDisableLine;
+        this.movement;
         this.minZ = Number.MAX_SAFE_INTEGER;
         this.accelerationCompensation = 0.2777;
 
@@ -74,10 +75,12 @@ export default class Gcode {
 
         for (const line of lines) {
             const strippedLine = this._stripCommentsFromLine(line);
+            console.log(strippedLine);
 
             if (strippedLine === '') {
                 continue;
             }
+
             result.push(this._toObject(strippedLine));
         }
         return result;
