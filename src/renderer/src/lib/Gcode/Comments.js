@@ -15,6 +15,7 @@ export const Movements = {
     'MOVEMENT_REDUCED': 'Reduced',
     'MOVEMENT_HIGH_FEED': 'High Feed',
     'MOVEMENT_FINISH_CUTTING': 'Finish Cutting',
+    'MOVEMENT_PARKING': 'Parking'
 };
 
 export const displayMovement = line => {
