@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { Context } from '../../lib/FluidNC';
 import Modal from '../../util/Modal';
-import Grid from '../../util/Grid';
 import * as ProdFiles from '../../lib/FluidNC/Files';
 import * as DevFiles from '../../lib/FluidNC/DevFiles';
 import Button from '../Button';
@@ -41,6 +40,15 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
         }
     };
 
+    const deleteAllFiles = async files => {
+        if (window.confirm(`Are you sure you want to delete all files?`)) {
+            for (const file of files) {
+                await Files.deleteFile(file.name);
+            }
+            setFiles([]);
+        }
+    };
+
     useEffect(() => {
         if (Files.hasNewFile(message)) {
             getFiles();
@@ -57,10 +65,24 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
             onClose={onClose}
         >
             <div style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'hidden', padding: 5 }}>
-                <div className="file-selector">
-                    <Grid x={4}>
-                        <h2>Files</h2>
-                    </Grid>
+                <div className="file-selector" style={{ width: 400, maxHeight: 500, overflowY: 'auto' }}>
+                    <div className='flex-row space-between' style={{ alignItems: 'center', marginBottom: 20, borderBottom: '1px solid lightgrey' }}>
+                        <h2 style={{ paddingLeft: 10 }}>Files</h2>
+                        <Button
+                            icon={Delete}
+                            invertIcon={true}
+                            iconSize={30}
+                            bufferClick
+                            onClick={() => deleteAllFiles(files)}
+                            style={{
+                                width: 50,
+                                height: 50,
+                                border: 'none',
+                                background: 'none',
+                                borderRadius: 0,
+                            }} />
+                    </div>
+
                     <table>
                         <tbody>
                             {files.map((file, i) => (

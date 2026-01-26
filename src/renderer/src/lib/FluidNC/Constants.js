@@ -34,7 +34,6 @@ export const VacuumMode = {
     }
 };
 
-
 export const ToolSetterPosition = {
     x: 0,
     y: 0,

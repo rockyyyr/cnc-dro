@@ -75,7 +75,6 @@ export default class Gcode {
 
         for (const line of lines) {
             const strippedLine = this._stripCommentsFromLine(line);
-            console.log(strippedLine);
 
             if (strippedLine === '') {
                 continue;
@@ -103,12 +102,12 @@ export default class Gcode {
         const result = {};
 
         if (isMovement(line)) {
-            this.movement = displayMovement(line);
+            result.movement = displayMovement(line);
             return { duration: 0 };
         }
 
         if (isSectionEnd(line)) {
-            this.movement = null;
+            result.movement = null;
             return { duration: 0 };
         }
 
