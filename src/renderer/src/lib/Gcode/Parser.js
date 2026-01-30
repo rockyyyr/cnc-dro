@@ -55,7 +55,7 @@ export default class Gcode {
         this.lines = this._format(this.gcode);
     }
 
-    getCurrentMovement(lineNumber) {
+    getMovementAtLine(lineNumber) {
         return this.lines[lineNumber - 1]?.movement || null;
     }
 
