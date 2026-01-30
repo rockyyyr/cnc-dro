@@ -178,7 +178,7 @@ export default function Visualizer() {
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
-                                {currentMovement && (<h4>Movement - {currentMovement}</h4>)}
+                                {currentMovement && (<h4>{currentMovement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
