@@ -55,6 +55,10 @@ export default class Gcode {
         this.lines = this._format(this.gcode);
     }
 
+    getCurrentMovement(lineNumber) {
+        return this.lines[lineNumber - 1]?.movement || null;
+    }
+
     _parseTools(gcode) {
         const matches = gcode.match(TOOLTABLE);
         if (matches) {
@@ -82,7 +86,7 @@ export default class Gcode {
 
             result.push(this._toObject(strippedLine));
         }
-        return result;
+        return result.filter(line => line !== null);
     }
 
     _stripCommentsFromLine(line) {
@@ -102,13 +106,14 @@ export default class Gcode {
         const result = {};
 
         if (isMovement(line)) {
-            result.movement = displayMovement(line);
-            return { duration: 0 };
+            this.movement = displayMovement(line);
+            // return { duration: 0 };
+            return null;
         }
 
         if (isSectionEnd(line)) {
-            result.movement = null;
-            return { duration: 0 };
+            this.movement = null;
+            return null;
         }
 
         const parts = line
@@ -193,6 +198,7 @@ export default class Gcode {
         }
 
         result.duration = this.computeTimePerLine(result);
+        result.movement = this.movement;
 
         return result;
     }

@@ -1,34 +1,16 @@
 # cnc-dro
 
-An Electron application with React
-
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-## Project Setup
-
-### Install
-
+## Start up on Pi
 ```bash
-$ npm install
+$ npm start
 ```
 
-### Development
-
+## Build
 ```bash
-$ npm run dev
+$ npm run rebuild
 ```
 
-### Build
-
-```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+## Preview URL
+```
+http://cnc:5173
 ```

@@ -28,6 +28,7 @@ export default function Visualizer() {
     const [showFileSelector, setShowFileSelector] = useState(false);
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
     const [gcode, setGcode] = useState(null);
+    const [currentMovement, setCurrentMovement] = useState(null);
     const [fileName, setFileName] = useState(null);
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
@@ -94,6 +95,13 @@ export default function Visualizer() {
             if (gcode?.coolantDisableLine && gcode.coolantDisableLine - line < 3) {
                 setAir(false);
                 setMist(false);
+            }
+
+            if (gcode) {
+                const movement = gcode.getMovementAtLine(line);
+                if (movement && movement !== currentMovement) {
+                    setCurrentMovement(movement);
+                }
             }
         }
     }, [line]);
@@ -162,7 +170,7 @@ export default function Visualizer() {
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
-                                {gcode.movement && (<h4>Movement - {gcode.movement}</h4>)}
+                                {currentMovement && (<h4>Movement - {currentMovement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
