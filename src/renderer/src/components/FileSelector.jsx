@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useContext } from 'react';
-import { Context } from '../../lib/FluidNC';
-import Modal from '../../util/Modal';
-import * as ProdFiles from '../../lib/FluidNC/Files';
-import * as DevFiles from '../../lib/FluidNC/DevFiles';
-import Button from '../Button';
+import { Context } from '../lib/FluidNC';
+import Modal from '../util/Modal';
+import * as ProdFiles from '../lib/FluidNC/Files';
+import * as DevFiles from '../lib/FluidNC/DevFiles';
+import Button from './Button';
 
 const Files = window.env.NODE_ENV === 'development'
     ? DevFiles
     : ProdFiles;
 
-import '../../assets/file-selector.css';
-import Delete from '../../assets/img/cancel.svg';
+import '../assets/file-selector.css';
+import Delete from '../assets/img/cancel.svg';
 
 export default function FileSelector({ show, onClose, onChange, onFilesLoaded }) {
     const [files, setFiles] = useState([]);

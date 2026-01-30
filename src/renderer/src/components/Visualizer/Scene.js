@@ -130,10 +130,22 @@ export default class Scene {
         this.cncGroup.add(this.tool);
     }
 
-    updateTool(position) {
+    updateTool(position, follow = false) {
         if (this.tool) {
             this.tool.position.set(position.x, position.y, position.z + this.toolBottom);
             this.tool.updateMatrixWorld();
+
+            if (follow) {
+                const cameraOffset = new THREE.Vector3(0, 150, 150);
+                const toolPosition = new THREE.Vector3(position.x, 0, -position.y);
+
+                this.camera.position.copy(toolPosition).add(cameraOffset);
+                this.camera.lookAt(toolPosition);
+                this.controls.target.copy(toolPosition);
+                this.controls.update();
+
+                this.needsRender = true;
+            }
         }
     }
 

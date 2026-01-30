@@ -11,7 +11,7 @@ import * as Job from '../../lib/job';
 import '../../assets/visualizer.css';
 import Play from '../../assets/img/play.svg';
 import Stop from '../../assets/img/stop.svg';
-import FileSelector from './FileSelector';
+import FileSelector from '../FileSelector';
 
 const decToMinSec = dm => {
     let min = Math.floor(dm);
@@ -29,6 +29,7 @@ export default function Visualizer() {
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
     const [gcode, setGcode] = useState(null);
     const [currentMovement, setCurrentMovement] = useState(null);
+    const [followTool, setFollowTool] = useState(false);
     const [fileName, setFileName] = useState(null);
     const [disablePlay, setDisablePlay] = useState(false);
     const [disableStop, setDisableStop] = useState(false);
@@ -39,6 +40,8 @@ export default function Visualizer() {
         setFileName(null);
         setGcode(null);
     };
+
+    const toggleFollowMode = () => setFollowTool(!followTool);
 
     const loadSelectedFile = async file => {
         // const { data } = await Files.getFile(file.name);
@@ -125,7 +128,7 @@ export default function Visualizer() {
         if (scene && workPosition && machinePosition) {
             scene.needsRender = true;
             if (scene.tool) {
-                scene.updateTool({ ...machinePosition, z: workPosition.z });
+                scene.updateTool({ ...machinePosition, z: workPosition.z }, followTool);
             } else {
                 scene.drawTool({ ...machinePosition, z: workPosition.z });
             }
@@ -150,6 +153,11 @@ export default function Visualizer() {
                 onFilesLoaded={files => setHasFilesLoaded(files.length > 0)}
             />
             <div className='visualizer'>
+                <div className="visualizer-settings">
+                    <Grid x={1.5} y={0.6}>
+                        <Button label="Follow" variant={followTool ? 'info' : ''} labelSize='xxs' onClick={toggleFollowMode} />
+                    </Grid>
+                </div>
                 {fileName && gcode
                     ? (
                         <>

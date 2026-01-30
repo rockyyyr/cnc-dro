@@ -8,6 +8,12 @@
     margin-left: 20px;
 }
 
+.visualizer-settings {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
 .visualizer-info-movement {
     position: fixed;
     top: 500px;
