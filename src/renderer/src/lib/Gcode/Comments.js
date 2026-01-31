@@ -24,5 +24,6 @@ export const displayMovement = line => {
 };
 
 export const isMovement = line => line.includes('MOVEMENT_');
+export const isRapid = line => line.includes('G1 --> G0');
 export const isSectionEnd = line => line.includes('*** SECTION end ***');
 export const isSectionStart = line => line.includes('*** SECTION begin ***');

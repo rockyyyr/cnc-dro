@@ -1,6 +1,6 @@
 import { roundTo } from '../../util/numbers';
 import { Constants } from '../FluidNC';
-import { isMovement, isSectionEnd, displayMovement } from './Comments';
+import { isMovement, isSectionEnd, displayMovement, isRapid } from './Comments';
 
 export const Commands = {
     G0: 'G0',
@@ -31,6 +31,7 @@ export default class Gcode {
         this.mistEnableLine;
         this.coolantDisableLine;
         this.movement;
+        this.rapid;
         this.minZ = Number.MAX_SAFE_INTEGER;
         this.accelerationCompensation = 0.2777;
 
@@ -57,6 +58,10 @@ export default class Gcode {
 
     getMovementAtLine(lineNumber) {
         return this.lines[lineNumber - 1]?.movement || null;
+    }
+
+    getRapidStateAtLine(lineNumber) {
+        return this.lines[lineNumber - 1]?.rapid || false;
     }
 
     _parseTools(gcode) {
@@ -107,8 +112,11 @@ export default class Gcode {
 
         if (isMovement(line)) {
             this.movement = displayMovement(line);
-            // return { duration: 0 };
             return null;
+        }
+
+        if (isRapid(line)) {
+            this.rapid = true;
         }
 
         if (isSectionEnd(line)) {
@@ -178,6 +186,10 @@ export default class Gcode {
                 result.f = parseFloat(part.substring(1));
                 if (result.f) {
                     this.prevFeedrate = result.f;
+
+                    if (result.f < Constants.RAPID_SPEED) {
+                        this.rapid = false;
+                    }
                 }
 
             } else if (part.startsWith('S')) {
@@ -199,6 +211,7 @@ export default class Gcode {
 
         result.duration = this.computeTimePerLine(result);
         result.movement = this.movement;
+        result.rapid = this.rapid || false;
 
         return result;
     }
