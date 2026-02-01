@@ -98,7 +98,7 @@ export default class Gcode {
         if (line.includes(';')) {
             return line.split(';')[0].trim();
         }
-        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line)) {
+        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line) && !isRapid(line)) {
             return line.split('(')[0].trim();
         }
         if (line.includes('%')) {
@@ -117,6 +117,7 @@ export default class Gcode {
 
         if (isRapid(line)) {
             this.rapid = true;
+            return null;
         }
 
         if (isSectionEnd(line)) {
@@ -211,7 +212,7 @@ export default class Gcode {
 
         result.duration = this.computeTimePerLine(result);
         result.movement = this.movement;
-        result.rapid = this.rapid || false;
+        result.rapid = this.rapid;
 
         return result;
     }
