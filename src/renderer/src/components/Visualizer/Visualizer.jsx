@@ -186,7 +186,7 @@ export default function Visualizer() {
                                         {gcode.mist && <span className='text-info'>Mist</span>}
                                     </p>
                                 )}
-                                {currentMovement || isRapid && (<h4 className='text-info'>{isRapid ? 'Rapid' : currentMovement}</h4>)}
+                                {currentMovement || isRapid && (<h4 className={isRapid ? 'text-danger' : 'text-info'} >{isRapid ? 'Rapid' : currentMovement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
