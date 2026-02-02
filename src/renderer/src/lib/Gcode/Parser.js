@@ -1,6 +1,6 @@
 import { roundTo } from '../../util/numbers';
 import { Constants } from '../FluidNC';
-import { isMovement, isSectionEnd, displayMovement, isRapid } from './Comments';
+import { isMovement, isSectionEnd, displayMovement } from './Comments';
 
 export const Commands = {
     G0: 'G0',
@@ -40,6 +40,7 @@ export default class Gcode {
 
         this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
+        console.log(this.lines.filter(line => line.rapid));
         this.length = this.lines.length;
         this.minLineNumber = this.lines[0]?.line || -1;
         this.maxLineNumber = this.lines[this.lines.length - 1]?.line || -1;
@@ -98,7 +99,7 @@ export default class Gcode {
         if (line.includes(';')) {
             return line.split(';')[0].trim();
         }
-        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line) && !isRapid(line)) {
+        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line)) {
             return line.split('(')[0].trim();
         }
         if (line.includes('%')) {
@@ -112,11 +113,6 @@ export default class Gcode {
 
         if (isMovement(line)) {
             this.movement = displayMovement(line);
-            return null;
-        }
-
-        if (isRapid(line)) {
-            this.rapid = true;
             return null;
         }
 
@@ -152,8 +148,13 @@ export default class Gcode {
 
             if (part.startsWith('G')) {
                 result.command = part;
+
                 if (this.firstCommand === undefined) {
                     this.firstCommand = result.command;
+                }
+
+                if (result.command === Commands.G0) {
+                    result.rapid = true;
                 }
 
             } else if (part.startsWith('X')) {
@@ -185,16 +186,14 @@ export default class Gcode {
 
             } else if (part.startsWith('F')) {
                 result.f = parseFloat(part.substring(1));
+
                 if (result.f) {
                     this.prevFeedrate = result.f;
-
-                    if (result.f < Constants.RAPID_SPEED) {
-                        this.rapid = false;
-                    }
                 }
 
             } else if (part.startsWith('S')) {
                 result.s = parseFloat(part.substring(1));
+
                 if (this.spindleSpeed === undefined) {
                     this.spindleSpeed = result.s;
                 }
@@ -210,9 +209,13 @@ export default class Gcode {
             }
         }
 
+
         result.duration = this.computeTimePerLine(result);
         result.movement = this.movement;
-        result.rapid = this.rapid;
+
+        if (this.currentCommand === Commands.G0 && !result.m) {
+            result.rapid = true;
+        }
 
         return result;
     }
