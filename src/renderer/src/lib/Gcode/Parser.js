@@ -40,7 +40,6 @@ export default class Gcode {
 
         this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
-        console.log(this.lines.filter(line => line.rapid));
         this.length = this.lines.length;
         this.minLineNumber = this.lines[0]?.line || -1;
         this.maxLineNumber = this.lines[this.lines.length - 1]?.line || -1;
