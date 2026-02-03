@@ -26,5 +26,7 @@ export const displayMovement = line => {
 
 export const isMovement = line => line.includes('MOVEMENT_');
 export const isRapid = line => line.includes('G1 --> G0');
-export const isSectionEnd = line => line.includes('*** SECTION end ***');
 export const isSectionStart = line => line.includes('*** SECTION begin ***');
+export const isSectionEnd = line => line.includes('*** SECTION end ***');
+export const isSectionData = line => line.includes('SECTION DATA:');
+export const getSectionData = line => !line ? {} : JSON.parse(line.replace('(SECTION DATA:', '').replace(')', '').trim());

@@ -8,6 +8,17 @@
     margin-left: 20px;
 }
 
+.visualizer-info * {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0px 10px;
+    border-radius: 2px;
+    width: fit-content;
+}
+
+.visualizer-info h5 {
+    font-size: 0.9rem;
+}
+
 .visualizer-settings {
     position: fixed;
     top: 10px;

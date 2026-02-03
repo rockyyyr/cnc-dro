@@ -1,6 +1,6 @@
 import { roundTo } from '../../util/numbers';
 import { Constants } from '../FluidNC';
-import { isMovement, isSectionEnd, displayMovement } from './Comments';
+import { isMovement, isSectionStart, isSectionEnd, displayMovement, isSectionData, getSectionData } from './Comments';
 
 export const Commands = {
     G0: 'G0',
@@ -15,6 +15,8 @@ export default class Gcode {
 
     constructor(gcode, workOffset, initialPosition) {
         this.initialPosition = initialPosition;
+        this.sections = [];
+        this.currentSection = -1;
         this.firstX;
         this.firstY;
         this.firstZ;
@@ -41,6 +43,7 @@ export default class Gcode {
         this.tools = this._parseTools(gcode);
         this.lines = this._format(gcode);
         this.length = this.lines.length;
+        this.numOfOperations = this.sections.length;
         this.minLineNumber = this.lines[0]?.line || -1;
         this.maxLineNumber = this.lines[this.lines.length - 1]?.line || -1;
         this.durationMinutes = this.lines.reduce((acc, line) => acc + line.duration, 0);
@@ -62,6 +65,18 @@ export default class Gcode {
 
     getRapidStateAtLine(lineNumber) {
         return this.lines[lineNumber - 1]?.rapid || false;
+    }
+
+    getSectionDataAtLine(lineNumber) {
+        const sectionIndex = this.lines[lineNumber - 1]?.section;
+        const section = sectionIndex === -1
+            ? this.sections[0]
+            : this.sections[sectionIndex];
+
+        return {
+            data: section,
+            index: sectionIndex
+        };
     }
 
     _parseTools(gcode) {
@@ -98,7 +113,7 @@ export default class Gcode {
         if (line.includes(';')) {
             return line.split(';')[0].trim();
         }
-        if (line.includes('(') && !isMovement(line) && !isSectionEnd(line)) {
+        if (line.includes('(') && !isMovement(line) && !isSectionStart(line) && !isSectionEnd(line) && !isSectionData(line)) {
             return line.split('(')[0].trim();
         }
         if (line.includes('%')) {
@@ -115,8 +130,20 @@ export default class Gcode {
             return null;
         }
 
+        if (isSectionStart(line)) {
+            this.currentSection++;
+            return null;
+        }
+
         if (isSectionEnd(line)) {
             this.movement = null;
+            const sectionDuration = this.sections[this.currentSection].durationMinutes || 0;
+            this.sections[this.currentSection].durationMinutes = sectionDuration + (sectionDuration * this.accelerationCompensation);
+            return null;
+        }
+
+        if (isSectionData(line)) {
+            this.sections.push(getSectionData(line));
             return null;
         }
 
@@ -208,9 +235,14 @@ export default class Gcode {
             }
         }
 
-
-        result.duration = this.computeTimePerLine(result);
+        const duration = this.computeTimePerLine(result);
+        result.duration = duration;
         result.movement = this.movement;
+        result.section = this.currentSection;
+
+        if (this.currentSection !== -1) {
+            this.sections[this.currentSection].durationMinutes = (this.sections[this.currentSection].durationMinutes || 0) + duration;
+        }
 
         if (this.currentCommand === Commands.G0 && !result.m) {
             result.rapid = true;

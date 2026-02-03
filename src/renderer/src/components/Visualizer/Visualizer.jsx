@@ -29,6 +29,8 @@ export default function Visualizer() {
     const [hasFilesLoaded, setHasFilesLoaded] = useState(false);
     const [gcode, setGcode] = useState(null);
     const [currentMovement, setCurrentMovement] = useState(null);
+    const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
+    const [currentSection, setCurrentSection] = useState(null);
     const [isRapid, setIsRapid] = useState(false);
     const [followTool, setFollowTool] = useState(false);
     const [fileName, setFileName] = useState(null);
@@ -113,6 +115,13 @@ export default function Visualizer() {
                 if (rapid !== isRapid) {
                     setIsRapid(rapid);
                 }
+
+                const { data, index } = gcode.getSectionDataAtLine(line);
+
+                if (index !== currentSectionIndex) {
+                    setCurrentSectionIndex(index);
+                    setCurrentSection(data);
+                }
             }
         }
     }, [line]);
@@ -149,7 +158,10 @@ export default function Visualizer() {
 
         } else {
             scene?.disposeGcode();
-        };
+            setCurrentSectionIndex(-1);
+            setCurrentSection(null);
+        }
+
     }, [gcode]);
 
     return (
@@ -177,15 +189,14 @@ export default function Visualizer() {
                                 />
                                 <h3>{fileName}</h3>
                                 {/* {gcode.tools && (<p>Tools: {gcode.tools.map(tool => `${tool.name}${tool.diameter ? ` (${parseFloat(tool.diameter).toFixed(2)})` : ''}`).join(', ')}</p>)} */}
-                                {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)}
                                 {gcode.durationMinutes && (<p>Duration: {decToMinSec(gcode.durationMinutes)}m</p>)}
+                                {gcode.numOfOperations && (<p>Operations: {gcode.numOfOperations}</p>)}
+                                {/* {gcode.spindleSpeed && (<p>Spindle: {gcode.spindleSpeed}rpm</p>)} */}
                                 {<p className={gcode.minZ < 0 ? 'text-warning' : 'text-success'}>Min Z: {gcode.minZ}</p>}
-                                {(gcode.air || gcode.mist) && (
-                                    <p>
-                                        {gcode.air && <span style={{ paddingRight: 20 }} className='text-success'>Air</span>}
-                                        {gcode.mist && <span className='text-info'>Mist</span>}
-                                    </p>
-                                )}
+                                {gcode.air && (<p className='text-success'>Air</p>)}
+                                {currentSection && (<h4 style={{ marginTop: 10 }}>{gcode.numOfOperations > 1 ? `${currentSectionIndex + 1}. ` : ''}{currentSection.name}</h4>)}
+                                {currentSection?.durationMinutes && gcode.numOfOperations > 1 && (<p>Duration: {decToMinSec(currentSection.durationMinutes)}m</p>)}
+                                {currentSection && (<p>Op: {currentSection.strategy}</p>)}
                                 {currentMovement || isRapid && (<h4 className={isRapid ? 'text-danger' : 'text-info'} >{isRapid ? 'Rapid' : currentMovement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>

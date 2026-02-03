@@ -23,6 +23,7 @@ export default class Scene {
         this.cncGroup.scale.set(1, 1, 1);
         this.gcodeGroup = null;
         this.plane = null;
+        this.axesHelper = null;
         this.tool = null;
         this.toolHeight = 15;
         this.toolBottom = this.toolHeight / 2;
@@ -72,8 +73,8 @@ export default class Scene {
     }
 
     drawAxes() {
-        const axesHelper = new THREE.AxesHelper(50);
-        this.cncGroup.add(axesHelper);
+        this.axesHelper = new THREE.AxesHelper(50);
+        this.cncGroup.add(this.axesHelper);
     }
 
     drawPlaneLabels() {
@@ -149,8 +150,15 @@ export default class Scene {
         }
     }
 
+    updatePlaneZPosition(z = 0) {
+        this.plane.position.set((this.size / 2), z, -(this.size / 2));
+        this.axesHelper.position.set(0, 0, z);
+    }
+
     draw(gcode) {
         this.disposeGcode();
+        this.updatePlaneZPosition(gcode.minZ);
+
         this.gcodeGroup = new THREE.Group();
 
         if (gcode.length === 0) {
