@@ -197,7 +197,7 @@ export default function Visualizer() {
                                 {currentSection && (<h4 style={{ marginTop: 10 }}>{gcode.numOfOperations > 1 ? `${currentSectionIndex + 1}. ` : ''}{currentSection.name}</h4>)}
                                 {currentSection?.durationMinutes && gcode.numOfOperations > 1 && (<p>Duration: {decToMinSec(currentSection.durationMinutes)}m</p>)}
                                 {currentSection && (<p>Op: {currentSection.strategy}</p>)}
-                                {currentMovement || isRapid && (<h4 className={isRapid ? 'text-danger' : 'text-info'} >{isRapid ? 'Rapid' : currentMovement}</h4>)}
+                                {(currentMovement || isRapid) && (<h4 className={isRapid ? 'text-danger' : 'text-info'} >{isRapid ? 'Rapid' : currentMovement}</h4>)}
                             </div>
                             <div className='visualizer-controls'>
                                 <Grid x={1.25} y={0.8}>
