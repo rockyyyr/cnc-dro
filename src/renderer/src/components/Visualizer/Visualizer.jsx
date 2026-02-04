@@ -160,6 +160,8 @@ export default function Visualizer() {
             scene?.disposeGcode();
             setCurrentSectionIndex(-1);
             setCurrentSection(null);
+            setCurrentMovement(null);
+            setIsRapid(false);
         }
 
     }, [gcode]);
