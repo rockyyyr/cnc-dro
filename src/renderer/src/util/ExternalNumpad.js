@@ -1,3 +1,4 @@
+import { Constants } from '../lib/FluidNC';
 import * as Jog from '../lib/jog';
 import * as Probe from '../lib/probe';
 
@@ -18,11 +19,12 @@ export default class ExternalNumpad {
             'Numpad3': () => Jog.rightDown(this.distance),
             'Numpad9': () => Jog.rightUp(this.distance),
             'Numpad5': () => Jog.xyZero(),
+            'Numpad0': () => Jog.goToMachine(Constants.ToolChangePosition),
             'NumpadDecimal': () => Probe.probeZ(10),
             'NumLock': () => this.distance = 0.1,
             'NumpadDivide': () => this.distance = 1,
             'NumpadMultiply': () => this.distance = 5,
-            'Backspace': () => this.distance = 10,
+            'Backspace': () => this.distance = 10
         };
     }
 

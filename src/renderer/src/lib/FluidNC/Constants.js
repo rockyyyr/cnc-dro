@@ -23,6 +23,18 @@ export const Dimensions = {
     }
 };
 
+export const ParkPosition = {
+    x: Dimensions.Machine.x / 2,
+    y: Dimensions.Machine.y,
+    z: -5,
+};
+
+export const ToolChangePosition = {
+    x: Dimensions.Machine.x / 2,
+    y: 50,
+    z: -5,
+};
+
 export const VacuumMode = {
     min: {
         x: 55,

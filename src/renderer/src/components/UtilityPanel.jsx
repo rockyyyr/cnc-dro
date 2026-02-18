@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from 'react';
-import { Constants } from '../lib/FluidNC';
+// import { Constants } from '../lib/FluidNC';
 import Grid from '../util/Grid';
 import Button from './Button';
 import ProbePanel from './ProbePanel';
-import { probeZ } from '../lib/probe';
+// import { probeZ } from '../lib/probe';
 import { Context, States } from '../lib/FluidNC';
 import * as Coolant from '../lib/coolant';
 import Terminal from './Terminal';
@@ -46,7 +46,8 @@ export default function UtilityPanel() {
 
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(true), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
-        { icon: TouchPlate, onClick: () => probeZ(Constants.Dimensions.TouchPlate.height), variant: accessories?.mist ? 'success' : '' },
+        // { icon: TouchPlate, onClick: () => probeZ(Constants.Dimensions.TouchPlate.height), variant: accessories?.mist ? 'success' : '' },
+        { icon: TouchPlate, onClick: () => { }, variant: accessories?.mist ? 'success' : '' },
         { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
         // { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },

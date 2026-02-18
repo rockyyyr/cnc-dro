@@ -7,6 +7,7 @@ import Spacer from '../util/Spacer';
 import * as Jog from '../lib/jog';
 
 import Park from '../assets/img/park.svg';
+import Tool from '../assets/img/tool.svg';
 
 const jogContainerSize = 487;
 const actualMachineSize = 410;
@@ -63,8 +64,9 @@ export default function AdvancedJogPanel({ show, onClose }) {
         { label: 'XY0', onClick: () => bufferMovement({ x: 0, y: 0 }) },
         { label: 'X0', onClick: () => bufferMovement({ x: 0 }) },
         { label: 'Y0', onClick: () => bufferMovement({ y: 0 }) },
-        { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) },
-        { icon: Park, onClick: () => bufferMovement({ x: Constants.Dimensions.Machine.x / 2, y: Constants.Dimensions.Machine.y, z: 0 }, Jog.goToMachine) },
+        // { label: 'ZUp', onClick: () => bufferMovement({ z: -10 }, Jog.goToMachine) },
+        { icon: Tool, onClick: () => bufferMovement(Constants.ToolChangePosition, Jog.goToMachine) },
+        { icon: Park, onClick: () => bufferMovement(Constants.ParkPosition, Jog.goToMachine) },
     ];
 
     useEffect(() => {
