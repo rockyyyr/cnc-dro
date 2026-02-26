@@ -6,6 +6,7 @@ import Button from './Button';
 import Input from './Input';
 import { probeZ, probeXY, probeX, probeY, probeWithToolSetter } from '../lib/probe';
 import Spacer from '../util/Spacer';
+import * as Storage from '../util/storage';
 
 import DownLeft from '../assets/img/arrow-down-left.svg';
 import DownRight from '../assets/img/arrow-down-right.svg';
@@ -18,7 +19,7 @@ import ToolSetter from '../assets/img/tool-setter.svg';
 import Success from '../assets/img/check.svg';
 import Failed from '../assets/img/cancel.svg';
 
-const Storage = {
+const StorageNames = {
     ProbeHeight: 'probePanel/probeHeight',
     ProbeWidth: 'probePanel/probeWidth',
     ToolDiameter: 'probePanel/toolDiameter',
@@ -44,9 +45,9 @@ export default function ProbePanel({ show, onClose }) {
     const [touchProbePresetActive, setTouchProbePresetActive] = useState(false);
 
     useEffect(() => {
-        const savedProbeHeight = localStorage.getItem(Storage.ProbeHeight);
-        const savedProbeWidth = localStorage.getItem(Storage.ProbeWidth);
-        const savedToolDiameter = localStorage.getItem(Storage.ToolDiameter);
+        const savedProbeHeight = localStorage.getItem(StorageNames.ProbeHeight);
+        const savedProbeWidth = localStorage.getItem(StorageNames.ProbeWidth);
+        const savedToolDiameter = localStorage.getItem(StorageNames.ToolDiameter);
 
         if (savedProbeHeight) {
             setProbeHeight(parseFloat(savedProbeHeight));
@@ -84,16 +85,10 @@ export default function ProbePanel({ show, onClose }) {
 
     const runToolSetter = () => probeWithToolSetter(probeDirection);
 
-    // const runAndClose = command => () => {
-    //     command();
-    //     onClose();
-    // };
 
-    const updateAndSaveSetting = (data, command, storageName) => {
-        command(data);
+    const deactivatePresets = () => {
         setTouchProbePresetActive(false);
         setTouchPlatePresetActive(false);
-        localStorage.setItem(storageName, data);
     };
 
     const directions = [
@@ -125,9 +120,6 @@ export default function ProbePanel({ show, onClose }) {
             show={show}
             onClose={() => onClose()}
         >
-            {/* <Grid x={4}> */}
-            {/* <h2 style={{ marginBottom: 10, textAlign: 'center' }}>Probe</h2> */}
-            {/* </Grid> */}
             <div className="flex-row">
                 <div>
                     <div className="flex-row">
@@ -168,7 +160,7 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Probe Height'
                             value={probeHeight}
-                            onChange={value => value !== undefined && updateAndSaveSetting(value, setProbeHeight, Storage.ProbeHeight)}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setProbeHeight, StorageNames.ProbeHeight, deactivatePresets)}
                         />
 
                         <Input
@@ -176,7 +168,7 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Probe Width'
                             value={probeWidth}
-                            onChange={value => value !== undefined && updateAndSaveSetting(value, setProbeWidth, Storage.ProbeWidth)}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setProbeWidth, StorageNames.ProbeWidth, deactivatePresets)}
                         />
                     </div>
 
@@ -186,7 +178,7 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Tool ⌀'
                             value={toolDiameter}
-                            onChange={value => value !== undefined && updateAndSaveSetting(value, setToolDiameter, Storage.ToolDiameter)}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setToolDiameter, StorageNames.ToolDiameter, deactivatePresets)}
                         />
                     </div>
                 </div>

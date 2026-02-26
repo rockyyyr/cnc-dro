@@ -11,19 +11,22 @@ const ToolSetterPosition = {
 
 const CORRECTION = 0.12;
 
-export const probeZ = (probeHeight, retract) => {
+export const probeZ = (probeHeight, retract, setCoords = true) => {
     return Comms.send(`
         ${REL}
         ${PROBE} Z-20 F${seekProbeSpeed}
         ${RAPID} Z2
         ${PROBE} Z-3 F${feedProbeSpeed}
-        ${OFFSET} ${SET_COORDS} P1 Z${probeHeight - CORRECTION}
+        ${setCoords
+            ? `${OFFSET} ${SET_COORDS} P1 Z${probeHeight - CORRECTION}`
+            : ''
+        }
         ${RAPID} Z${retract || 5}
         ${ABS}
     `);
 };
 
-const probeHorizontal = (probeWidth, toolDiameter, direction, axis) => {
+const probeHorizontal = (probeWidth, toolDiameter, direction, axis, setCoords = true) => {
     const toolRadius = toolDiameter / 2;
     const offset = probeWidth + toolRadius;
     const pos = amount => `${axis}${amount * direction}`;
@@ -33,7 +36,10 @@ const probeHorizontal = (probeWidth, toolDiameter, direction, axis) => {
         ${PROBE} ${pos(-40)} F${seekProbeSpeed}
         ${RAPID} ${pos(2)}
         ${PROBE} ${pos(-3)} F${feedProbeSpeed}
-        ${OFFSET} ${SET_COORDS} P1 ${pos(offset)}
+        ${setCoords
+            ? `${OFFSET} ${SET_COORDS} P1 ${pos(offset)}`
+            : ''
+        }
         ${RAPID} ${pos(5)}
         ${ABS}
     `);
@@ -84,4 +90,16 @@ export const probeWithToolSetter = () => {
 
     const retract = 50;
     return probeZ(ToolSetterPosition.z, retract);
+};
+
+export const measureX = (probeWidth, toolDiameter, direction) => {
+    return probeHorizontal(probeWidth, toolDiameter, direction, 'X', false);
+};
+
+export const measureY = (probeWidth, toolDiameter, direction) => {
+    return probeHorizontal(probeWidth, toolDiameter, direction, 'Y', false);
+};
+
+export const measureZ = () => {
+    return probeZ(0, 3, false);
 };

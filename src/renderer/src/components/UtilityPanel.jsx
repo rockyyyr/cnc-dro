@@ -9,10 +9,11 @@ import * as Coolant from '../lib/coolant';
 import Terminal from './Terminal';
 
 import Probe from '../assets/img/probe.svg';
-import TouchPlate from '../assets/img/touchplate.svg';
+import Measure from '../assets/img/measure.svg';
 import Air from '../assets/img/air.svg';
 // import Mist from '../assets/img/mist.svg';
 import TerminalIcon from '../assets/img/terminal.svg';
+import MeasurePanel from './MeasurePanel';
 // import Vacuum from '../assets/img/vacuum.svg';
 // import VacuumPanel from './VacuumPanel';
 
@@ -20,6 +21,7 @@ export default function UtilityPanel() {
     const [showProbePanel, setShowProbePanel] = useState(false);
     // const [showVacuumPanel, setShowVacuumPanel] = useState(false);
     const [showTerminal, setShowTerminal] = useState(false);
+    const [showMeasurePanel, setShowMeasurePanel] = useState(false);
     // const [airEnabled, setAirEnabled] = useState(false);
     // const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
@@ -47,7 +49,7 @@ export default function UtilityPanel() {
     const buttons = [
         { icon: Probe, onClick: () => setShowProbePanel(true), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
         // { icon: TouchPlate, onClick: () => probeZ(Constants.Dimensions.TouchPlate.height), variant: accessories?.mist ? 'success' : '' },
-        { icon: TouchPlate, onClick: () => { }, variant: accessories?.mist ? 'success' : '' },
+        { icon: Measure, onClick: () => setShowMeasurePanel(true), variant: accessories?.mist ? 'success' : '' },
         { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
         // { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },
@@ -59,15 +61,19 @@ export default function UtilityPanel() {
                 show={showProbePanel}
                 onClose={() => setShowProbePanel(false)}
             />
+            <MeasurePanel
+                show={showMeasurePanel}
+                onClose={() => setShowMeasurePanel(false)}
+            />
+            <Terminal
+                show={showTerminal}
+                onClose={() => setShowTerminal(false)}
+            />
             {buttons.map((button, index) => (
                 <Grid key={index}>
                     <Button icon={button.icon} onClick={button.onClick} variant={button.variant} actuallyDisable disabled={button.disabled} />
                 </Grid>
             ))}
-            <Terminal
-                show={showTerminal}
-                onClose={() => setShowTerminal(false)}
-            />
             {/* <VacuumPanel
                 show={showVacuumPanel}
                 onClose={() => setShowVacuumPanel(false)}
