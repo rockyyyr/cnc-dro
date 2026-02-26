@@ -1,27 +1,27 @@
 import { useState, useContext, useEffect } from 'react';
-import { Context, Constants } from '../lib/FluidNC';
+import { Context } from '../lib/FluidNC';
+import { Dimensions, Directions } from '../lib/FluidNC/Constants';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
 import Input from './Input';
-import { probeZ, probeXY, probeX, probeY, probeWithToolSetter } from '../lib/probe';
+import { probeZ, probeXY, probeX, probeY } from '../lib/probe';
 import Spacer from '../util/Spacer';
 import * as Storage from '../util/storage';
 
-import DownLeft from '../assets/img/arrow-down-left.svg';
-import DownRight from '../assets/img/arrow-down-right.svg';
-import UpLeft from '../assets/img/arrow-up-left.svg';
-import UpRight from '../assets/img/arrow-up-right.svg';
-import TouchProbe from '../assets/img/touchprobe.svg';
-import TouchPlate from '../assets/img/touchplate.svg';
-import ToolSetter from '../assets/img/tool-setter.svg';
+import Left from '../assets/img/arrow-left.svg';
+import Right from '../assets/img/arrow-right.svg';
+import Up from '../assets/img/arrow-up.svg';
+import Down from '../assets/img/arrow-down.svg';
+// import TouchProbe from '../assets/img/touchprobe.svg';
+// import TouchPlate from '../assets/img/touchplate.svg';
+// import ToolSetter from '../assets/img/tool-setter.svg';
 
 import Success from '../assets/img/check.svg';
 import Failed from '../assets/img/cancel.svg';
 
 const StorageNames = {
     ProbeHeight: 'probePanel/probeHeight',
-    ProbeWidth: 'probePanel/probeWidth',
     ToolDiameter: 'probePanel/toolDiameter',
 };
 
@@ -37,65 +37,59 @@ const TDStyle = {
 
 export default function ProbePanel({ show, onClose }) {
     const { probeResults } = useContext(Context);
-    const [probeHeight, setProbeHeight] = useState(5);
-    const [probeWidth, setProbeWidth] = useState(5);
-    const [toolDiameter, setToolDiameter] = useState(6);
-    const [probeDirection, setProbeDirection] = useState({ y: -1, x: -1, label: 'downleft' });
-    const [touchPlatePresetActive, setTouchPlatePresetActive] = useState(false);
-    const [touchProbePresetActive, setTouchProbePresetActive] = useState(false);
+    const [probeHeight, setProbeHeight] = useState(Dimensions.TouchProbe.height);
+    const [toolDiameter, setToolDiameter] = useState(Dimensions.TouchProbe.diameter);
+    const [xDirection, setXDirection] = useState(Directions.Right);
+    const [yDirection, setYDirection] = useState(Directions.Up);
+    // const [touchPlatePresetActive, setTouchPlatePresetActive] = useState(false);
+    // const [touchProbePresetActive, setTouchProbePresetActive] = useState(false);
 
     useEffect(() => {
         const savedProbeHeight = localStorage.getItem(StorageNames.ProbeHeight);
-        const savedProbeWidth = localStorage.getItem(StorageNames.ProbeWidth);
         const savedToolDiameter = localStorage.getItem(StorageNames.ToolDiameter);
 
         if (savedProbeHeight) {
             setProbeHeight(parseFloat(savedProbeHeight));
         }
-        if (savedProbeWidth) {
-            setProbeWidth(parseFloat(savedProbeWidth));
-        }
+
         if (savedToolDiameter) {
             setToolDiameter(parseFloat(savedToolDiameter));
         }
     }, []);
 
     const runProbeZ = () => probeZ(probeHeight);
-    const runProbeXY = () => probeXY(probeWidth, toolDiameter, probeDirection);
-    const runProbeX = () => probeX(probeWidth, toolDiameter, probeDirection);
-    const runProbeY = () => probeY(probeWidth, toolDiameter, probeDirection);
+    const runProbeXY = () => probeXY(toolDiameter, { x: xDirection, y: yDirection });
+    const runProbeX = () => probeX(toolDiameter, xDirection);
+    const runProbeY = () => probeY(toolDiameter, yDirection);
 
-    const presetTouchProbe = () => {
-        const { width, height, diameter } = Constants.Dimensions.TouchProbe;
-        setProbeHeight(height);
-        setProbeWidth(width);
-        setToolDiameter(diameter);
-        setTouchPlatePresetActive(false);
-        setTouchProbePresetActive(true);
-    };
+    // const presetTouchProbe = () => {
+    //     const { width, height, diameter } = Dimensions.TouchProbe;
+    //     setProbeHeight(height);
+    //     setProbeWidth(width);
+    //     setToolDiameter(diameter);
+    //     setTouchPlatePresetActive(false);
+    //     setTouchProbePresetActive(true);
+    // };
 
-    const presetTouchPlate = () => {
-        const { width, height, diameter } = Constants.Dimensions.TouchPlate;
-        setProbeHeight(height);
-        setProbeWidth(width);
-        setToolDiameter(diameter);
-        setTouchPlatePresetActive(true);
-        setTouchProbePresetActive(false);
-    };
+    // const presetTouchPlate = () => {
+    //     const { width, height, diameter } = Dimensions.TouchPlate;
+    //     setProbeHeight(height);
+    //     setProbeWidth(width);
+    //     setToolDiameter(diameter);
+    //     setTouchPlatePresetActive(true);
+    //     setTouchProbePresetActive(false);
+    // };
 
-    const runToolSetter = () => probeWithToolSetter(probeDirection);
-
-
-    const deactivatePresets = () => {
-        setTouchProbePresetActive(false);
-        setTouchPlatePresetActive(false);
-    };
+    // const deactivatePresets = () => {
+    //     setTouchProbePresetActive(false);
+    //     setTouchPlatePresetActive(false);
+    // };
 
     const directions = [
-        { icon: DownLeft, onClick: () => setProbeDirection({ y: -1, x: -1, label: 'downleft' }), variant: probeDirection?.label === 'downleft' ? 'info' : '' },
-        { icon: DownRight, onClick: () => setProbeDirection({ y: -1, x: 1, label: 'downright' }), variant: probeDirection?.label === 'downright' ? 'info' : '' },
-        { icon: UpLeft, onClick: () => setProbeDirection({ y: 1, x: -1, label: 'upleft' }), variant: probeDirection?.label === 'upleft' ? 'info' : '' },
-        { icon: UpRight, onClick: () => setProbeDirection({ y: 1, x: 1, label: 'upright' }), variant: probeDirection?.label === 'upright' ? 'info' : '' },
+        { icon: Left, onClick: () => setXDirection(Directions.Left), active: xDirection === Directions.Left },
+        { icon: Right, onClick: () => setXDirection(Directions.Right), active: xDirection === Directions.Right },
+        { icon: Up, onClick: () => setYDirection(Directions.Up), active: yDirection === Directions.Up },
+        { icon: Down, onClick: () => setYDirection(Directions.Down), active: yDirection === Directions.Down },
     ];
 
     const probeButtons = [
@@ -105,15 +99,15 @@ export default function ProbePanel({ show, onClose }) {
         { label: 'Y', onClick: runProbeY },
     ];
 
-    const presets = [
-        { icon: TouchProbe, onClick: presetTouchProbe, variant: touchProbePresetActive ? 'info' : 'warning' },
-        { icon: TouchPlate, onClick: presetTouchPlate, variant: touchPlatePresetActive ? 'info' : 'warning' },
-    ];
+    // const presets = [
+    //     { icon: TouchProbe, onClick: presetTouchProbe, variant: 'warning', active: touchProbePresetActive },
+    //     { icon: TouchPlate, onClick: presetTouchPlate, variant: 'warning', active: touchPlatePresetActive },
+    // ];
 
-    const macros = [
-        { _blank: true },
-        { icon: ToolSetter, onClick: runToolSetter, variant: 'success' },
-    ];
+    // const macros = [
+    //     { _blank: true },
+    //     { icon: ToolSetter, onClick: () => { }, variant: 'success' },
+    // ];
 
     return (
         <Modal
@@ -130,9 +124,17 @@ export default function ProbePanel({ show, onClose }) {
                         ))}
                     </div>
                     <div className="flex-row">
+                        {directions.map((button, index) => (
+                            <Grid key={index}>
+                                <Button icon={button.icon} onClick={button.onClick} active={button.active} />
+                            </Grid>
+                        ))}
+                    </div>
+                    {/* <Spacer y={0.2} x={4} hLine />
+                    <div className="flex-row">
                         {presets.map((button, index) => (
                             <Grid key={index}>
-                                <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
+                                <Button icon={button.icon} onClick={button.onClick} variant={button.variant} active={button.active} />
                             </Grid>
                         ))}
                         {macros.map((button, index) => (
@@ -142,15 +144,8 @@ export default function ProbePanel({ show, onClose }) {
                                 )}
                             </Grid>
                         ))}
-                    </div>
-                    <Spacer y={0.2} x={4} hLine />
-                    <div className="flex-row">
-                        {directions.map((button, index) => (
-                            <Grid key={index}>
-                                <Button icon={button.icon} onClick={button.onClick} variant={button.variant} />
-                            </Grid>
-                        ))}
-                    </div>
+                    </div> */}
+
 
                     <Spacer y={0.2} x={4} hLine />
 
@@ -160,25 +155,15 @@ export default function ProbePanel({ show, onClose }) {
                             inputWidth={1}
                             label='Probe Height'
                             value={probeHeight}
-                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setProbeHeight, StorageNames.ProbeHeight, deactivatePresets)}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setProbeHeight, StorageNames.ProbeHeight)}
                         />
 
-                        <Input
-                            labelSize='xxs'
-                            inputWidth={1}
-                            label='Probe Width'
-                            value={probeWidth}
-                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setProbeWidth, StorageNames.ProbeWidth, deactivatePresets)}
-                        />
-                    </div>
-
-                    <div className='flex-row'>
                         <Input
                             labelSize='xxs'
                             inputWidth={1}
                             label='Tool ⌀'
                             value={toolDiameter}
-                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setToolDiameter, StorageNames.ToolDiameter, deactivatePresets)}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setToolDiameter, StorageNames.ToolDiameter)}
                         />
                     </div>
                 </div>

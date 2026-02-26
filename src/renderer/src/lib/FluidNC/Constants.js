@@ -23,6 +23,13 @@ export const Dimensions = {
     }
 };
 
+export const Directions = {
+    Up: 1,
+    Down: -1,
+    Left: -1,
+    Right: 1
+};
+
 export const ParkPosition = {
     x: Dimensions.Machine.x / 2,
     y: Dimensions.Machine.y,

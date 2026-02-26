@@ -3,7 +3,7 @@ import '../assets/button.css';
 
 const CLICK_BUFFER_TIMEOUT = 1000;
 
-export default function Button({ label, onClick, icon, invertIcon, iconSize = 50, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className, bold, bufferClick }) {
+export default function Button({ label, onClick, icon, invertIcon, iconSize = 50, disabled, actuallyDisable, labelSize = 'lg', background = 'dark', outline, children, style, variant, className, bold, bufferClick, active = false, activeVariant = 'info' }) {
     const [buffered, setBuffered] = useState(false);
 
     let fontSize;
@@ -57,6 +57,10 @@ export default function Button({ label, onClick, icon, invertIcon, iconSize = 50
                 classes.push('button-info');
                 break;
         }
+    }
+
+    if (active) {
+        classes.push('button-' + activeVariant);
     }
 
     const clickHandler = () => {

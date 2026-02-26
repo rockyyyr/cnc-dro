@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Dimensions } from '../lib/FluidNC/Constants';
+import { Dimensions, Directions } from '../lib/FluidNC/Constants';
 import { Context } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
@@ -17,7 +17,7 @@ import Down from '../assets/img/arrow-down.svg';
 const TouchProbe = Dimensions.TouchProbe;
 
 const StorageNames = {
-    NumOfCycles: 'measurePanel/numOfCycles',
+    NumOfCycles: 'measurePanel/cycleCount',
     ToolDiameter: 'measurePanel/probeDiameter'
 };
 
@@ -36,15 +36,10 @@ export default function MeasurePanel({ show, onClose }) {
     const { probeResults } = useContext(Context);
 
     const [measurements, setMeasurements] = useState([]);
-    const [xDirection, setXDirection] = useState(1);
-    const [yDirection, setYDirection] = useState(1);
-    const [numOfCycles, setNumOfCycles] = useState(1);
+    const [xDirection, setXDirection] = useState(Directions.Right);
+    const [yDirection, setYDirection] = useState(Directions.Up);
+    const [cycleCount, setCycleCount] = useState(1);
     const [newResult, setNewResult] = useState(false);
-
-    const dLeft = -1;
-    const dRight = 1;
-    const dUp = 1;
-    const dDown = -1;
 
     useEffect(() => setNewResult(true), [probeResults]);
 
@@ -65,8 +60,8 @@ export default function MeasurePanel({ show, onClose }) {
     const runMeasurement = async (callback, direction, axis) => {
         const results = [];
 
-        for (let i = 0; i < numOfCycles; i++) {
-            callback(0, TouchProbe.diameter, direction);
+        for (let i = 0; i < cycleCount; i++) {
+            callback(TouchProbe.diameter, direction);
             await waitForResult();
 
             results.push(probeResults[0]);
@@ -84,17 +79,17 @@ export default function MeasurePanel({ show, onClose }) {
         [
             { label: 'X', onClick: () => runMeasurement(Probe.measureX, xDirection, 'x') },
             { spacer: true },
-            { icon: Left, onClick: () => setXDirection(dLeft), variant: xDirection === dLeft ? 'info' : '' },
-            { icon: Right, onClick: () => setXDirection(dRight), variant: xDirection === dRight ? 'info' : '' }
+            { icon: Left, onClick: () => setXDirection(Directions.Left), active: xDirection === Directions.Left },
+            { icon: Right, onClick: () => setXDirection(Directions.Right), active: xDirection === Directions.Right }
         ],
         [
             { label: 'Y', onClick: () => runMeasurement(Probe.measureY, yDirection, 'y') },
             { spacer: true },
-            { icon: Up, onClick: () => setYDirection(dUp), variant: yDirection === dUp ? 'info' : '' },
-            { icon: Down, onClick: () => setYDirection(dDown), variant: yDirection === dDown ? 'info' : '' }
+            { icon: Up, onClick: () => setYDirection(Directions.Up), active: yDirection === Directions.Up },
+            { icon: Down, onClick: () => setYDirection(Directions.Down), active: yDirection === Directions.Down }
         ],
         [
-            { label: 'Z', onClick: () => runMeasurement(Probe.measureZ, dDown, 'z') },
+            { label: 'Z', onClick: () => runMeasurement(Probe.measureZ, Directions.Down, 'z') },
             { spacer: true },
             { _blank: true },
             { icon: Down, variant: 'info' }
@@ -112,7 +107,7 @@ export default function MeasurePanel({ show, onClose }) {
                                 : (
                                     <Grid key={index}>
                                         {button._blank ? null : (
-                                            <Button label={button.label} icon={button.icon} onClick={button.onClick} variant={button.variant} bold bufferClick />
+                                            <Button label={button.label} icon={button.icon} onClick={button.onClick} variant={button.variant} active={button.active} bold bufferClick />
                                         )}
                                     </Grid>
                                 ))}
@@ -126,8 +121,8 @@ export default function MeasurePanel({ show, onClose }) {
                             labelSize='xxs'
                             inputWidth={2.2}
                             label='Cycles'
-                            value={numOfCycles}
-                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setNumOfCycles, StorageNames.NumOfCycles)}
+                            value={cycleCount}
+                            onChange={value => value !== undefined && Storage.setStateAndSave(value, setCycleCount, StorageNames.NumOfCycles)}
                         />
                     </div>
                 </div>

@@ -26,9 +26,9 @@ export const probeZ = (probeHeight, retract, setCoords = true) => {
     `);
 };
 
-const probeHorizontal = (probeWidth, toolDiameter, direction, axis, setCoords = true) => {
+const probeHorizontal = (toolDiameter, direction, axis, setCoords = true) => {
     const toolRadius = toolDiameter / 2;
-    const offset = probeWidth + toolRadius;
+    const offset = toolRadius;
     const pos = amount => `${axis}${amount * direction}`;
 
     return Comms.send(`
@@ -45,15 +45,15 @@ const probeHorizontal = (probeWidth, toolDiameter, direction, axis, setCoords = 
     `);
 };
 
-export const probeX = (probeWidth, toolDiameter, directions) => {
-    return probeHorizontal(probeWidth, toolDiameter, directions.x, 'X');
+export const probeX = (toolDiameter, direction) => {
+    return probeHorizontal(toolDiameter, direction, 'X');
 };
 
-export const probeY = (probeWidth, toolDiameter, directions) => {
-    return probeHorizontal(probeWidth, toolDiameter, directions.y, 'Y');
+export const probeY = (toolDiameter, direction) => {
+    return probeHorizontal(toolDiameter, direction, 'Y');
 };
 
-export const probeXY = (probeWidth, toolDiameter, directions) => {
+export const probeXY = (toolDiameter, directions) => {
     Comms.send(`
         ${REL}
         ${RAPID} Z10
@@ -61,7 +61,7 @@ export const probeXY = (probeWidth, toolDiameter, directions) => {
         ${RAPID} Z-15
     `);
 
-    probeX(probeWidth, toolDiameter, directions);
+    probeX(toolDiameter, directions);
 
     Comms.send(`
         ${REL}
@@ -71,7 +71,7 @@ export const probeXY = (probeWidth, toolDiameter, directions) => {
         ${RAPID} Z-15
     `);
 
-    probeY(probeWidth, toolDiameter, directions);
+    probeY(toolDiameter, directions);
 };
 
 export const probeWithTouchProbe = direction => {
@@ -92,12 +92,12 @@ export const probeWithToolSetter = () => {
     return probeZ(ToolSetterPosition.z, retract);
 };
 
-export const measureX = (probeWidth, toolDiameter, direction) => {
-    return probeHorizontal(probeWidth, toolDiameter, direction, 'X', false);
+export const measureX = (toolDiameter, direction) => {
+    return probeHorizontal(toolDiameter, direction, 'X', false);
 };
 
-export const measureY = (probeWidth, toolDiameter, direction) => {
-    return probeHorizontal(probeWidth, toolDiameter, direction, 'Y', false);
+export const measureY = (toolDiameter, direction) => {
+    return probeHorizontal(toolDiameter, direction, 'Y', false);
 };
 
 export const measureZ = () => {
