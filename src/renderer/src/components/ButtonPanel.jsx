@@ -55,7 +55,7 @@ export default function ButtonPanel() {
             case RESET:
                 return 'danger';
             case ALARM:
-                return 'warning';
+                return 'danger';
             case EMERG:
                 return 'danger';
             case RUN:
@@ -95,7 +95,7 @@ export default function ButtonPanel() {
         { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true, disabled: disableMovement || hasFault, actuallyDisable: true },
         { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
         { icon: hasFault ? null : Reset, label: faultLabel, labelSize: 'xs', onClick: () => reset(inputs?.fault), variant: hasFault ? 'danger' : '', disabled: inputs?.eStop, actuallyDisable: true },
-        { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '', disabled: disableMovement || hasFault, actuallyDisable: true },
+        { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '', disabled: hasFault, actuallyDisable: true },
         { icon: Pause, onClick: () => Comms.send(Commands.HOLD), variant: hold ? 'warning' : '' },
     ];
 

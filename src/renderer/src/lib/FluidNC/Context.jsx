@@ -20,7 +20,8 @@ const FluidNCContext = createContext({
     enableVacuumMode: false,
     setAir: null,
     setMist: null,
-    disableMovement: false
+    disableMovement: false,
+    hasFault: false
 });
 
 export default FluidNCContext;

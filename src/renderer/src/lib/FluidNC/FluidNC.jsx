@@ -111,7 +111,7 @@ const FluidNC = ({ children }) => {
             ![States.IDLE, States.JOG].includes(state),
             inputs?.eStop,
             inputs?.fault
-        ].some(() => true)
+        ].some(x => x)
         );
     }, [state, inputs?.eStop, inputs?.fault]);
 
@@ -184,6 +184,8 @@ const FluidNC = ({ children }) => {
                     }
                 }
             });
+        } else {
+            setState(null);
         }
 
     }, [ready]);
@@ -224,7 +226,8 @@ const FluidNC = ({ children }) => {
         enableVacuumMode: enabled => setVacuumMode(enabled),
         setAir,
         setMist,
-        disableMovement
+        disableMovement,
+        hasFault: inputs?.eStop || inputs?.fault
     };
 
     return (

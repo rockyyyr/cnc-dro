@@ -5,8 +5,7 @@ export default class Websocket {
 
     constructor() {
         this.ready = false;
-        this.invterval = null;
-        this.message = null;
+        this.interval = null;
     }
 
     addQueue = queue => {
@@ -19,7 +18,7 @@ export default class Websocket {
 
     autoReport = () => {
         if (this.socket) {
-            this.invterval = setInterval(() => {
+            this.interval = setInterval(() => {
                 this.forceSend(`?`);
             }, PING_INTERVAL);
         }
@@ -38,8 +37,9 @@ export default class Websocket {
         if (this.socket) {
             this.socket.addEventListener('close', () => {
                 this.ready = false;
-                clearInterval(this.invterval);
                 callback();
+                clearInterval(this.interval);
+                setTimeout(() => this.open(), 2000);
             });
         }
     };
@@ -55,7 +55,10 @@ export default class Websocket {
             this.socket.addEventListener('message', async message => {
                 const newMessage = await Messages.parseWebsocketMessage(message);
                 callback(newMessage);
-                this.message = message;
+
+                if (window.env.LOG_COMMS) {
+                    console.log(message);
+                }
             });
         }
     };

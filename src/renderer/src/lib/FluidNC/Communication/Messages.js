@@ -112,7 +112,8 @@ const parseStatusMessage = message => {
         },
         inputs: !status.Pn ? null : {
             probe: status.Pn.includes('P'),
-            estop: status.Pn.includes('E'),
+            toolSetter: status.Pn.includes('T'),
+            eStop: status.Pn.includes('E'),
             fault: status.Pn.includes('F')
         },
         accessories: status.A
@@ -194,7 +195,7 @@ export const parseSerialMessage = message => {
 
 export const parseWebsocketMessage = async event => {
     if (typeof event.data === 'string') {
-        return parseGeneric(event?.data?.replace(LINE_TERMINATION, ''));
+        return parseMessage(event.data);
 
     } else {
         const buffer = await event.data.arrayBuffer();
@@ -202,4 +203,3 @@ export const parseWebsocketMessage = async event => {
         return parseMessage(text);
     }
 };
-
