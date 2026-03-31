@@ -32,6 +32,7 @@ const FluidNC = ({ children }) => {
 
     const [probeResults, setProbeResults] = useState([]);
     const [limits, setLimits] = useState(null);
+    const [inputs, setInputs] = useState(null);
     const [feedrate, setFeedrate] = useState(0);
     const [spindleSpeed, setSpindleSpeed] = useState(0);
     const [message, setMessage] = useState(null);
@@ -106,10 +107,13 @@ const FluidNC = ({ children }) => {
     // }, [workX, workY, vacuumMode, workOffsetX, workOffsetY]);
 
     useEffect(() => {
-        setDisableMovement(
-            ![States.IDLE, States.JOG].includes(state)
+        setDisableMovement([
+            ![States.IDLE, States.JOG].includes(state),
+            inputs?.eStop,
+            inputs?.fault
+        ].some(() => true)
         );
-    }, [state]);
+    }, [state, inputs?.eStop, inputs?.fault]);
 
     useEffect(() => {
         if (ready) {
@@ -146,6 +150,7 @@ const FluidNC = ({ children }) => {
                     safeSetNumber(message.spindleSpeed, setSpindleSpeed);
                     safeSetNumber(message.line, setLine);
                     setLimits(message.limits);
+                    setInputs(message.inputs);
 
                 } else if (message.type === Messages.MessageType.INFO) {
                     if (message.value) {
@@ -190,6 +195,7 @@ const FluidNC = ({ children }) => {
         notification,
         probeResults,
         limits,
+        inputs,
         feedrate,
         spindleSpeed,
         line,

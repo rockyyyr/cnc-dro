@@ -3,18 +3,24 @@ import { createContext } from 'react';
 const FluidNCContext = createContext({
     state: null,
     substate: null,
-    limits: null,
-    workPosition: null,
-    machinePostion: null,
-    workOffset: null,
-    feedrate: null,
-    spindleSpeed: null,
     message: null,
     notification: null,
     probeResults: null,
-    accessories: null,
+    limits: null,
+    inputs: null,
+    feedrate: null,
+    spindleSpeed: null,
     line: null,
-    overrides: null
+    overrides: null,
+    accessories: null,
+    workPosition: null,
+    machinePostion: null,
+    workOffset: null,
+    vacuumMode: null,
+    enableVacuumMode: false,
+    setAir: null,
+    setMist: null,
+    disableMovement: false
 });
 
 export default FluidNCContext;

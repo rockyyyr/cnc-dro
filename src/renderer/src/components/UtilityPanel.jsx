@@ -25,7 +25,7 @@ export default function UtilityPanel() {
     // const [airEnabled, setAirEnabled] = useState(false);
     // const [mistEnabled, setMistEnabled] = useState(false);
     const [override, setOverride] = useState(false);
-    const { state, limits, accessories, setAir, disableMovement } = useContext(Context);
+    const { state, inputs, accessories, setAir, disableMovement } = useContext(Context);
 
     useEffect(() => {
         setOverride([States.RUN, States.HOLD].includes(state));
@@ -47,9 +47,9 @@ export default function UtilityPanel() {
     // };
 
     const buttons = [
-        { icon: Probe, onClick: () => setShowProbePanel(true), variant: limits?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
+        { icon: Probe, onClick: () => setShowProbePanel(true), variant: inputs?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
         // { icon: TouchPlate, onClick: () => probeZ(Constants.Dimensions.TouchPlate.height), variant: accessories?.mist ? 'success' : '' },
-        { icon: Measure, onClick: () => setShowMeasurePanel(true), variant: accessories?.mist ? 'success' : '' },
+        { icon: Measure, onClick: () => setShowMeasurePanel(true), variant: accessories?.mist ? 'success' : '', disabled: disableMovement },
         { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
         // { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },

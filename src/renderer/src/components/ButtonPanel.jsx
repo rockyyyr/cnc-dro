@@ -11,6 +11,7 @@ import Play from '../assets/img/play.svg';
 import Pause from '../assets/img/pause.svg';
 import Locked from '../assets/img/locked.svg';
 import Unlocked from '../assets/img/unlocked.svg';
+import Disconnected from '../assets/img/disconnected.svg';
 
 const { RESET, ALARM, RUN, HOLD, IDLE, JOG, PROBE, EMERG, HOME } = States;
 
@@ -18,7 +19,8 @@ export default function ButtonPanel() {
     const [locked, setLocked] = useState(false);
     const [run, setRun] = useState(false);
     const [hold, setHold] = useState(false);
-    const { state, disableMovement } = useContext(Context);
+    const { state, disableMovement, inputs } = useContext(Context);
+    const hasFault = inputs?.eStop || inputs?.fault;
 
     useEffect(() => {
         if (state === ALARM) {
@@ -41,10 +43,15 @@ export default function ButtonPanel() {
             setRun(false);
             setHold(false);
         }
-    }, [state]);
+
+        setLocked(hasFault);
+
+    }, [state, hasFault]);
 
     const alarmVariant = state => {
         switch (state) {
+            case null:
+                return 'warning';
             case RESET:
                 return 'danger';
             case ALARM:
@@ -66,12 +73,29 @@ export default function ButtonPanel() {
         }
     };
 
+    const faultLabel = inputs?.eStop
+        ? 'EStop'
+        : inputs?.fault
+            ? 'Fault'
+            : null;
+
+    const reset = clearFault => {
+        Comms.send(Commands.RESET);
+
+        if (clearFault) {
+            Comms.send([
+                Commands.MOTOR_DISABLE,
+                Commands.MOTOR_ENABLE
+            ]);
+        }
+    }
+
     const buttons = [
-        { label: state, disabled: true, variant: alarmVariant(state) },
-        { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true, disabled: disableMovement, actuallyDisable: true },
+        { icon: state === null ? Disconnected : null, label: state, disabled: true, variant: alarmVariant(state) },
+        { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true, disabled: disableMovement || hasFault, actuallyDisable: true },
         { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
-        { icon: Reset, onClick: () => Comms.send(Commands.RESET) },
-        { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '' },
+        { icon: hasFault ? null : Reset, label: faultLabel, labelSize: 'xs', onClick: () => reset(inputs?.fault), variant: hasFault ? 'danger' : '', disabled: inputs?.eStop, actuallyDisable: true },
+        { icon: Play, onClick: () => Comms.send(Commands.RESUME), variant: run ? 'success' : '', disabled: disableMovement || hasFault, actuallyDisable: true },
         { icon: Pause, onClick: () => Comms.send(Commands.HOLD), variant: hold ? 'warning' : '' },
     ];
 
@@ -81,7 +105,7 @@ export default function ButtonPanel() {
                 <Grid key={index} y={1}>
                     <Button
                         label={button.label}
-                        labelSize={button.label === 'Alarm' ? 'xs' : 'sm'}
+                        labelSize={button.label === 'Alarm' ? 'xs' : (button.labelSize || 'sm')}
                         icon={button.icon}
                         onClick={button.onClick}
                         variant={button.variant}

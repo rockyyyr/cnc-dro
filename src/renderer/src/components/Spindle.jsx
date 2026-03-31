@@ -16,7 +16,7 @@ export default function Spindle() {
     const { show } = useNumpad();
     const [spindleSetting, setSpindleSetting] = useState(0);
     const [override, setOverride] = useState(false);
-    const { state, spindleSpeed, accessories, overrides } = useContext(Context);
+    const { state, spindleSpeed, accessories, overrides, disableMovement } = useContext(Context);
 
     useEffect(() => {
         setOverride(state === States.HOLD);
@@ -27,7 +27,7 @@ export default function Spindle() {
     });
 
     const spindleButtons = [
-        { icon: Rotate, onClick: () => clockwise(spindleSetting, override), variant: accessories?.spindle && spindleSpeed > 0 ? 'info' : '' },
+        { icon: Rotate, onClick: () => clockwise(spindleSetting, override), variant: accessories?.spindle && spindleSpeed > 0 ? 'info' : '', disabled: disableMovement },
         { icon: RotateStop, onClick: () => off(override) },
     ];
 
@@ -48,6 +48,8 @@ export default function Spindle() {
                             label={button.label}
                             onClick={button.onClick}
                             variant={button.variant}
+                            disabled={button.disabled}
+                            actuallyDisable
                         />
                     </Grid>
                 ))}

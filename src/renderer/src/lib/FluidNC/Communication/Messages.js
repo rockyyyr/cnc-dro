@@ -108,8 +108,12 @@ const parseStatusMessage = message => {
         limits: !status.Pn ? null : {
             x: status.Pn.includes('X'),
             y: status.Pn.includes('Y'),
-            z: status.Pn.includes('Z'),
+            z: status.Pn.includes('Z')
+        },
+        inputs: !status.Pn ? null : {
             probe: status.Pn.includes('P'),
+            estop: status.Pn.includes('E'),
+            fault: status.Pn.includes('F')
         },
         accessories: status.A
             ? {

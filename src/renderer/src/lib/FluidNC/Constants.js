@@ -1,5 +1,6 @@
-export const WS = 'ws://10.0.0.178:81';
-export const URL = 'http://10.0.0.178:80';
+const FLUIDNC_IP = window.env.FLUIDNC_IP;
+export const WS = `ws://${FLUIDNC_IP}:${window.env.FLUIDNC_WEBSOCKET_PORT}`;
+export const URL = `http://${FLUIDNC_IP}:80`;
 export const REPORT_INTERVAL = 75;
 export const PING_INTERVAL = 100;
 
