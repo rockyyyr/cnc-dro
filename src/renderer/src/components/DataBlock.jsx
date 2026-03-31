@@ -23,4 +23,3 @@ export default function DataBlock({ label, value, variant, unit, secondaryValue,
         </div>
     );
 }
-

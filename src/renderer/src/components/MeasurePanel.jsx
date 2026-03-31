@@ -40,6 +40,7 @@ export default function MeasurePanel({ show, onClose }) {
     const [yDirection, setYDirection] = useState(Directions.Up);
     const [cycleCount, setCycleCount] = useState(1);
     const [newResult, setNewResult] = useState(false);
+    const [measuredDimension, setMeasuredDimension] = useState();
 
     useEffect(() => setNewResult(true), [probeResults]);
 
@@ -71,6 +72,10 @@ export default function MeasurePanel({ show, onClose }) {
         const measurement = measurements[0] && measurements[0].axis === axis
             ? Math.abs(measurements[0].position - avgPosition).toFixed(3)
             : undefined;
+
+        if (measurement) {
+            setMeasuredDimension(prev => ({ ...prev, [axis]: parseFloat(measurement) }));
+        }
 
         setMeasurements(prev => [{ axis, position: avgPosition, fromLastPosition: measurement }, ...prev]);
     };
@@ -129,30 +134,63 @@ export default function MeasurePanel({ show, onClose }) {
                 {measurements.length > 0 && (
                     <>
                         <Spacer vLine x={0.2} y={4.2} />
-                        <Grid x={6} y={4.2} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
-                            <table style={{ width: '100%' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={THStyle}>Axis</th>
-                                        <th style={THStyle}>Position</th>
-                                        <th style={THStyle}>Measurement</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {measurements.map((measurement, i) => (
-                                        <tr key={i}>
-                                            <td style={TDStyle}>{measurement.axis.toUpperCase()}</td>
-                                            <td style={TDStyle}>{measurement.position}</td>
-                                            <td style={TDStyle}>{
-                                                measurement.fromLastPosition === undefined
-                                                    ? ' - '
-                                                    : `${measurement.fromLastPosition}mm`
-                                            }</td>
+
+                        <div>
+                            <Grid x={6}>
+                                {/* <table style={{ width: '100%', textAlign: 'center' }}>
+                                    <tbody>
+                                        <tr>
+                                            {Object.entries(measuredDimension).map(([axis, value]) => (
+                                                <td key={axis} style={TDStyle}>
+                                                    <span style={THStyle}>{axis.toUpperCase()}: </span>
+                                                    <span style={TDStyle}>{value}</span>
+                                                </td>
+
+                                            ))}
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </Grid>
+                                    </tbody>
+                                </table> */}
+                                {Object.entries(measuredDimension).map(([axis, value]) => (
+                                    <Input
+                                        key={axis}
+                                        inputWidth={1.4}
+                                        inputLabelSize='xs'
+                                        labelSize='xl'
+                                        labelWidth={0.6}
+                                        label={axis.toUpperCase()}
+                                        value={value}
+                                        disable
+                                    />
+                                ))}
+                            </Grid>
+
+                            <Spacer hLine x={6} y={0.2} />
+
+                            <Grid x={6} y={3.2} style={{ justifyContent: 'flex-start', alignItems: 'start', overflow: 'scroll', fontSize: '1.2rem' }}>
+                                <table style={{ width: '100%' }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={THStyle}>Axis</th>
+                                            <th style={THStyle}>Position</th>
+                                            <th style={THStyle}>Measurement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {measurements.map((measurement, i) => (
+                                            <tr key={i}>
+                                                <td style={TDStyle}>{measurement.axis.toUpperCase()}</td>
+                                                <td style={TDStyle}>{measurement.position}</td>
+                                                <td style={TDStyle}>{
+                                                    measurement.fromLastPosition === undefined
+                                                        ? ' - '
+                                                        : `${measurement.fromLastPosition}mm`
+                                                }</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </Grid>
+                        </div>
                     </>
                 )}
             </div>
