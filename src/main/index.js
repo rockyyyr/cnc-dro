@@ -15,6 +15,8 @@ if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('enable-unsafe-swiftshader');
     app.commandLine.appendSwitch('use-angle', 'egl');
     app.commandLine.appendSwitch('disable-hid-blocklist');
+
+    import('./DriverFaults');
 }
 
 const isMac = process.platform === 'darwin';
