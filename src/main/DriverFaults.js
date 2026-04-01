@@ -30,7 +30,7 @@ class DriverFaults {
     }
 
     poll() {
-        this.pins.forEach(pin => {
+        Object.keys(this.pins).forEach(pin => {
             rpio.poll(pin, this.updatePinState, rpio.POLL_BOTH);
         });
     }
