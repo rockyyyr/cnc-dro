@@ -8,6 +8,7 @@ const FluidNCContext = createContext({
     probeResults: null,
     limits: null,
     inputs: null,
+    faults: null,
     feedrate: null,
     spindleSpeed: null,
     line: null,

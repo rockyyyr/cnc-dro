@@ -38,6 +38,12 @@ const FluidNC = ({ children }) => {
     const [message, setMessage] = useState(null);
     const [line, setLine] = useState(null);
     const [overrides, setOverrides] = useState(null);
+    const [faults, setFaults] = useState({
+        x: false,
+        y: false,
+        a: false,
+        z: false
+    });
 
     const [air, setAir] = useState(false);
     const [mist, setMist] = useState(false);
@@ -87,6 +93,25 @@ const FluidNC = ({ children }) => {
         });
         Comms.onclose(() => setReady(false));
         return () => Comms.close();
+    }, []);
+
+    useEffect(() => {
+        let mounted = true;
+
+        window.api.getDriverFaults?.().then(faultState => {
+            if (mounted && faultState) {
+                setFaults(faultState);
+            }
+        }).catch(console.error);
+
+        const unsubscribe = window.api.onDriverFaultsChanged?.(faultState => {
+            setFaults(faultState);
+        });
+
+        return () => {
+            mounted = false;
+            unsubscribe?.();
+        };
     }, []);
 
     // useEffect(() => {
@@ -198,6 +223,7 @@ const FluidNC = ({ children }) => {
         probeResults,
         limits,
         inputs,
+        faults,
         feedrate,
         spindleSpeed,
         line,
@@ -232,12 +258,6 @@ const FluidNC = ({ children }) => {
 
     return (
         <FluidNCContext.Provider value={status}>
-            {/* {!Comms.ready && (
-                <div className='not-connected-overlay'>
-                    <h1>Connecting</h1>
-                    <div className="loading" />
-                </div>
-            )} */}
             {children}
             <button style={{ display: 'none' }} ref={externalNumpadRef} onClick={loadExternalKeypad} />
         </FluidNCContext.Provider>

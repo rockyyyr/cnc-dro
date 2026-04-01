@@ -15,8 +15,6 @@ if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('enable-unsafe-swiftshader');
     app.commandLine.appendSwitch('use-angle', 'egl');
     app.commandLine.appendSwitch('disable-hid-blocklist');
-
-    import('./DriverFaults');
 }
 
 const isMac = process.platform === 'darwin';
@@ -81,7 +79,27 @@ function createWindow() {
     });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+    let driverFaults = null;
+
+    if (process.env.DEVICE === 'pi') {
+        ({ default: driverFaults } = await import('./DriverFaults'));
+
+        ipcMain.handle('driver-faults:get-state', () => driverFaults.getState());
+        driverFaults.onChange((faultState) => {
+            BrowserWindow
+                .getAllWindows()
+                .forEach(window => window.webContents.send('driver-faults:changed', faultState));
+        });
+    } else {
+        ipcMain.handle('driver-faults:get-state', () => ({
+            x: false,
+            y: false,
+            a: false,
+            z: false
+        }));
+    }
+
     electronApp.setAppUserModelId('com.electron');
 
     app.on('browser-window-created', (_, window) => {

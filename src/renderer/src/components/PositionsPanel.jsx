@@ -6,12 +6,16 @@ import DataBlock from './DataBlock';
 import { zeroWorkAxis } from '../lib/positions';
 
 export default function PositionsPanel() {
-    const { workPosition, machinePosition, limits } = useContext(Context);
+    const { workPosition, machinePosition, limits, faults, inputs } = useContext(Context);
+
+    const yLabel = inputs?.fault && (faults.y || faults.a)
+        ? `${faults.y ? 'Y' : ''}${faults.a ? 'A' : ''}`
+        : 'Y';
 
     const blocks = [
-        { label: 'X', value: workPosition.x, secondaryValue: machinePosition.x, unit: 'mm', onClick: () => zeroWorkAxis('X'), variant: limits?.x ? 'danger' : '' },
-        { label: 'Y', value: workPosition.y, secondaryValue: machinePosition.y, unit: 'mm', onClick: () => zeroWorkAxis('Y'), variant: limits?.y ? 'danger' : '' },
-        { label: 'Z', value: workPosition.z, secondaryValue: machinePosition.z, unit: 'mm', onClick: () => zeroWorkAxis('Z'), variant: limits?.z ? 'danger' : '' },
+        { label: 'X', value: workPosition.x, secondaryValue: machinePosition.x, unit: 'mm', onClick: () => zeroWorkAxis('X'), variant: (limits?.x || (inputs?.fault && faults?.x)) ? 'danger' : '' },
+        { label: yLabel, value: workPosition.y, secondaryValue: machinePosition.y, unit: 'mm', onClick: () => zeroWorkAxis('Y'), variant: (limits?.y || (inputs?.fault && (faults?.y || faults.a))) ? 'danger' : '' },
+        { label: 'Z', value: workPosition.z, secondaryValue: machinePosition.z, unit: 'mm', onClick: () => zeroWorkAxis('Z'), variant: (limits?.z || (inputs?.fault && faults?.z)) ? 'danger' : '' },
     ];
 
     return (

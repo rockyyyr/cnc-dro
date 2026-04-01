@@ -15,7 +15,14 @@ if (process.contextIsolated) {
         contextBridge.exposeInMainWorld('api', {
             onMenuCommand: (callback) => {
                 ipcRenderer.on('restart-board', (_, cmd) => callback(cmd));
-            }
+            },
+            getDriverFaults: () => ipcRenderer.invoke('driver-faults:get-state'),
+            onDriverFaultsChanged: (callback) => {
+                const listener = (_, faultState) => callback(faultState);
+                ipcRenderer.on('driver-faults:changed', listener);
+
+                return () => ipcRenderer.removeListener('driver-faults:changed', listener);
+            },
         });
 
         contextBridge.exposeInMainWorld('serial', {

@@ -1,8 +1,10 @@
 import rpio from 'rpio';
+import { EventEmitter } from 'events';
 
 class DriverFaults {
 
     constructor() {
+        this.events = new EventEmitter();
         this.X_PIN = 11; //gpio.17
         this.Y_PIN = 13; //gpio.27
         this.A_PIN = 15; //gpio.22
@@ -16,11 +18,27 @@ class DriverFaults {
         };
 
         this.faults = {
-            x: 0,
-            y: 0,
-            a: 0,
-            z: 0
+            x: false,
+            y: false,
+            a: false,
+            z: false
         };
+    }
+
+    get fault() {
+        return Object.values(this.faults).some(Boolean);
+    }
+
+    getState() {
+        return {
+            fault: this.fault,
+            faults: { ...this.faults }
+        };
+    }
+
+    onChange(callback) {
+        this.events.on('change', callback);
+        return () => this.events.off('change', callback);
     }
 
     init() {
@@ -37,8 +55,15 @@ class DriverFaults {
 
     updatePinState(pin) {
         const state = rpio.read(pin);
-        this.faults[this.pins[pin]] = !state;
-        console.log(this.faults);
+        const axis = this.pins[pin];
+        const nextFault = !state;
+
+        if (this.faults[axis] === nextFault) {
+            return;
+        }
+
+        this.faults[axis] = nextFault;
+        this.events.emit('change', this.getState());
     }
 }
 
