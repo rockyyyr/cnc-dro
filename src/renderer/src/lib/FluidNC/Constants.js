@@ -2,7 +2,7 @@ const FLUIDNC_IP = window.env.FLUIDNC_IP;
 export const WS = `ws://${FLUIDNC_IP}:${window.env.FLUIDNC_WEBSOCKET_PORT}`;
 export const URL = `http://${FLUIDNC_IP}:80`;
 export const REPORT_INTERVAL = 75;
-export const PING_INTERVAL = 100;
+export const PING_INTERVAL = 1000;
 
 export const RAPID_SPEED = 3200;
 

@@ -80,14 +80,9 @@ export default function ButtonPanel() {
             : null;
 
     const reset = clearFault => {
-        Comms.send(Commands.RESET);
-
-        if (clearFault) {
-            Comms.send([
-                Commands.MOTOR_DISABLE,
-                Commands.MOTOR_ENABLE
-            ]);
-        }
+        return clearFault
+            ? Commands.clearFault()
+            : Comms.send(Commands.RESET);
     }
 
     const buttons = [

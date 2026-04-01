@@ -1,3 +1,5 @@
+import * as Api from './Communication/Api';
+
 export const UNLOCK = '$X';
 export const HOME = '$H';
 export const STATUS = '?';
@@ -22,3 +24,8 @@ export const SPINDLE_OVERRIDE_STOP = '\x9E';
 
 export const AIR_OVERRIDE = '\xA0';
 export const MIST_OVERRIDE = '\xA1';
+
+export const clearFault = () => {
+    setTimeout(() => Api.command(MOTOR_DISABLE), 1000);
+    setTimeout(() => Api.command(MOTOR_ENABLE), 3000);
+}
