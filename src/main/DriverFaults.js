@@ -3,10 +3,10 @@ import rpio from 'rpio';
 class DriverFaults {
 
     constructor() {
-        this.X_PIN = 1;
-        this.Y_PIN = 2;
-        this.A_PIN = 3;
-        this.Z_PIN = 4;
+        this.X_PIN = 17;
+        this.Y_PIN = 27;
+        this.A_PIN = 22;
+        this.Z_PIN = 23;
 
         this.pins = {
             [this.X_PIN]: 'x',
