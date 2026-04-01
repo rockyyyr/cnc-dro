@@ -1,4 +1,5 @@
 import * as Api from './Communication/Api';
+import Comms from './Communication';
 
 export const UNLOCK = '$X';
 export const HOME = '$H';
@@ -26,6 +27,10 @@ export const AIR_OVERRIDE = '\xA0';
 export const MIST_OVERRIDE = '\xA1';
 
 export const clearFault = () => {
-    setTimeout(() => Api.command(MOTOR_DISABLE), 1000);
-    setTimeout(() => Api.command(MOTOR_ENABLE), 3000);
-}
+    const send = window.env.COMMS === 'serial'
+        ? Comms.send
+        : Api.command;
+
+    setTimeout(() => send(MOTOR_DISABLE), 1000);
+    setTimeout(() => send(MOTOR_ENABLE), 3000);
+};
