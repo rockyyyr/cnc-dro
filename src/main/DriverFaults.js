@@ -25,15 +25,8 @@ class DriverFaults {
         };
     }
 
-    get fault() {
-        return Object.values(this.faults).some(Boolean);
-    }
-
     getState() {
-        return {
-            fault: this.fault,
-            faults: { ...this.faults }
-        };
+        return this.faults;
     }
 
     onChange(callback) {
@@ -56,6 +49,7 @@ class DriverFaults {
     updatePinState(pin) {
         const state = rpio.read(pin);
         const axis = this.pins[pin];
+
         const nextFault = !state;
 
         if (this.faults[axis] === nextFault) {
