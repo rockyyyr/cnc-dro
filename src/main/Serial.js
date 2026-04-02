@@ -8,7 +8,7 @@ class Serial {
         this.parser = null;
         this.options = {
             path: '/dev/serial0',
-            baudRate: 115200,
+            baudRate: 1000000,
             lock: false,
             autoOpen: true
         };
