@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /home/rocky/Apps/cnc-dro
+cd /home/rocky/apps/cnc-dro
 npm start
