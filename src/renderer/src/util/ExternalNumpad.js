@@ -20,7 +20,7 @@ export default class ExternalNumpad {
             'Numpad9': () => Jog.rightUp(this.distance),
             'Numpad5': () => Jog.xyZero(),
             'Numpad0': () => Jog.goToMachine(Constants.ToolChangePosition),
-            'Enter': () => Jog.goToMachine(Constants.ParkPosition),
+            // 'Enter': () => Jog.goToMachine(Constants.ParkPosition),
             'NumpadDecimal': () => Probe.probeZ(10),
             'NumLock': () => this.distance = 0.1,
             'NumpadDivide': () => this.distance = 1,
@@ -31,7 +31,7 @@ export default class ExternalNumpad {
 
     async open() {
         window.addEventListener('keyup', event => {
-            if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD || ['Backspace', 'NumLock', 'Enter'].includes(event.code)) {
+            if (event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD || ['Backspace', 'NumLock'].includes(event.code)) {
                 this.createCommand(event.code);
             }
         });
