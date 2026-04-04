@@ -44,7 +44,7 @@ export default function ButtonPanel() {
             setHold(false);
         }
 
-        setLocked(hasFault);
+        setLocked(hasFault || state === ALARM);
 
     }, [state, hasFault]);
 
@@ -83,7 +83,7 @@ export default function ButtonPanel() {
         return clearFault
             ? Commands.clearFault()
             : Comms.send(Commands.RESET);
-    }
+    };
 
     const buttons = [
         { icon: state === null ? Disconnected : null, label: state, disabled: true, variant: alarmVariant(state) },
