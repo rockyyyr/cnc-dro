@@ -6,7 +6,7 @@ const { NUMPAD_VENDOR_ID, NUMPAD_PRODUCT_ID, FULLSCREEN } = process.env;
 import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import icon from '../../resources/icon.png?asset';
+import icon from '../../resources/icon.svg?asset';
 
 if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
