@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=CNC DRO
+Comment=CNC Digital Readout
+Exec=__HOME__/apps/cnc-dro/start.sh
+Icon=__HOME__/apps/cnc-dro/resources/icon.svg
+Terminal=false
+Type=Application
+Categories=Utility;
+
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=CNC
+Comment=Launch CNC DRO
+Icon=__HOME__/apps/cnc-dro/resources/icon.svg
+Exec=__HOME__/apps/cnc-dro/start.sh
+Path=__HOME__/apps/cnc-dro
+Terminal=false
+Categories=Utility;
