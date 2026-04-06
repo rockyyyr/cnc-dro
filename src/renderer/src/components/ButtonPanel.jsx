@@ -86,7 +86,7 @@ export default function ButtonPanel() {
     };
 
     const buttons = [
-        { icon: state === null ? Disconnected : null, label: state, disabled: true, variant: alarmVariant(state), onClick: window.api.showContextMenu },
+        { icon: state === null ? Disconnected : null, label: state, disabled: true, variant: alarmVariant(state), onClick: window.api.showContextMenu, bufferClick: true },
         { icon: Home, onClick: () => Comms.send(Commands.HOME), bufferClick: true, disabled: disableMovement || hasFault, actuallyDisable: true },
         { icon: locked ? Locked : Unlocked, onClick: () => Comms.send(Commands.UNLOCK), variant: locked ? 'danger' : '' },
         { icon: hasFault ? null : Reset, label: faultLabel, labelSize: 'xs', onClick: () => reset(inputs?.fault), variant: hasFault ? 'danger' : '', disabled: inputs?.eStop, actuallyDisable: true },
