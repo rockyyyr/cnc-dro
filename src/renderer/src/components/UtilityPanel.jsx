@@ -8,9 +8,9 @@ import { Context, States } from '../lib/FluidNC';
 import * as Coolant from '../lib/coolant';
 import Terminal from './Terminal';
 
-import Probe from '../assets/img/probe.svg';
+import Probe from '../assets/img/tool-setter.svg';
 import Measure from '../assets/img/measure.svg';
-import Air from '../assets/img/air.svg';
+import Wind from '../assets/img/wind.svg';
 // import Mist from '../assets/img/mist.svg';
 import TerminalIcon from '../assets/img/terminal.svg';
 import MeasurePanel from './MeasurePanel';
@@ -50,7 +50,7 @@ export default function UtilityPanel() {
         { icon: Probe, onClick: () => setShowProbePanel(true), variant: inputs?.probe ? 'danger' : showProbePanel ? 'info' : '', disabled: disableMovement },
         // { icon: TouchPlate, onClick: () => probeZ(Constants.Dimensions.TouchPlate.height), variant: accessories?.mist ? 'success' : '' },
         { icon: Measure, onClick: () => setShowMeasurePanel(true), variant: accessories?.mist ? 'success' : '', disabled: disableMovement },
-        { icon: Air, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
+        { icon: Wind, onClick: toggleAir, variant: accessories?.air ? 'info' : '' },
         { icon: TerminalIcon, onClick: () => setShowTerminal(true) },
         // { icon: Vacuum, onClick: () => setShowVacuumPanel(true), variant: vacuumMode ? 'success' : '' },
     ];
