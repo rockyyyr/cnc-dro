@@ -13,6 +13,7 @@ if (process.contextIsolated) {
         });
 
         contextBridge.exposeInMainWorld('api', {
+            showContextMenu: () => ipcRenderer.send('show-context-menu'),
             onMenuCommand: (callback) => {
                 ipcRenderer.on('restart-board', (_, cmd) => callback(cmd));
             },

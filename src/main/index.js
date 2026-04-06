@@ -157,6 +157,10 @@ app.whenReady().then(async () => {
         window.webContents.on('context-menu', () => {
             menu.popup();
         });
+
+        ipcMain.on('show-context-menu', () => {
+            menu.popup();
+        });
     });
 
     ipcMain.on('ping', () => console.log('pong'));
