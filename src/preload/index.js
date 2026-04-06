@@ -31,7 +31,7 @@ if (process.contextIsolated) {
             onOpen: callback => Serial.onOpen(callback),
             onError: callback => Serial.onError(callback),
             onClose: callback => Serial.onClose(callback),
-            onData: data => Serial.onData(data),
+            onData: (callback, once) => Serial.onData(callback, once),
             close: () => Serial.close()
         });
 

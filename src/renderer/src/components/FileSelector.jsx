@@ -42,9 +42,7 @@ export default function FileSelector({ show, onClose, onChange, onFilesLoaded })
 
     const deleteAllFiles = async files => {
         if (window.confirm(`Are you sure you want to delete all files?`)) {
-            for (const file of files) {
-                await Files.deleteFile(file.name);
-            }
+            await ProdFiles.deleteAllFiles(files);
             setFiles([]);
         }
     };

@@ -47,7 +47,6 @@ export default function Visualizer() {
     const toggleFollowMode = () => setFollowTool(!followTool);
 
     const loadSelectedFile = async file => {
-        // const { data } = await Files.getFile(file.name);
         setFileName(file.name);
         setGcode(new Gcode(file.data, workOffset, machinePosition));
     };

@@ -44,9 +44,13 @@ class Serial {
         this.port?.on('close', () => callback());
     }
 
-    onData(callback) {
+    onData(callback, once = false) {
         if (!this.parser) console.log('Parser is not ready yet');
-        this.parser?.on('data', line => callback(line));
+        if (once) {
+            this.parser?.once('data', line => callback(line));
+        } else {
+            this.parser?.on('data', line => callback(line));
+        }
     }
 
     close() {

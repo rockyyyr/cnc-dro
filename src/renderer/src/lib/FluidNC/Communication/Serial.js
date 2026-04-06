@@ -71,6 +71,25 @@ export default class Serial {
         }
     };
 
+    sendAndWait = data => {
+        const ONCE = true;
+
+        if (this.port) {
+            this.forceSend(data);
+
+            return new Promise(resolve => {
+                this.port.onData(line => {
+                    const message = Messages.parseSerialMessage(line);
+                    resolve(message);
+
+                    if (window.env.LOG_COMMS) {
+                        console.log(line);
+                    }
+                }, ONCE);
+            });
+        }
+    };
+
     close = () => {
         if (this.port) {
             this.port.close();

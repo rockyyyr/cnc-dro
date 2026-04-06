@@ -18,6 +18,10 @@ export const deleteFile = async () => {
     return false;
 };
 
+export const deleteAllFiles = async () => {
+    return false;
+};
+
 export const getLatestFile = async () => {
     const files = await getFileList();
 

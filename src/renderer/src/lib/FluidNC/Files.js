@@ -1,6 +1,9 @@
 import api from "./Communication/Api";
 import { FILE_UPLOADED } from './Events';
 import * as Messages from './Communication/Messages';
+import { wait } from '../../util/helpers';
+
+let bufferNewFile = false;
 
 export const getFileList = async () => {
     const response = await api.get('/upload?path=%2F&action=list');
@@ -16,7 +19,23 @@ export const getFile = async filename => {
 };
 
 export const deleteFile = async filename => {
-    return api.get(`/upload?path=%2F&filename=${encodeURI(filename)}&action=delete`);
+    bufferNewFile = true;
+
+    await api.get(`/upload?path=%2F&filename=${encodeURI(filename)}&action=delete`);
+    await wait(2000);
+
+    bufferNewFile = false;
+};
+
+export const deleteAllFiles = async files => {
+    bufferNewFile = true;
+
+    for (const file of files) {
+        await deleteFile(file.name);
+    }
+
+    await wait(2000);
+    bufferNewFile = false;
 };
 
 export const getLatestFile = async () => {
@@ -36,5 +55,7 @@ export const getLatestFile = async () => {
 };
 
 export const hasNewFile = message => {
-    return message?.type === Messages.MessageType.INFO && message.value?.includes(FILE_UPLOADED);
+    return !bufferNewFile &&
+        message?.type === Messages.MessageType.INFO &&
+        message.value?.includes(FILE_UPLOADED);
 };

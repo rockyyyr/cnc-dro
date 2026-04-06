@@ -18,6 +18,7 @@ export const MessageLevels = {
     INFO: 'INFO',
     ALARM: 'ALARM',
     ERROR: 'ERR',
+    DEBUG: 'DBG'
 };
 
 const LINE_TERMINATION = /\r$|\n$|\r\n$/g;
