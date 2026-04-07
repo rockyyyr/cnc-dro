@@ -1,7 +1,9 @@
 import { existsSync, readFileSync } from "fs";
+import OS from 'os';
+import * as Path from 'path';
 
 export const load = () => {
-    const path = '~/.cnc.json';
+    const path = Path.join(OS.homedir(), '.cnc.json');
 
     try {
         return existsSync(path)
