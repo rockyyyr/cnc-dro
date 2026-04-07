@@ -1,0 +1,27 @@
+{
+    "rapidSpeed": 3200,
+    "dimensions": {
+        "machine": {
+            "x": 408,
+            "y": 420,
+            "z": 128
+        },
+        "touchProbe": {
+            "diameter": 2,
+            "height": 0
+        },
+        "touchPlate": {
+            "width": 10,
+            "height": 10
+        }
+    },
+    "positions": {
+        "toolChangePosition": {
+            "y": 50
+        },
+        "toolSetterPosition": {
+            "x": 0,
+            "y": 0
+        }
+    }
+}
