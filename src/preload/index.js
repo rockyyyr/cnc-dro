@@ -26,6 +26,10 @@ if (process.contextIsolated) {
             },
         });
 
+        contextBridge.exposeInMainWorld('config', {
+            load: () => ipcRenderer.invoke('config:load')
+        });
+
         contextBridge.exposeInMainWorld('serial', {
             open: () => Serial.open(),
             send: cmd => Serial.send(cmd),

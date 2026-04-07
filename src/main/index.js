@@ -7,6 +7,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.svg?asset';
+import * as Config from './Config';
 
 if (process.env.DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
@@ -91,6 +92,8 @@ app.whenReady().then(async () => {
                 .getAllWindows()
                 .forEach(window => window.webContents.send('driver-faults:changed', faultState));
         });
+
+
     } else {
         ipcMain.handle('driver-faults:get-state', () => ({
             x: false,
@@ -99,6 +102,8 @@ app.whenReady().then(async () => {
             z: false
         }));
     }
+
+    ipcMain.handle('config:load', () => Config.load());
 
     electronApp.setAppUserModelId('com.electron');
 
