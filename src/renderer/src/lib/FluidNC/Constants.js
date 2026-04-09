@@ -8,7 +8,7 @@ export const PING_INTERVAL = 1000;
 
 const Config = window.config.load() || {};
 
-export const RAPID_SPEED = setIfExists(Config.rapidSpeed, 3200);
+export const RAPID_SPEED = setIfExists(Config.rapidSpeed, 100000);
 
 export const Dimensions = {
     Machine: {
