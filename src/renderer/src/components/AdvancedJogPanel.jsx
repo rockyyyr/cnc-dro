@@ -3,17 +3,20 @@ import { Context, States, Constants } from '../lib/FluidNC';
 import Modal from '../util/Modal';
 import Grid from '../util/Grid';
 import Button from './Button';
-import Spacer from '../util/Spacer';
 import * as Jog from '../lib/jog';
 
 import Park from '../assets/img/park.svg';
 import Tool from '../assets/img/tool.svg';
 
-const jogContainerSize = 487;
-const actualMachineSize = 410;
-const gridSize = jogContainerSize / 10;
+const jogContainerHeight = 457;
+const machineX = Constants.Dimensions.Machine.x;
+const machineY = Constants.Dimensions.Machine.y;
 
-const scaleFactor = jogContainerSize / actualMachineSize;
+const scale = jogContainerHeight / Math.max(machineX, machineY);
+const jogContainerWidth = machineX * scale;
+const jogContainerHeightScaled = machineY * scale;
+
+const gridSize = jogContainerHeight / 15;
 const toolRadius = 10;
 
 export default function AdvancedJogPanel({ show, onClose }) {
@@ -24,15 +27,15 @@ export default function AdvancedJogPanel({ show, onClose }) {
     const ref = useRef(null);
 
     const position = group => ({
-        bottom: group.y * scaleFactor - toolRadius,
-        left: group.x * scaleFactor - toolRadius
+        bottom: group.y * scale - toolRadius,
+        left: group.x * scale - toolRadius
     });
 
     const jogPosition = position(machinePosition);
 
     const gridStyle = {
-        width: jogContainerSize,
-        height: jogContainerSize,
+        width: jogContainerWidth,
+        height: jogContainerHeightScaled,
         backgroundSize: `${gridSize}px ${gridSize}px`,
     };
 
@@ -50,11 +53,11 @@ export default function AdvancedJogPanel({ show, onClose }) {
             const elementX = e.clientX - rect.left;
             const elementY = rect.bottom - e.clientY;
 
-            const x = Math.round(elementX / scaleFactor);
-            const y = Math.round(elementY / scaleFactor);
+            const x = Math.round(elementX / scale);
+            const y = Math.round(elementY / scale);
 
-            // bufferMovement({ z: 10 });
-            bufferMovement({ x, y, z: -10 }, Jog.goToMachine);
+            bufferMovement({ z: -10 }, Jog.goToMachine);
+            bufferMovement({ x, y }, Jog.goToMachine);
             setTargetPosition(position({ x, y }));
             setShowTarget(true);
         }
@@ -78,22 +81,24 @@ export default function AdvancedJogPanel({ show, onClose }) {
     }, [state]);
 
     return (
-        <Modal show={show} onClose={onClose} style={{ overflow: 'hidden', paddingRight: 0 }} >
+        <Modal show={show} onClose={onClose} style={{ overflow: 'hidden' }} noPadding>
             {show && (
-                <Grid x={6} y={5} noPad style={{ justifyContent: 'space-around' }}>
-                    <div className='flex-col flex-start' style={{ height: '100%' }}>
-                        {buttons.map((button, index) => (
-                            <Grid key={index}>
-                                <Button
-                                    icon={button.icon}
-                                    label={button.label}
-                                    labelSize='sm'
-                                    onClick={button.onClick}
-                                />
-                            </Grid>
-                        ))}
-                    </div>
-                    <Spacer x={1} y={5} />
+                <Grid y={5} noPad style={{ width: 'fit-content', maxWidth: 1920 }}>
+                    <Grid x={1} y={5} style={{ margin: 10 }}>
+                        <div className='flex-col flex-start' style={{ height: '100%' }}>
+                            {buttons.map((button, index) => (
+                                <Grid key={index}>
+                                    <Button
+                                        icon={button.icon}
+                                        label={button.label}
+                                        labelSize='sm'
+                                        onClick={button.onClick}
+                                    />
+                                </Grid>
+                            ))}
+                        </div>
+                    </Grid>
+                    {/* <Spacer x={0.03} y={5} /> */}
                     <div className='advanced-jog-machine'>
                         <div
                             ref={ref}
