@@ -6,6 +6,21 @@ export const StorageNames = {
     JogFeedrate: 'jog/feedrate'
 };
 
+let feedrate = Number(Storage.get(StorageNames.JogFeedrate));
+const listeners = new Set();
+
+export const getFeedrate = () => feedrate;
+export const setFeedrate = value => {
+    feedrate = value;
+    Storage.save(value, StorageNames.JogFeedrate);
+    listeners.forEach(listener => listener());
+};
+
+export const subscribeFeedrate = listener => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+};
+
 const f = feedrate => `${FEEDRATE}${feedrate || Constants.MAX_RAPID}`;
 const MACHINE_POSITION = true;
 
@@ -20,7 +35,7 @@ const jog = (directions, distance) => {
         command.push(`${key.toUpperCase()}${directions[key] * distance}`);
     }
 
-    command.push(`${f(Storage.get(StorageNames.JogFeedrate))}`);
+    command.push(f(feedrate));
     return Commands.JOG + command.join(' ');
 };
 
@@ -37,7 +52,7 @@ const goToPosition = (axes, machinePosition) => {
         command.push(`${key.toUpperCase()}${axes[key]}`);
     }
 
-    command.push(`${f(Storage.get(StorageNames.JogFeedrate))}`);
+    command.push(f(feedrate));
     return Commands.JOG + command.join(' ');
 };
 
