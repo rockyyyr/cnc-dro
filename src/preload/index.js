@@ -16,6 +16,7 @@ if (process.contextIsolated) {
             showContextMenu: () => ipcRenderer.send('show-context-menu'),
             onMenuCommand: (callback) => {
                 ipcRenderer.on('restart-board', (_, cmd) => callback(cmd));
+                ipcRenderer.on('reset-board', (_, cmd) => callback(cmd));
             },
             getDriverFaults: () => ipcRenderer.invoke('driver-faults:get-state'),
             onDriverFaultsChanged: (callback) => {

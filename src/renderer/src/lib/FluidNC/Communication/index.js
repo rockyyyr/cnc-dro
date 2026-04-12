@@ -10,6 +10,9 @@ window.api.onMenuCommand((cmd) => {
         comms.send('$BYE');
         setTimeout(() => window.location.reload(), 8000);
     }
+    if (cmd === '$X') {
+        comms.send('$X');
+    }
 });
 
 export default comms;

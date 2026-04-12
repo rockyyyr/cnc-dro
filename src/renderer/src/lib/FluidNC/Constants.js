@@ -9,10 +9,17 @@ export const PING_INTERVAL = 1000;
 const Config = await window.config.load();
 const { dimensions, positions } = Config;
 
+export const ConfigLevels = {
+    DEFAULT: 'default',
+    USER: 'user',
+    FLUIDNC: 'fluidnc'
+};
+
+export const CONFIG_LEVEL = Config.configLevel;
+
 export const RAPID_X = setIfExists(Config.rapidSpeed, 3200);
 export const RAPID_Y = setIfExists(Config.rapidSpeed, 3200);
 export const RAPID_Z = setIfExists(Config.rapidSpeed, 3200);
-
 export const MAX_RAPID = Math.max(RAPID_X, RAPID_Y, RAPID_Z);
 
 export const Dimensions = {

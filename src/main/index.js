@@ -123,6 +123,23 @@ app.whenReady().then(async () => {
                 click: () => window.webContents.openDevTools(),
             },
             {
+                label: 'Reset Board',
+                click: async (menuItem, browserWindow) => {
+                    const result = await dialog.showMessageBox(browserWindow, {
+                        type: 'warning',
+                        buttons: ['Reset', 'Cancel'],
+                        defaultId: 1,
+                        cancelId: 1,
+                        title: 'Confirm Reset',
+                        message: 'Are you sure you want to reset the board?'
+                    });
+
+                    if (result.response === 0) {
+                        window.webContents.send('reset-board', '$X');
+                    }
+                }
+            },
+            {
                 label: 'Restart Board',
                 click: async (menuItem, browserWindow) => {
                     const result = await dialog.showMessageBox(browserWindow, {

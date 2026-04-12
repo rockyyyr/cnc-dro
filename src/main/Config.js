@@ -40,7 +40,10 @@ function loadUser() {
         return {};
     }
     try {
-        return JSON.parse(readFileSync(userConfigPath, 'utf-8'));
+        return {
+            configLevel: 'user',
+            ...JSON.parse(readFileSync(userConfigPath, 'utf-8'))
+        };
     } catch (e) {
         console.warn(`Failed to load user config from ${userConfigPath}:`, e.message);
         return {};
@@ -53,6 +56,7 @@ async function loadFluidNC() {
         const yaml = parseYaml(response.data);
 
         return !yaml ? {} : {
+            configLevel: 'fluidnc',
             rapidX: yaml.axes?.x?.max_rate_mm_per_min,
             rapidY: yaml.axes?.y?.max_rate_mm_per_min,
             rapidZ: yaml.axes?.z?.max_rate_mm_per_min,
