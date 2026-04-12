@@ -261,7 +261,7 @@ export default class Gcode {
         let feed;
 
         if (cmd === Commands.G0) {
-            feed = Constants.RAPID_SPEED;
+            feed = Constants.MAX_RAPID;
 
         } else {
             feed = line.f || this.prevFeedrate;
