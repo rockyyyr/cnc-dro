@@ -6,7 +6,7 @@ export const StorageNames = {
     JogFeedrate: 'jog/feedrate'
 };
 
-let feedrate = Number(Storage.get(StorageNames.JogFeedrate));
+let feedrate = Number(Storage.get(StorageNames.JogFeedrate) || 0);
 const listeners = new Set();
 
 export const getFeedrate = () => feedrate;
