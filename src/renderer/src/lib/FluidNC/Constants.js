@@ -7,13 +7,13 @@ export const REPORT_INTERVAL = 75;
 export const PING_INTERVAL = 1000;
 
 const Config = await window.config.load();
-console.log(Config);
-
 const { dimensions, positions } = Config;
 
 export const RAPID_X = setIfExists(Config.rapidSpeed, 3200);
 export const RAPID_Y = setIfExists(Config.rapidSpeed, 3200);
 export const RAPID_Z = setIfExists(Config.rapidSpeed, 3200);
+
+export const MAX_RAPID = Math.max(RAPID_X, RAPID_Y, RAPID_Z);
 
 export const Dimensions = {
     Machine: {
@@ -66,4 +66,8 @@ export const VacuumMode = {
 export const ToolSetterPosition = {
     x: setIfExists(positions.toolSetterPosition.x, 0),
     y: setIfExists(positions.toolSetterPosition.y, 0)
+};
+
+export const StorageNames = {
+
 };

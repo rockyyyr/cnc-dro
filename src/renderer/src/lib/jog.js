@@ -1,7 +1,12 @@
 import { MM, ABS, FEEDRATE, REL, MACHINE_COORD } from './Gcode/Commands';
 import { Commands, Comms, Constants } from './FluidNC';
+import * as Storage from '../util/storage';
 
-const f = speed => `${FEEDRATE}${speed}`;
+export const StorageNames = {
+    JogFeedrate: 'jog/feedrate'
+};
+
+const f = feedrate => `${FEEDRATE}${feedrate || Constants.MAX_RAPID}`;
 const MACHINE_POSITION = true;
 
 const jog = (directions, distance) => {
@@ -15,7 +20,7 @@ const jog = (directions, distance) => {
         command.push(`${key.toUpperCase()}${directions[key] * distance}`);
     }
 
-    command.push(`${f(Constants.RAPID_SPEED)}`);
+    command.push(`${f(Storage.get(StorageNames.JogFeedrate))}`);
     return Commands.JOG + command.join(' ');
 };
 
@@ -32,7 +37,7 @@ const goToPosition = (axes, machinePosition) => {
         command.push(`${key.toUpperCase()}${axes[key]}`);
     }
 
-    command.push(`${f(Constants.RAPID_SPEED)}`);
+    command.push(`${f(Storage.get(StorageNames.JogFeedrate))}`);
     return Commands.JOG + command.join(' ');
 };
 
