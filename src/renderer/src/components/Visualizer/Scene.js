@@ -8,7 +8,9 @@ export default class Scene {
         this.lastTime = 0;
         this.needsRender = true;
 
-        this.size = Math.max(Constants.Dimensions.Machine.x, Constants.Dimensions.Machine.y);
+        this.sizeX = Constants.Dimensions.Machine.x;
+        this.sizeY = Constants.Dimensions.Machine.y;
+        this.size = Math.max(this.sizeX, this.sizeY);
         this.divisions = 20;
 
         this.colorMap = {
@@ -46,13 +48,14 @@ export default class Scene {
     init() {
         this.renderer.setSize(this.width, this.height);
 
-        const center = this.size / 2;
+        const centerX = this.sizeX / 2;
+        const centerY = this.sizeY / 2;
 
         this.camera.up.set(0, 0, -1);
-        this.camera.position.set(center, this.size - 70, center);
+        this.camera.position.set(centerX, this.size - 70, centerX);
         this.camera.lookAt(0, 0, 0);
 
-        this.controls.target.set(center, -5, -center);
+        this.controls.target.set(centerX, -5, -centerY);
         this.controls.noPan = false;
         this.controls.panSpeed = 1.0;
         this.controls.rotateSpeed = 4.0;
@@ -64,8 +67,36 @@ export default class Scene {
     }
 
     drawPlane() {
-        this.plane = new THREE.GridHelper(this.size, this.divisions);
-        this.plane.position.set((this.size / 2), 0, -(this.size / 2));
+        const xSize = this.sizeX;
+        const ySize = this.sizeY;
+        const divisionsX = this.divisions;
+        const divisionsY = Math.round(this.divisions * (ySize / xSize));
+
+        const vertices = [];
+        const color = new THREE.Color(0x444444);
+        const colors = [];
+
+        // Lines along X (varying Y)
+        for (let i = 0; i <= divisionsY; i++) {
+            const z = -(i / divisionsY) * ySize;
+            vertices.push(0, 0, z, xSize, 0, z);
+            colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+        }
+
+        // Lines along Y (varying X)
+        for (let i = 0; i <= divisionsX; i++) {
+            const x = (i / divisionsX) * xSize;
+            vertices.push(x, 0, 0, x, 0, -ySize);
+            colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+        const material = new THREE.LineBasicMaterial({ vertexColors: true });
+        this.plane = new THREE.LineSegments(geometry, material);
+
         const box = new THREE.Box3().setFromObject(this.plane);
         this.subjectBoundingBox = box;
         this.scene.add(this.plane);
@@ -151,7 +182,7 @@ export default class Scene {
     }
 
     updatePlaneZPosition(z = 0) {
-        this.plane.position.set((this.size / 2), z, -(this.size / 2));
+        this.plane.position.setY(z);
         this.axesHelper.position.set(0, 0, z);
     }
 
