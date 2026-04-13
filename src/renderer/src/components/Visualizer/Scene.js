@@ -52,7 +52,7 @@ export default class Scene {
         const centerY = this.sizeY / 2;
 
         this.camera.up.set(0, 0, -1);
-        this.camera.position.set(centerX, this.size - 70, centerX);
+        this.camera.position.set(centerX, this.size / 2, this.size / 2);
         this.camera.lookAt(0, 0, 0);
 
         this.controls.target.set(centerX, -5, -centerY);
