@@ -17,9 +17,9 @@ export const ConfigLevels = {
 
 export const CONFIG_LEVEL = Config.configLevel;
 
-export const RAPID_X = setIfExists(Config.rapidSpeed, 3200);
-export const RAPID_Y = setIfExists(Config.rapidSpeed, 3200);
-export const RAPID_Z = setIfExists(Config.rapidSpeed, 3200);
+export const RAPID_X = setIfExists(Config.rapidX, 3200);
+export const RAPID_Y = setIfExists(Config.rapidY, 3200);
+export const RAPID_Z = setIfExists(Config.rapidZ, 3200);
 export const MAX_RAPID = Math.max(RAPID_X, RAPID_Y, RAPID_Z);
 
 export const Dimensions = {

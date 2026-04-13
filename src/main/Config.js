@@ -11,7 +11,7 @@ const resourcesPath = app.isPackaged
 
 const defaultConfigPath = Path.join(resourcesPath, 'default.config.json');
 const userConfigPath = Path.join(OS.homedir(), '.cnc.json');
-const fluidNCConfigUrl = `http://10.0.0.178/config.yaml`;
+const fluidNCConfigUrl = `http://${process.env.FLUIDNC_IP}/config.yaml`;
 
 function deepMerge(defaults, overrides) {
     const result = structuredClone(defaults);

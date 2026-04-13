@@ -1,7 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import './env';
 
-const { NUMPAD_VENDOR_ID, NUMPAD_PRODUCT_ID, FULLSCREEN } = process.env;
 
 import { app, shell, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join } from 'path';
@@ -9,7 +7,9 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.svg?asset';
 import * as Config from './Config';
 
-if (process.env.DEVICE === 'pi') {
+const { NUMPAD_VENDOR_ID, NUMPAD_PRODUCT_ID, FULLSCREEN, DEVICE, DEVTOOLS } = process.env;
+
+if (DEVICE === 'pi') {
     app.commandLine.appendSwitch('ignore-gpu-blacklist');
     app.commandLine.appendSwitch('enable-gpu');
     app.commandLine.appendSwitch('enable-webgl');
@@ -39,7 +39,7 @@ function createWindow() {
         }
     });
 
-    if (process.env.DEVTOOLS) {
+    if (DEVTOOLS) {
         mainWindow.webContents.openDevTools();
     }
 
@@ -83,7 +83,7 @@ function createWindow() {
 app.whenReady().then(async () => {
     let driverFaults = null;
 
-    if (process.env.DEVICE === 'pi') {
+    if (DEVICE === 'pi') {
         ({ default: driverFaults } = await import('./DriverFaults'));
 
         ipcMain.handle('driver-faults:get-state', () => driverFaults.getState());
