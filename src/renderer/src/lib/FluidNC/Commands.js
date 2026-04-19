@@ -1,6 +1,7 @@
 import * as Api from './Communication/Api';
 import Comms from './Communication';
 
+export const REPORT_INTERVAL = '$ri=';
 export const UNLOCK = '$x';
 export const HOME = '$h';
 export const STATUS = '?';

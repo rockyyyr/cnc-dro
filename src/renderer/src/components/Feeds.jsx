@@ -21,18 +21,17 @@ export default function Feeds() {
         onChange: value => Jog.setFeedrate(value)
     });
 
-    const displayFeedRate = !state || state === States.IDLE
-        ? jogFeedrate
-        : feedrate;
+    const showJogFeedrate = [States.JOG, States.IDLE].includes(state) && jogFeedrate;
 
     return (
         <div>
             <Grid x={4}>
                 <DataBlock
                     label='F'
-                    value={displayFeedRate}
-                    unit='mm/min'
+                    value={<>{feedrate}<span style={{ fontSize: '1.1rem', marginLeft: 10 }}>mm/min</span></>}
+                    secondaryValue={showJogFeedrate ? <>{jogFeedrate}<span style={{ fontSize: '0.8rem', marginLeft: 10 }}>mm/min</span></> : undefined}
                     onClick={showNumpad}
+                    small={showJogFeedrate}
                 />
             </Grid>
             <OverridePanel

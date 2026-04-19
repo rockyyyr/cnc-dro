@@ -1,14 +1,16 @@
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 
+const { SERIAL_PATH, SERIAL_BAUD } = process.env;
+
 class Serial {
 
     constructor() {
         this.port = null;
         this.parser = null;
         this.options = {
-            path: '/dev/serial0',
-            baudRate: 1000000,
+            path: SERIAL_PATH ?? '/dev/serial0',
+            baudRate: Number(SERIAL_BAUD ?? 1000000),
             lock: false,
             autoOpen: true
         };

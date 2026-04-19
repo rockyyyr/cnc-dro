@@ -1,7 +1,7 @@
 import '../assets/data-block.css';
 import Button from './Button';
 
-export default function DataBlock({ label, value, variant, unit, secondaryValue, buttonLabel, onClick = () => { } }) {
+export default function DataBlock({ label, value, small, variant, unit, secondaryValue, buttonLabel, onClick = () => { } }) {
 
     const hasButton = onClick && buttonLabel;
 
@@ -10,7 +10,7 @@ export default function DataBlock({ label, value, variant, unit, secondaryValue,
             <Button disabled variant={variant} className="data-block-label">{label}</Button>
             <div className={`data-block-value-container ${hasButton ? 'data-block-value-container-w-button' : ''}`} onClick={!hasButton ? onClick : () => { }}>
                 <div className="data-block-value-wrapper">
-                    <div className="data-block-value">{value}</div>
+                    <div className={`data-block-value ${small ? 'data-block-value-small' : ''}`}>{value}</div>
                     {secondaryValue !== undefined && (
                         <div className="data-block-value data-block-secondary-value">{secondaryValue}</div>
                     )}

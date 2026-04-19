@@ -38,9 +38,8 @@
 
 .visualizer-load-file {
     position: fixed;
-    text-align: center;
     top: 10px;
-    margin-left: 8px
+    margin-left: 8px;
 }
 
 .visualizer-controls {

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import Gcode from '../../lib/Gcode';
 import Scene from './Scene';
-import { Files, Context, States } from '../../lib/FluidNC';
+import { Files, Context, States, Constants } from '../../lib/FluidNC';
 import Button from '../Button';
 import Grid from '../../util/Grid';
 import Progress from '../../util/Progress';
@@ -221,6 +221,26 @@ export default function Visualizer() {
                                             actuallyDisable={!hasFilesLoaded}
                                             onClick={() => setShowFileSelector(true)}
                                         />
+                                    </Grid>
+                                    <Grid x={2} y={4} style={{ paddingLeft: 10, justifyContent: 'start', marginTop: 10, alignItems: 'start' }}>
+                                        <div style={{ fontSize: 12 }}>
+                                            <div style={{ fontWeight: 'bold' }}>Config:</div>
+                                            <div className={'flex-col'} style={{ justifyContent: 'start', paddingLeft: 14 }}>
+                                                <div style={{ textTransform: 'capitalize' }}>{Constants.CONFIG_LEVEL}</div>
+                                            </div>
+                                            <div style={{ fontWeight: 'bold' }}>Rapids</div>
+                                            <div className={'flex-col'} style={{ justifyContent: 'start', paddingLeft: 14 }}>
+                                                <div>X: {Constants.RAPID_X}</div>
+                                                <div>Y: {Constants.RAPID_Y}</div>
+                                                <div>Z: {Constants.RAPID_Z}</div>
+                                            </div>
+                                            <div style={{ fontWeight: 'bold' }}>Dimensions</div>
+                                            <div className={'flex-col'} style={{ justifyContent: 'start', paddingLeft: 14 }}>
+                                                <div>X: {Constants.Dimensions.Machine.x}</div>
+                                                <div>Y: {Constants.Dimensions.Machine.y}</div>
+                                                <div>Z: {Constants.Dimensions.Machine.z}</div>
+                                            </div>
+                                        </div>
                                     </Grid>
                                 </div>
                             )}

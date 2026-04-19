@@ -1,11 +1,14 @@
 import * as Messages from './Messages';
-import { REPORT_INTERVAL } from '../Constants';
+import * as Constants from '../Constants';
+import * as Commands from '../Commands';
+
 
 export default class Serial {
 
     constructor() {
         this.ready = false;
         this.reconnectInterval = null;
+        this.messageCount = 0;
     }
 
     addQueue = queue => {
@@ -23,7 +26,7 @@ export default class Serial {
 
     autoReport = () => {
         if (this.port) {
-            this.forceSend(`$Report/Interval=${REPORT_INTERVAL}`);
+            this.forceSend(Commands.REPORT_INTERVAL + Constants.REPORT_INTERVAL);
         }
     };
 
@@ -53,7 +56,9 @@ export default class Serial {
                 callback(message);
 
                 if (window.env.LOG_COMMS) {
-                    console.log(line);
+                    if (message.type !== Messages.MessageType.STATUS || window.env.LOG_STATUS) {
+                        console.log(window.env.LOG_RAW_COMMS ? line : message);
+                    }
                 }
             });
         }
@@ -68,6 +73,10 @@ export default class Serial {
     forceSend = data => {
         if (this.port) {
             this.port.send(`${data}\r\n`, console.error);
+
+            if (window.env.LOG_COMMS) {
+                console.log(data);
+            }
         }
     };
 

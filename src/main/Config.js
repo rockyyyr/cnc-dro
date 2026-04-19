@@ -5,13 +5,16 @@ import { app } from 'electron';
 import axios from 'axios';
 import { parse as parseYaml } from 'yaml';
 
+const { FLUIDNC_IP, FLUIDNC_HTTP_PORT } = process.env;
+
 const resourcesPath = app.isPackaged
     ? process.resourcesPath
     : Path.join(__dirname, '../../resources');
 
 const defaultConfigPath = Path.join(resourcesPath, 'default.config.json');
 const userConfigPath = Path.join(OS.homedir(), '.cnc.json');
-const fluidNCConfigUrl = `http://${process.env.FLUIDNC_IP}/config.yaml`;
+
+const fluidNCConfigUrl = `http://${FLUIDNC_IP}:${FLUIDNC_HTTP_PORT}/config.yaml`;
 
 function deepMerge(defaults, overrides) {
     const result = structuredClone(defaults);

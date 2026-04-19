@@ -29,6 +29,7 @@
     padding-right: 0;
 }
 
+.data-block-value-small.data-block-value,
 .data-block-value-container-w-button .data-block-value {
     font-size: 2.5rem;
 }
