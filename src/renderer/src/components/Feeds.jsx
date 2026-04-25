@@ -21,7 +21,7 @@ export default function Feeds() {
         onChange: value => Jog.setFeedrate(value)
     });
 
-    const showJogFeedrate = [States.JOG, States.IDLE].includes(state) && jogFeedrate;
+    const showJogFeedrate = [States.JOG, States.IDLE, null].includes(state) && jogFeedrate;
 
     return (
         <div>
@@ -29,7 +29,8 @@ export default function Feeds() {
                 <DataBlock
                     label='F'
                     value={<>{feedrate}<span style={{ fontSize: '1.1rem', marginLeft: 10 }}>mm/min</span></>}
-                    secondaryValue={showJogFeedrate ? <>{jogFeedrate}<span style={{ fontSize: '0.8rem', marginLeft: 10 }}>mm/min</span></> : undefined}
+                    secondaryLabel={'Jog'}
+                    secondaryValue={showJogFeedrate ? jogFeedrate : null}
                     onClick={showNumpad}
                     small={showJogFeedrate}
                 />

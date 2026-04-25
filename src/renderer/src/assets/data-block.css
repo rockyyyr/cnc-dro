@@ -38,6 +38,7 @@
     /* display: flex; */
     /* flex-direction: column; */
     /* height: 100%; */
+    width: 100%;
 }
 
 .data-block-value {
@@ -47,10 +48,23 @@
     padding-right: 10px
 }
 
-.data-block-value.data-block-secondary-value {
-    font-size: 1.3rem;
+.data-block-secondary {
+    font-size: 1rem;
     font-weight: normal;
     margin-top: -15px;
+}
+
+.data-block-secondary-value {
+    padding-right: 10px;
+}
+
+.data-block-secondary-label {
+    padding-left: 15px;
+}
+
+.data-block-secondary .data-block-secondary-units {
+    margin-left: 10px;
+    font-size: 0.7rem;
 }
 
 .data-block-unit {
