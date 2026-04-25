@@ -29,8 +29,8 @@ export default function Feeds() {
                 <DataBlock
                     label='F'
                     value={<>{feedrate}<span style={{ fontSize: '1.1rem', marginLeft: 10 }}>mm/min</span></>}
-                    secondaryLabel={'Jog'}
-                    secondaryValue={showJogFeedrate ? jogFeedrate : null}
+                    // secondaryLabel={'Jog'}
+                    secondaryValue={showJogFeedrate ? <>{jogFeedrate}<span style={{ marginLeft: 10, fontSize: '0.9rem' }}>mm/min</span></> : undefined}
                     onClick={showNumpad}
                     small={showJogFeedrate}
                 />

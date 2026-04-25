@@ -11,12 +11,11 @@ export default function DataBlock({ label, value, small, variant, unit, secondar
             <div className={`data-block-value-container ${hasButton ? 'data-block-value-container-w-button' : ''}`} onClick={!hasButton ? onClick : () => { }}>
                 <div className="data-block-value-wrapper">
                     <div className={`data-block-value ${small ? 'data-block-value-small' : ''}`}>{value}</div>
-                    {secondaryValue && (
+                    {secondaryValue !== undefined && (
                         <div className="flex-row space-between">
-                            <div className="data-block-secondary data-block-secondary-label">{secondaryLabel}</div>
+                            <div className="data-block-secondary data-block-secondary-label">{secondaryLabel ?? null}</div>
                             <div className="data-block-secondary data-block-secondary-value">
                                 {secondaryValue}
-                                <span className="data-block-secondary data-block-secondary-units">mm/min</span>
                             </div>
                         </div>
                     )}
