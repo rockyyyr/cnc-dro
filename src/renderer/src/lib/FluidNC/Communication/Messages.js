@@ -112,8 +112,7 @@ const parseStatusMessage = message => {
             z: status.Pn.includes('Z')
         },
         inputs: !status.Pn ? null : {
-            probe: status.Pn.includes('P'),
-            toolSetter: status.Pn.includes('T'),
+            probe: ['P', 'T'].includes(status.Pn),
             eStop: status.Pn.includes('E'),
             fault: status.Pn.includes('F')
         },
