@@ -41,8 +41,15 @@ export default function MeasurePanel({ show, onClose }) {
     const [cycleCount, setCycleCount] = useState(1);
     const [newResult, setNewResult] = useState(false);
     const [measuredDimension, setMeasuredDimension] = useState({});
+    const [probeResultsLength, setProbeResultsLength] = useState(0);
 
-    useEffect(() => setNewResult(true), [probeResults]);
+    useEffect(() => {
+        if (probeResults?.length > probeResultsLength) {
+            setNewResult(true);
+            setProbeResultsLength(probeResults.length);
+            console.log({ probeResultsLength });
+        }
+    }, [probeResults, probeResultsLength]);
 
     const waitForResult = () => {
         return new Promise(resolve => {
@@ -68,7 +75,7 @@ export default function MeasurePanel({ show, onClose }) {
             results.push(probeResults[0]);
         }
 
-        const avgPosition = results.reduce((sum, result) => sum + result[axis], 0) / results.length;
+        const avgPosition = results.reduce((sum, result) => sum + (result?.value[axis] ?? 0), 0) / results.length;
         const measurement = measurements[0] && measurements[0].axis === axis
             ? Math.abs(measurements[0].position - avgPosition).toFixed(3)
             : undefined;
