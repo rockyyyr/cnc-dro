@@ -40,7 +40,7 @@ export default function MeasurePanel({ show, onClose }) {
     const [yDirection, setYDirection] = useState(Directions.Up);
     const [cycleCount, setCycleCount] = useState(1);
     const [newResult, setNewResult] = useState(false);
-    const [measuredDimension, setMeasuredDimension] = useState();
+    const [measuredDimension, setMeasuredDimension] = useState({});
 
     useEffect(() => setNewResult(true), [probeResults]);
 
