@@ -9,7 +9,8 @@ const ToolSetterPosition = {
     z: -2
 };
 
-const CORRECTION = 0.12;
+// const CORRECTION = 0.12;
+const CORRECTION = 0;
 
 export const probeZ = (probeHeight, retract, setCoords = true) => {
     return Comms.send(`
